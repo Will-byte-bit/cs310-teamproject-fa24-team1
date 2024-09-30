@@ -14,7 +14,7 @@ public class Main {
 	 * Comments to check repo connection and permissions
 	 * Sam Cain - Check (testing netbeans push/pull)
 	 * Will Saint - Check testing 3
-	 * Mathew Sjostrom -
+	 * Mathew Sjostrom - This is a test
 	 * Josh Whaley - Testing push/pull
 	 * Madison Latham - Testing push/pull
 	 */
