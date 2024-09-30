@@ -16,6 +16,9 @@ public class ShiftDAO {
     
     //prepared statements for the two find methods
     private static final String QUERY_FIND_ID = "SELECT * FROM shift WHERE id = ?";
+    private static final String QUERY_FIND_BADGE = "SELECT shiftid FROM employee WHERE badge = ?";
+    
+    private final int DEFUALT_ID = 0;
  
 
     private final DAOFactory daoFactory;
@@ -24,6 +27,8 @@ public class ShiftDAO {
     public ShiftDAO(DAOFactory daoFactory){
         this.daoFactory = daoFactory;
     }
+    
+   
     public Shift find(int id) {
 
         Shift shift = null;
@@ -82,9 +87,58 @@ public class ShiftDAO {
     
     public Shift find(Badge badge){
         
-        //gets badgeID as int from badge object
-        int badgeID = Integer.parseInt(badge.getId());
-        return find(badgeID);
+        //create vars
+        PreparedStatement ps = null;
+        int id = DEFUALT_ID;
+        ResultSet rs = null;
+
+        try {
+
+            Connection conn = daoFactory.getConnection();
+
+            if (conn.isValid(0)) {
+
+                ps = conn.prepareStatement(QUERY_FIND_BADGE);
+                ps.setString(1, badge.getId());
+
+                boolean hasresults = ps.execute();
+
+                if (hasresults) {
+
+                    rs = ps.getResultSet();
+                    id = rs.getInt("shiftid");
+    
+                   
+                }
+
+            }
+
+        } catch (SQLException e) {
+
+            throw new DAOException(e.getMessage());
+
+        } finally {
+
+            if (rs != null) {
+                try {
+                    rs.close();
+                } catch (SQLException e) {
+                    throw new DAOException(e.getMessage());
+                }
+            }
+            if (ps != null) {
+                try {
+                    ps.close();
+                } catch (SQLException e) {
+                    throw new DAOException(e.getMessage());
+                }
+            }
+
+        }
+
+      
+        
+        return find(id);
     }
     public HashMap<Integer, String> resultSetToHashMap(ResultSet rs){
         
