@@ -82,6 +82,7 @@ public class ShiftDAO {
     
     public Shift find(Badge badge){
         
+        //gets badgeID as int from badge object
         int badgeID = Integer.parseInt(badge.getId());
         return find(badgeID);
     }
