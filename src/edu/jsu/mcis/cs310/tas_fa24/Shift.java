@@ -88,5 +88,32 @@ public class Shift {
   
         return result;
     }
-    
+    public HashMap<Integer, String> getShift() {
+        return shift;
+    }
+
+    public int getShiftDuration() {
+        return shiftDuration;
+    }
+
+    public int getLunchDuration() {
+        return lunchDuration;
+    }
+
+    public String getShiftStartStr() {
+        return shiftStartStr;
+    }
+
+    public String getShiftEndStr() {
+        return shiftEndStr;
+    }
+
+    public String getLunchStartStr() {
+        return lunchStartStr;
+    }
+
+    public String getLunchEndStr() {
+        return lunchEndStr;
+    }
+
 }
