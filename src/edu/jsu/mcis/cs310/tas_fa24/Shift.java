@@ -88,6 +88,8 @@ public class Shift {
   
         return result;
     }
+    
+    //getters
     public HashMap<Integer, String> getShift() {
         return shift;
     }

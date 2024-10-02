@@ -16,9 +16,9 @@ public class ShiftDAO {
     
     //prepared statements for the two find methods
     private static final String QUERY_FIND_ID = "SELECT * FROM shift WHERE id = ?";
-    private static final String QUERY_FIND_BADGE = "SELECT shiftid FROM employee WHERE badge = ?";
+    private static final String QUERY_FIND_BADGE = "SELECT shiftid FROM employee WHERE badgeid = ?";
     
-    private final int DEFUALT_ID = 0;
+    private final int DEFAULT_ID = 0;
  
 
     private final DAOFactory daoFactory;
@@ -50,6 +50,7 @@ public class ShiftDAO {
                 if (hasresults) {
 
                     rs = ps.getResultSet();
+                    System.out.println(rs);
                     shift = new Shift(resultSetToHashMap(rs));
                     
                     
@@ -86,10 +87,11 @@ public class ShiftDAO {
     }
     
     public Shift find(Badge badge){
+        System.out.println("test");
         
         //create vars
         PreparedStatement ps = null;
-        int id = DEFUALT_ID;
+        int id = DEFAULT_ID;
         ResultSet rs = null;
 
         try {
@@ -99,15 +101,20 @@ public class ShiftDAO {
             if (conn.isValid(0)) {
 
                 ps = conn.prepareStatement(QUERY_FIND_BADGE);
+                System.out.println(badge.getId());
                 ps.setString(1, badge.getId());
+                
 
                 boolean hasresults = ps.execute();
+                System.out.println(hasresults);
 
                 if (hasresults) {
-
+                    
                     rs = ps.getResultSet();
+                    rs.next();
                     id = rs.getInt("shiftid");
-    
+                    
+                    
                    
                 }
 
@@ -140,6 +147,7 @@ public class ShiftDAO {
         
         return find(id);
     }
+    //move to dao utility
     public HashMap<Integer, String> resultSetToHashMap(ResultSet rs){
         
          //Hash map of the raw shift data, key is 0 through length of shift.
