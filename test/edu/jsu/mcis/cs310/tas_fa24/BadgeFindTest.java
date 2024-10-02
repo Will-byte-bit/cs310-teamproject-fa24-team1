@@ -60,4 +60,28 @@ public class BadgeFindTest {
 
     }
     
+    @Test
+    public void testFindBadge4() {
+	    BadgeDAO badgeDAO = daoFactory.getBadgeDAO();
+	    
+	    /* Retrieve Badges from Database */
+	    
+	    Badge b4 = badgeDAO.find("124A2DED");
+	    
+	    // Compare to Expected Values
+	    
+	    assertEquals("#124A2DED (Ford, Nicholas R)", b4.toString());
+    }
+    
+    @Test public void testFindBadge5() {
+	    BadgeDAO badgeDAO = daoFactory.getBadgeDAO();
+	    
+	    // Retrieve Badges from Database
+	    
+	    Badge b5 = badgeDAO.find("DFD9BB5C");
+	    
+	    // Compare to Expected Values
+	    
+	    assertEquals("#DFD9BB5C (Gallegos, Phillip M)", b5.toString());
+    }
 }
