@@ -14,7 +14,7 @@ import java.sql.*;
  */
 public class EmployeeDAO {
     private static final String QUERY_FIND_ID = "SELECT * FROM employee WHERE id = ?";
-    private static final String QUERY_FIND_BADGE = "SELECT id FROM employee WHERE badgeid = ?";
+    private static final String QUERY_FIND_BADGE = "SELECT employeetypeid FROM employee WHERE badgeid = ?";
     
     private final DAOFactory daoFactory;
     
@@ -27,7 +27,6 @@ public class EmployeeDAO {
         
         PreparedStatement ps = null;
         ResultSet rs = null;
-        boolean hasResults;
         
         try {
             Connection conn = daoFactory.getConnection();
@@ -36,7 +35,7 @@ public class EmployeeDAO {
                 ps = conn.prepareCall(QUERY_FIND_ID);
                 ps.setInt(1, id);
                 
-                hasResults = ps.execute();
+                boolean hasResults = ps.execute();
                 
                 if (hasResults) {
                     rs = ps.getResultSet();
@@ -69,7 +68,7 @@ public class EmployeeDAO {
     public Employee find(Badge badge) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-        boolean hasResults;
+
         int id = 0;
         
         try {
@@ -79,16 +78,16 @@ public class EmployeeDAO {
                 ps = conn.prepareCall(QUERY_FIND_BADGE);
                 ps.setString(1, badge.getId());
                 
-                hasResults = ps.execute();
+                boolean hasResults = ps.execute();
                 
                 if (hasResults) {
                     rs = ps.getResultSet();
                     rs.next();
-                    id = rs.getInt("id");
+                    id = rs.getInt("employeetypeid");
                 }
             }
         } catch (SQLException e) {
-            throw new DAOException(e.getLocalizedMessage());
+            throw new DAOException(e.getMessage());
         } finally {
             if (rs != null) {
                 try {
