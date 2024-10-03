@@ -31,6 +31,7 @@ public final class DAOUtility {
                 //iterate over cols
                 for (int i=1; i<=numberOfCols; i++) {
                     String colName = rsMeta.getColumnName(i);
+              
                     mapOfShift.put(i-1, rs.getString(colName));
 
                 }
@@ -40,6 +41,7 @@ public final class DAOUtility {
             catch(SQLException e){
                 throw new DAOException(e.getMessage());
             }
+      
             return mapOfShift;
         }
 }

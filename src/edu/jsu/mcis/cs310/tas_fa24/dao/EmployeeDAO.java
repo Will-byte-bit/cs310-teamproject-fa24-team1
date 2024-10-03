@@ -14,7 +14,7 @@ import java.sql.*;
  */
 public class EmployeeDAO {
     private static final String QUERY_FIND_ID = "SELECT * FROM employee WHERE id = ?";
-    private static final String QUERY_FIND_BADGE = "SELECT employeetypeid FROM employee WHERE badgeid = ?";
+    private static final String QUERY_FIND_BADGE = "SELECT id FROM employee WHERE badgeid = ?";
     
     private final DAOFactory daoFactory;
     
@@ -39,7 +39,9 @@ public class EmployeeDAO {
                 
                 if (hasResults) {
                     rs = ps.getResultSet();
+                    
                     employee = new Employee(DAOUtility.resultSetToHashMap(rs));
+                    
                 }
                 
                 
@@ -68,7 +70,8 @@ public class EmployeeDAO {
     public Employee find(Badge badge) {
         PreparedStatement ps = null;
         ResultSet rs = null;
-
+        
+        //magic constant. Might need to change. William Saint. 10/3/24
         int id = 0;
         
         try {
@@ -83,7 +86,8 @@ public class EmployeeDAO {
                 if (hasResults) {
                     rs = ps.getResultSet();
                     rs.next();
-                    id = rs.getInt("employeetypeid");
+                    id = rs.getInt("id");
+                    System.out.println(id);
                 }
             }
         } catch (SQLException e) {

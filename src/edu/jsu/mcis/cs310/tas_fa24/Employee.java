@@ -26,6 +26,7 @@ public class Employee {
     
     public Employee(HashMap<Integer, String> employee) {
         this.employee = employee;
+   
     }
 
     // Constructor
@@ -58,7 +59,7 @@ public class Employee {
     // Override toString method
     @Override
     public String toString() {
-        return "ID: " + id + ", Name: " + firstName + " " + middleName + " " + lastName +
+        return "ID: " + employee.get(0)+ ", Name: " + firstName + " " + middleName + " " + lastName +
                ", Badge ID: " + badge + ", Type: " + employeeType +
                ", Department: " + department + ", Active Date: " + active;
     }
