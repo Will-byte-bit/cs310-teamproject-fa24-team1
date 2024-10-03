@@ -5,6 +5,7 @@
 package edu.jsu.mcis.cs310.tas_fa24;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -26,14 +27,26 @@ public class Punch {
         originalTimeStamp = LocalDateTime.now();
     }
     public Punch(int id, int terminalid, Badge badge, LocalDateTime originalTimeStamp, EventType punchtype){
+        this.id = id;
         this.terminalId = terminalId;
         this.badge = badge;
-        this.punchType = punchType;
-        this.id = id;
+        this.punchType = punchtype;
         this.originalTimeStamp = originalTimeStamp;
         
     }
-    
+    public String printOriginal(){
+        
+        //get day of week abriv
+        String day = originalTimeStamp.getDayOfWeek().toString().substring(0, 3);
+        
+        //format string
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append("#").append(badge.getId()).append(" ").append(punchType).append(": ").append(day).append(" ").append(originalTimeStamp.format(formatter));
+
+        return sb.toString();
+    }
     public int getTerminalId() {
     return terminalId;
     }
