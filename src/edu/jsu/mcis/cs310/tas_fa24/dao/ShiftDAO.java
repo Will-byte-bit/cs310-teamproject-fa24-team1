@@ -51,7 +51,7 @@ public class ShiftDAO {
 
                     rs = ps.getResultSet();
                     System.out.println(rs);
-                    shift = new Shift(resultSetToHashMap(rs));
+                    shift = new Shift(DAOUtility.resultSetToHashMap(rs));
                     
                     
                    
@@ -147,31 +147,5 @@ public class ShiftDAO {
         
         return find(id);
     }
-    //move to dao utility
-    public HashMap<Integer, String> resultSetToHashMap(ResultSet rs){
-        
-         //Hash map of the raw shift data, key is 0 through length of shift.
-         HashMap<Integer, String> mapOfShift = new HashMap<Integer, String>();
-         
-         try{
-            ResultSetMetaData rsMeta = rs.getMetaData();
-
-            int numberOfCols = rsMeta.getColumnCount();
-            while(rs.next()) {
-
-              //iterate over cols
-              for (int i=1; i<=numberOfCols; i++) {
-                String colName = rsMeta.getColumnName(i);
-                mapOfShift.put(i-1, rs.getString(colName));
-
-              }
-
-           }
-         }
-         catch(SQLException e){
-             throw new DAOException(e.getMessage());
-         }
-         return mapOfShift;
-     }
-
+  
 }
