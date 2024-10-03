@@ -40,7 +40,7 @@ public class EmployeeDAO {
                 
                 if (hasResults) {
                     rs = ps.getResultSet();
-                    
+                    employee = new Employee(DAOUtility.resultSetToHashMap(rs));
                 }
                 
                 

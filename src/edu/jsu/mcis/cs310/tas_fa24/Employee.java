@@ -5,13 +5,15 @@
 package edu.jsu.mcis.cs310.tas_fa24;
 
 import java.time.LocalDateTime;
+import java.util.HashMap;
 
 /**
  *
  * @author Matthew
  */
 public class Employee {
-
+    
+    private HashMap<Integer, String> employee;
     private int id;
     private String firstName;
     private String middleName;
@@ -21,6 +23,10 @@ public class Employee {
     private Department department;
     private Shift shift;
     private EmployeeType employeeType;
+    
+    public Employee(HashMap<Integer, String> employee) {
+        this.employee = employee;
+    }
 
     // Constructor
     public Employee(int id, String firstName, String middleName, String lastName, 
@@ -38,6 +44,7 @@ public class Employee {
     }
 
     // Getters
+    public HashMap<Integer, String> getEmployee() { return employee; }
     public int getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getMiddleName() { return middleName; }
