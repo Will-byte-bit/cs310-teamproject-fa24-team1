@@ -3,68 +3,51 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package edu.jsu.mcis.cs310.tas_fa24.dao;
+
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
-import edu.jsu.mcis.cs310.tas_fa24.Shift;
+import edu.jsu.mcis.cs310.tas_fa24.Employee;
 import java.sql.*;
-import java.util.HashMap;
 
 /**
  *
- * @author Will
+ * @author Madison
  */
-public class ShiftDAO {
+public class EmployeeDAO {
+    private static final String QUERY_FIND_ID = "SELECT * FROM employee WHERE id = ?";
+    private static final String QUERY_FIND_BADGE = "SELECT id FROM employee WHERE badgeid = ?";
     
-    //prepared statements for the two find methods
-    private static final String QUERY_FIND_ID = "SELECT * FROM shift WHERE id = ?";
-    private static final String QUERY_FIND_BADGE = "SELECT shiftid FROM employee WHERE badgeid = ?";
-    
-    private final int DEFAULT_ID = 0;
- 
-
     private final DAOFactory daoFactory;
     
-    
-    public ShiftDAO(DAOFactory daoFactory){
+    public EmployeeDAO(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
     }
     
-   
-    public Shift find(int id) {
-
-        Shift shift = null;
-
+    public Employee find(int id) {
+        Employee employee = null;
+        
         PreparedStatement ps = null;
         ResultSet rs = null;
-
+        boolean hasResults;
+        
         try {
-
             Connection conn = daoFactory.getConnection();
-
+            
             if (conn.isValid(0)) {
-
-                ps = conn.prepareStatement(QUERY_FIND_ID);
+                ps = conn.prepareCall(QUERY_FIND_ID);
                 ps.setInt(1, id);
-
-                boolean hasresults = ps.execute();
-
-                if (hasresults) {
-
+                
+                hasResults = ps.execute();
+                
+                if (hasResults) {
                     rs = ps.getResultSet();
-                    System.out.println(rs);
-                    shift = new Shift(DAOUtility.resultSetToHashMap(rs));
                     
-                    
-                   
                 }
-
+                
+                
             }
-
         } catch (SQLException e) {
-
             throw new DAOException(e.getMessage());
-
         } finally {
-
             if (rs != null) {
                 try {
                     rs.close();
@@ -76,56 +59,37 @@ public class ShiftDAO {
                 try {
                     ps.close();
                 } catch (SQLException e) {
-                    throw new DAOException(e.getMessage());
+                    throw new DAOException (e.getMessage());
                 }
             }
-
         }
-
-        return shift;
-
+        return employee;
     }
     
-    public Shift find(Badge badge){
-        System.out.println("test");
-        
-        //create vars
+    public Employee find(Badge badge) {
         PreparedStatement ps = null;
-        int id = DEFAULT_ID;
         ResultSet rs = null;
-
+        boolean hasResults;
+        int id = 0;
+        
         try {
-
             Connection conn = daoFactory.getConnection();
-
+            
             if (conn.isValid(0)) {
-
-                ps = conn.prepareStatement(QUERY_FIND_BADGE);
-                System.out.println(badge.getId());
+                ps = conn.prepareCall(QUERY_FIND_BADGE);
                 ps.setString(1, badge.getId());
                 
-
-                boolean hasresults = ps.execute();
-                System.out.println(hasresults);
-
-                if (hasresults) {
-                    
+                hasResults = ps.execute();
+                
+                if (hasResults) {
                     rs = ps.getResultSet();
                     rs.next();
-                    id = rs.getInt("shiftid");
-                    
-                    
-                   
+                    id = rs.getInt("id");
                 }
-
             }
-
         } catch (SQLException e) {
-
-            throw new DAOException(e.getMessage());
-
+            throw new DAOException(e.getLocalizedMessage());
         } finally {
-
             if (rs != null) {
                 try {
                     rs.close();
@@ -140,12 +104,7 @@ public class ShiftDAO {
                     throw new DAOException(e.getMessage());
                 }
             }
-
         }
-
-      
-        
         return find(id);
     }
-  
 }
