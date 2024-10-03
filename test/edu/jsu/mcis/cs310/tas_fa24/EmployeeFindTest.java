@@ -79,4 +79,18 @@ public class EmployeeFindTest {
 
     }
     
+    @Test
+    public void testFindEmployee5() {
+	    EmployeeDAO employeeDAO = daoFactory.getEmployeeDAO();
+	    BadgeDAO badgeDAO = daoFactory.getBadgeDAO();
+	    
+	    // Retrieve Employee from Database (by badge)
+	    
+	    Badge b = badgeDAO.find("08D01475");
+	    Employee e5 = employeeDAO.find(b);
+	    
+	    // Compare to Expected Values
+	    assertEquals("", e5.toString());
+    }
+    
 }
