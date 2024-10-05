@@ -23,6 +23,7 @@ public class Department {
         
     }
     
+    // Getters
     public int getDeptID(){
         return deptID;
     }
@@ -35,8 +36,15 @@ public class Department {
         return terminalID;
     }
     
+    
+    @Override
     public String toString(){
-        return "#" + deptID + " (" + description + "), Terminal ID: " + terminalID;
+        
+        StringBuilder s = new StringBuilder();
+        s.append("#").append(deptID).append(" (");
+        s.append(description).append("), Terminal ID: ").append(terminalID);
+        return s.toString();
+    
     }
     
 }
