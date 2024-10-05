@@ -90,7 +90,7 @@ public class EmployeeFindTest {
 	    Employee e5 = employeeDAO.find(b);
 	    
 	    // Compare to Expected Values
-	    assertEquals("", e5.toString());
+	    assertEquals("ID #4: Littell, Amie D (#08D01475), Type: Full-Time, Department: Grinding, Active: 01/22/2017", e5.toString());
     }
     
 }
