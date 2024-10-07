@@ -1,7 +1,3 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package edu.jsu.mcis.cs310.tas_fa24.dao;
 
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
@@ -14,7 +10,16 @@ import java.time.LocalDateTime;
 import java.util.HashMap;
 
 /**
- *
+ * What This Code Does: This file is used to find an employee with their id 
+ * number or badge number.
+ * The Functions: 
+ * find(int id) - This function takes the employees known id number and finds
+ * the rest of the information regarding that certain employee and returns a new
+ * employee object that is populated with the correct details.
+ * find(Badge badge) - This function takes the employees known badge number and
+ * finds the related id number and returns the find(id) function which uses the
+ * found id in the first function.
+ * 
  * @author Madison
  */
 public class EmployeeDAO {
@@ -83,7 +88,9 @@ public class EmployeeDAO {
                         ResultSet rsDepartment = psDepartment.executeQuery();
                                 
                         if(rsDepartment.next()) {
-                            Department department = new Department(departmentID, rsDepartment.getString("description"), rsDepartment.getInt("terminalid"));
+                            Department department = new Department(departmentID,
+                                rsDepartment.getString("description"), 
+                                rsDepartment.getInt("terminalid"));
                             
                             // Getting shift info and creating a shift object
                             int shiftID = rs.getInt("shiftID");
@@ -108,7 +115,9 @@ public class EmployeeDAO {
                                 Shift shift = new Shift(shiftData);
                                 
                                 // Create and populate employee object
-                                employee = new Employee(id, firstName, middleName, lastName, active, badge, department, shift, employeeType);
+                                employee = new Employee(id, firstName, 
+                                    middleName, lastName, active, badge, department,
+                                    shift, employeeType);
                             }
                         }
                     }
