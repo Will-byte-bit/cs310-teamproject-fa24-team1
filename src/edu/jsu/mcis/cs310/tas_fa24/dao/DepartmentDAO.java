@@ -28,11 +28,14 @@ public class DepartmentDAO {
         String QueryFindDept = "SELECT * FROM department WHERE id = ?";
         ResultSet resultSet = null;
         
+        // connection and load query into statement
         try(PreparedStatement ps = daoFactory.getConnection().prepareStatement(QueryFindDept)){
             
+            // get deptID
             ps.setInt(1, deptID);
             resultSet = ps.executeQuery();
             
+            // retrieve fields from resultSet
             if(resultSet.next()){
                 
                 String description = resultSet.getString("description");
@@ -58,8 +61,7 @@ public class DepartmentDAO {
                     throw new DAOException(e.getMessage());
                 }
         }
-
-            
+ 
         return department;        
     }
      

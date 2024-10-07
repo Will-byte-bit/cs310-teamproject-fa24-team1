@@ -83,5 +83,38 @@ public class DepartmentFindTest {
     }
     
     // adding more here soon.
-
+    
+    // 1st Additional Test
+    @Test
+    public void testFindDepartment6() {
+        DepartmentDAO departmentDAO = daoFactory.getDepartmentDAO();
+        
+        // data retrieval from database
+        Department d6 = departmentDAO.find(4);
+        
+        // Compare to Expected Value
+        assertEquals("#4 (Grinding), Terminal ID: 104", d6.toString());
+    }
+    
+    // 2nd Additional Test
+    public void testFindDepartment7() {
+        DepartmentDAO departmentDAO = daoFactory.getDepartmentDAO();
+        
+        // data retrieval from database
+        Department d7 = departmentDAO.find(3);
+        
+        //compare retrived to expected value
+        assertEquals("#3 (Warehouse), Terminal ID: 106", d7.toString());
+    }
+    
+    // 3rd Additional test
+    public void testFindDepartment8() {
+        DepartmentDAO departmentDAO = daoFactory.getDepartmentDAO();
+        
+        // data retrieval from database
+        Department d8 = departmentDAO.find(9);
+        
+        // compare expected to retrieved values
+        assertEquals("#9 (Tool and Die), Terminal ID: 104", d8.toString());
+    }
 }

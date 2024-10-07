@@ -5,7 +5,7 @@
 package edu.jsu.mcis.cs310.tas_fa24;
 
 import java.time.LocalDateTime;
-import java.util.HashMap;
+import java.time.format.DateTimeFormatter;
 
 /**
  *
@@ -13,7 +13,6 @@ import java.util.HashMap;
  */
 public class Employee {
     
-    private HashMap<Integer, String> employee;
     private int id;
     private String firstName;
     private String middleName;
@@ -24,10 +23,6 @@ public class Employee {
     private Shift shift;
     private EmployeeType employeeType;
     
-    public Employee(HashMap<Integer, String> employee) {
-        this.employee = employee;
-   
-    }
 
     // Constructor
     public Employee(int id, String firstName, String middleName, String lastName, 
@@ -45,7 +40,6 @@ public class Employee {
     }
 
     // Getters
-    public HashMap<Integer, String> getEmployee() { return employee; }
     public int getId() { return id; }
     public String getFirstName() { return firstName; }
     public String getMiddleName() { return middleName; }
@@ -59,8 +53,22 @@ public class Employee {
     // Override toString method
     @Override
     public String toString() {
-        return "ID: " + employee.get(0)+ ", Name: " + firstName + " " + middleName + " " + lastName +
-               ", Badge ID: " + badge + ", Type: " + employeeType +
-               ", Department: " + department + ", Active Date: " + active;
+        StringBuilder sb = new StringBuilder();
+        String result;
+        
+        // Formatter for date to match
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        String formatActive = active.format(formatter);
+        
+        sb.append("ID #").append(id).append(": ").append(lastName).append(", ")
+                .append(firstName).append(" ").append(middleName).append(" (#")
+                .append(badge.getId()).append("), Type: ")
+                .append(employeeType).append(", Department: ")
+                .append(department.getDescription()).append(", Active: ")
+                .append(formatActive);
+        
+        result = sb.toString();
+        
+        return result;
     }
 }
