@@ -1,13 +1,15 @@
-/*
- * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
- * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
- */
 package edu.jsu.mcis.cs310.tas_fa24;
 
 /**
  *
  * @author joshwhaley
- */
+ * 
+ * This is the constructor class for the department. Inside the fields of the 
+ * department's identification number, the description or the department name,
+ * the terminal id assigned to that department are created and assigned as well
+ * as their coinciding getter methods. Also includes the proper toString() 
+ * override method to properly composition the output format. 
+  */
 public class Department {
     
     // field creation
