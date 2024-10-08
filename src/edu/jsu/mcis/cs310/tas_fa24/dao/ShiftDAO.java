@@ -10,10 +10,10 @@ import java.sql.*;
 
 
 /**
- * This class pulls shift data from the data base.
+ * This class pulls shift data from the database.
  * It implements two find functions, which pull data from the database and return a shift object.
  * with the data provided by the database
- * One function takes an id, another a badge.
+ * One function takes an ID, another a badge.
  * Both functions use a DAO utility class call ResultSetToHashMap
  * @see #DAOUtility.resultSetToHashmap
  * 
