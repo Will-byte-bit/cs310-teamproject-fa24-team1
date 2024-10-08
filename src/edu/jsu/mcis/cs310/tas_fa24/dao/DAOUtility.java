@@ -20,7 +20,7 @@ public final class DAOUtility {
     public static HashMap<Integer, String> resultSetToHashMap(ResultSet rs){
 
         //Hash map of the raw shift data, key is 0 through length of shift.
-        HashMap<Integer, String> mapOfShift = new HashMap<Integer, String>();
+        HashMap<Integer, String> mapOfShift = new HashMap<>();
 
         try{
             ResultSetMetaData rsMeta = rs.getMetaData();

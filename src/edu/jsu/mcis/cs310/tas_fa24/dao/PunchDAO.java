@@ -74,15 +74,9 @@ public class PunchDAO {
                             //setting event type based on type id
                             EventType et = null;
                             switch(typeId){
-                                case 0:
-                                    et = EventType.CLOCK_OUT;
-                                    break;
-                                case 1:
-                                    et = EventType.CLOCK_IN;
-                                    break;
-                                case 2:
-                                    et = EventType.TIME_OUT;
-                                    break;
+                                case 0 -> et = EventType.CLOCK_OUT;
+                                case 1 -> et = EventType.CLOCK_IN;
+                                case 2 -> et = EventType.TIME_OUT;
                             }
                          
                             
