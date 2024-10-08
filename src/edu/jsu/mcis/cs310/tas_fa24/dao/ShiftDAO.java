@@ -15,7 +15,7 @@ import java.sql.*;
  * with the data provided by the database
  * One function takes an id, another a badge.
  * Both functions use a DAO utility class call ResultSetToHashMap
- * @see #DAOUtility.ResultsetToHashmap
+ * @see #DAOUtility.resultSetToHashmap
  * 
  * @author William Saint
  */
