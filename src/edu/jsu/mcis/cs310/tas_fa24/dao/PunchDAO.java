@@ -13,7 +13,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
 
 /**
  *
@@ -127,62 +126,5 @@ public class PunchDAO {
 
     }
     
-     //bolier plate class to be used later
-    public ArrayList<Punch> List(Badge badge){
-       
-        //create vars
-        PreparedStatement ps = null;
-        int id = DEFAULT_ID;
-        ResultSet rs = null;
-
-        try {
-
-            Connection conn = daoFactory.getConnection();
-
-            if (conn.isValid(0)) {
-
-                ps = conn.prepareStatement(QUERY_FIND_BADGE);
-                System.out.println(badge.getId());
-                ps.setString(1, badge.getId());
-                
-
-                boolean hasresults = ps.execute();
-                System.out.println(hasresults);
-
-                if (hasresults) {
-                    
-                    rs = ps.getResultSet();
-                    rs.next();
-                   
-                }
-
-            }
-
-        } catch (SQLException e) {
-
-            throw new DAOException(e.getMessage());
-
-        } finally {
-
-            if (rs != null) {
-                try {
-                    rs.close();
-                } catch (SQLException e) {
-                    throw new DAOException(e.getMessage());
-                }
-            }
-            if (ps != null) {
-                try {
-                    ps.close();
-                } catch (SQLException e) {
-                    throw new DAOException(e.getMessage());
-                }
-            }
-
-        }
-        
-        return null;
-    }
-  
     
 }
