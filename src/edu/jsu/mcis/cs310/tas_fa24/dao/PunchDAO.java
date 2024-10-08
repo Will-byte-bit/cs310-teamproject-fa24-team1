@@ -13,10 +13,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 
 /**
  *
  * @author Will
+ * <p>
+ * PunchDao, like shift dao, creates a dao factory object to be used. The find method retrieves information from the ID.
+ * The list function is a bolier plate retrieving function. Will be implemented later.
  */
 public class PunchDAO {
     private static final String QUERY_FIND_ID = "SELECT * FROM event WHERE id = ?";
@@ -59,7 +63,6 @@ public class PunchDAO {
                         String badgeId = rs.getString("badgeid");
                         psForBadge.setString(1, badgeId);
                         
-                        
                         //if badge found run
                         if(psForBadge.execute()){
                             
@@ -79,7 +82,6 @@ public class PunchDAO {
                                 case 2 -> et = EventType.TIME_OUT;
                             }
                          
-                            
                             //creating badge, creating punch
                             Badge badge = new Badge(badgeId, rsForBadge.getString("description"));
                             
@@ -89,14 +91,11 @@ public class PunchDAO {
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
                             LocalDateTime dateTime = LocalDateTime.parse(rs.getTimestamp("timestamp").toString().substring(0, 19), formatter);
                              
-                            
                             //creating punch
                             punch = new Punch(id, rs.getInt("terminalid"), badge, dateTime,et);
                         }
                     }
                     
-                    
-                   
                 }
 
             }
@@ -128,9 +127,9 @@ public class PunchDAO {
 
     }
     
-    public Punch find(Badge badge){
+     //bolier plate class to be used later
+    public ArrayList<Punch> List(Badge badge){
        
-        
         //create vars
         PreparedStatement ps = null;
         int id = DEFAULT_ID;
@@ -154,9 +153,6 @@ public class PunchDAO {
                     
                     rs = ps.getResultSet();
                     rs.next();
-                   
-                    
-                    
                    
                 }
 
@@ -184,8 +180,6 @@ public class PunchDAO {
             }
 
         }
-
-      
         
         return null;
     }

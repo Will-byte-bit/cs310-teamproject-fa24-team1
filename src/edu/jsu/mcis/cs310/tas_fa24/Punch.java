@@ -10,6 +10,7 @@ import java.time.format.DateTimeFormatter;
 /**
  *
  * @author Will
+ * Punch class. Contains constructors for new and existing punches. It also contains getters for all variables as well as a printOriginal and to String.
  */
 public class Punch {
     private int terminalId;
@@ -46,6 +47,9 @@ public class Punch {
         sb.append("#").append(badge.getId()).append(" ").append(punchType).append(": ").append(day).append(" ").append(originalTimeStamp.format(formatter));
 
         return sb.toString();
+    }
+    public String ToString(){
+        return printOriginal();
     }
     public int getTerminalId() {
     return terminalId;

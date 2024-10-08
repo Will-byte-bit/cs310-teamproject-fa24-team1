@@ -12,7 +12,9 @@ import java.time.*;
  *
  * @author Will
  * 
- * Shift class, map matches layout of table. Key is index value of each data entry. I.E key 0 ID, key 1 descript, etc.
+ * Shift class, map matches layout of table. Key is the index value of each data entry. I.E., key 0 ID, key 1 descript, etc.
+ * calcTimeDifferenceShift takes two strings, converts them into local time, calculates the difference, and returns an integer.
+ * calcTimeDifference Lunch is the same as shift; I have them in separate functions for future proofing.
  */
 public class Shift {
     private HashMap<Integer, String> shift = new HashMap<Integer, String>();

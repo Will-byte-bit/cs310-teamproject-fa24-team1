@@ -6,12 +6,17 @@ package edu.jsu.mcis.cs310.tas_fa24.dao;
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
 import edu.jsu.mcis.cs310.tas_fa24.Shift;
 import java.sql.*;
-import java.util.HashMap;
+
 
 
 /**
  *
  * @author Will
+ * <p>
+ * This class implements two find functions, which pull data from the database and return a shift object
+ * with the data provided by the function.
+ * 
+ * </p>
  */
 public class ShiftDAO {
     
@@ -54,8 +59,6 @@ public class ShiftDAO {
                     System.out.println(rs);
                     shift = new Shift(DAOUtility.resultSetToHashMap(rs));
                     
-                    
-                   
                 }
 
             }
@@ -114,8 +117,6 @@ public class ShiftDAO {
                     rs = ps.getResultSet();
                     rs.next();
                     id = rs.getInt("shiftid");
-                    
-                    
                    
                 }
 
@@ -143,8 +144,6 @@ public class ShiftDAO {
             }
 
         }
-
-      
         
         return find(id);
     }
