@@ -4,17 +4,20 @@
  */
 package edu.jsu.mcis.cs310.tas_fa24;
 
-import java.time.temporal.ChronoUnit;
 import java.util.HashMap;
 import java.time.*;
 
 /**
- *
- * @author Will
- * 
- * Shift class, map matches layout of table. Key is the index value of each data entry. I.E., key 0 ID, key 1 descript, etc.
+ * The Shift class is an object that represent the shift data.
+ * It contains a HashMap of keys and values.
+ * The key is the index value of each data entry I.E., key 0: ID, key 1: descript, etc
  * calcTimeDifferenceShift takes two strings, converts them into local time, calculates the difference, and returns an integer.
  * calcTimeDifference Lunch is the same as shift; I have them in separate functions for future proofing.
+ *
+ * @author William Saint
+ * 
+ * 
+ *
  */
 public class Shift {
     private HashMap<Integer, String> shift = new HashMap<Integer, String>();
@@ -26,6 +29,12 @@ public class Shift {
     
     private final int  DEFAULT = 0;
     
+    /**
+     * Constructor for shift
+     * @param shift, integer string.
+     * 
+     * 
+     */
     public Shift(HashMap<Integer, String> shift){
         this.shift = shift;
         this.shiftDuration = calcTimeDifferenceShift(shift.get(2), shift.get(3));
@@ -34,10 +43,9 @@ public class Shift {
         
         
     }
+     
     public int calcTimeDifferenceShift(String shiftStart, String shiftEnd){
-        /*
-        \Calcuates difference between times.
-        */
+        
         
         //duration of shift in minutes
         int duration = DEFAULT;
@@ -74,6 +82,7 @@ public class Shift {
         
         return duration;
     }
+     
     public int calcTimeDifferenceLunch(String lunchStart, String lunchEnd){
         /*
         \Calcuates difference between times.
@@ -109,6 +118,7 @@ public class Shift {
         return duration;
     }
  
+    
     
     public String toString(){
         String result = null;

@@ -8,9 +8,14 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- *
- * @author Will
- * Punch class. Contains constructors for new and existing punches. It also contains getters for all variables as well as a printOriginal and to String.
+ * 
+ *The Punch class is an object that represents rows from the "event" table.
+ *It contains constructors for new and existing punches.
+ *It also contains getters for all variables as well as a printOriginal and to String.
+ *The printOriginal function implements StringBuilder.
+ * 
+ * @author William Saint
+ * 
  */
 public class Punch {
     private int terminalId;

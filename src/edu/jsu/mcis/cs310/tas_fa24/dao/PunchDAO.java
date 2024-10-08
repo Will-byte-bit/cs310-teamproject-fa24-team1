@@ -15,11 +15,13 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
 /**
- *
- * @author Will
- * <p>
- * PunchDao, like shift dao, creates a dao factory object to be used. The find method retrieves information from the ID.
- * The list function is a bolier plate retrieving function. Will be implemented later.
+ * PunchDAO is a class that grabs punches from the database. 
+ * Like shift DAO, creates a DAO factory object to be used
+ * The find method retrieves information from the database with the ID provided.
+ * @author William Saint
+ * 
+ * 
+ * 
  */
 public class PunchDAO {
     private static final String QUERY_FIND_ID = "SELECT * FROM event WHERE id = ?";
@@ -32,7 +34,8 @@ public class PunchDAO {
     public PunchDAO(DAOFactory daoFactory){
         this.daoFactory = daoFactory;
     }
-     public Punch find(int id) {
+    
+    public Punch find(int id) {
 
         Punch punch = null;
 

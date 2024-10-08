@@ -10,13 +10,14 @@ import java.sql.*;
 
 
 /**
- *
- * @author Will
- * <p>
- * This class implements two find functions, which pull data from the database and return a shift object
- * with the data provided by the function.
+ * This class pulls shift data from the data base.
+ * It implements two find functions, which pull data from the database and return a shift object.
+ * with the data provided by the database
+ * One function takes an id, another a badge.
+ * Both functions use a DAO utility class call ResultSetToHashMap
+ * @see #DAOUtility.ResultsetToHashmap
  * 
- * </p>
+ * @author William Saint
  */
 public class ShiftDAO {
     
@@ -34,7 +35,13 @@ public class ShiftDAO {
         this.daoFactory = daoFactory;
     }
     
-   
+    /**
+    * 
+    * returns a shift object based on the ID provided.
+    * @param id, id of shift
+    * @return shift, created shift object.
+    */
+
     public Shift find(int id) {
 
         Shift shift = null;
@@ -89,7 +96,12 @@ public class ShiftDAO {
         return shift;
 
     }
-    
+    /**
+    * 
+    * returns a shift object based on the badge provided.
+    * @param badge, badge of shift
+    * @return shift, created shift object.
+    */
     public Shift find(Badge badge){
         System.out.println("test");
         

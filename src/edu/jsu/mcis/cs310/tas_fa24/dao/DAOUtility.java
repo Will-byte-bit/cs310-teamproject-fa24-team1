@@ -17,6 +17,16 @@ import java.sql.SQLException;
  * 
  */
 public final class DAOUtility {
+    
+    /**
+     * Converts a ResultSet to a HashMap.
+     * The keys being ints matched to the index of the columns.
+     * The values being strings of data in the rows of said columns.
+     * @param rs, ResultSet of data. Cursor must before data.
+     * @return mapOfShift, a map of the values 0-the size of columns.
+     * @author William Saint
+     * 
+     */
     public static HashMap<Integer, String> resultSetToHashMap(ResultSet rs){
 
         //Hash map of the raw shift data, key is 0 through length of shift.
