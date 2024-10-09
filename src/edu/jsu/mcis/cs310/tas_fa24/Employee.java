@@ -10,6 +10,27 @@ import java.time.format.DateTimeFormatter;
 /**
  *
  * @author Matthew
+ * 
+ * What This Code Does: This file represents an Employee object containing attributes 
+ * such as id, name, active status, badge, department, shift, and employee type.
+ * 
+ * The Functions:
+ * - Employee(int id, String firstName, String middleName, String lastName, 
+ *   LocalDateTime active, Badge badge, Department department, Shift shift, 
+ *   EmployeeType employeeType) - This is the constructor that initializes the Employee 
+ *   object with the provided parameters.
+ * - getId() - Returns the employee's unique ID number.
+ * - getFirstName() - Returns the employee's first name.
+ * - getMiddleName() - Returns the employee's middle name.
+ * - getLastName() - Returns the employee's last name.
+ * - getActive() - Returns the date and time when the employee became active.
+ * - getBadge() - Returns the badge object associated with the employee.
+ * - getDepartment() - Returns the department object representing where the employee works.
+ * - getShift() - Returns the shift object representing the employee's assigned shift.
+ * - getEmployeeType() - Returns the type of employee (e.g., full-time, part-time).
+ * - toString() - Overrides the default toString method to provide a formatted string 
+ *   representation of the employee details.
+
  */
 public class Employee {
     
