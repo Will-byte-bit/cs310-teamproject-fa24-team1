@@ -8,9 +8,10 @@ import java.sql.*;
  * @author joshwhaley
  * 
  * This class makes use of the daoFactory in order to create a find() method for
- * the department, taking the department id as a parameter, which will then 
- * return all the information of the department. Additionally, I added a method
- * that finds the department based off the terminal id. 
+ * the department, taking the department id (int deptID) as a parameter, which 
+ * will then return all the information of that department. The information is 
+ * then formatted as a department object. Additionally, I added a method that 
+ * finds the department based off the terminal id (int terminalID). 
  */
 public class DepartmentDAO {
     
