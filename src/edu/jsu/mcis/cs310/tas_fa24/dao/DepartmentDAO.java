@@ -33,7 +33,7 @@ public class DepartmentDAO {
         // connection and load query into statement
         try(PreparedStatement ps = daoFactory.getConnection().prepareStatement(QueryFindDept)){
             
-            // get deptID
+            
             ps.setInt(1, deptID);
             resultSet = ps.executeQuery();
             
@@ -44,6 +44,7 @@ public class DepartmentDAO {
                 int terminalID = resultSet.getInt("terminalID");
                 department = new Department(deptID, description, terminalID);
             
+                
             }
             
             ps.close();
@@ -70,16 +71,16 @@ public class DepartmentDAO {
         
         
     // find department method based off terminalID
-    // find a way to make this method reachable
     public Department findByTermID(int terminalID){
         
         Department department = null;
         String QueryFindTermID = "SELECT * FROM department WHERE terminalid = ?";
         ResultSet resultSet = null;
         
+        // load query into statement and get connection
         try(PreparedStatement ps = daoFactory.getConnection().prepareStatement(QueryFindTermID)){
             
-            // get deptID
+            //set terminalID
             ps.setInt(1, terminalID);
             resultSet = ps.executeQuery();
             
@@ -90,6 +91,7 @@ public class DepartmentDAO {
                 int deptID = resultSet.getInt("id");
                 department = new Department(deptID, description, terminalID);
             
+                
             }
             
             ps.close();
@@ -101,17 +103,21 @@ public class DepartmentDAO {
         } finally {
 
             if (resultSet != null) {
+                
                 try {
+                    
                     resultSet.close();
+                    
                 } catch (SQLException e) {
+                    
                     throw new DAOException(e.getMessage());
+                
                 }
         
-        }
+            }
         
         return department;
-    }
-     
-    
+        
+        }
     }
 }
