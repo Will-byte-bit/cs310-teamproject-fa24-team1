@@ -32,8 +32,8 @@ public class Shift {
     /**
      * Constructor for shift
      * @param shift, integer string.
-     * 
-     * 
+     *  
+     * Use names of the fields for reference in map.
      */
     public Shift(HashMap<Integer, String> shift){
         this.shift = shift;
@@ -45,7 +45,7 @@ public class Shift {
     }
      
     public int calcTimeDifferenceShift(String shiftStart, String shiftEnd){
-        
+        // Create local instance, parse in the constructor
         
         //duration of shift in minutes
         int duration = DEFAULT;
@@ -67,7 +67,7 @@ public class Shift {
       
         
         duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
-        
+        // Check ChronoUnit API
         //testing if it is less than, meaning a different day.
         }else if(shiftEndLT.getMinute() < shiftStartLT.getMinute()){
             
