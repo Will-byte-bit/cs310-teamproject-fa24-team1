@@ -11,7 +11,7 @@ import java.time.format.DateTimeFormatter;
  * 
  *The Punch class is an object that represents rows from the "event" table.
  *It contains constructors for new and existing punches.
- *It also contains getters for all variables as well as a printOriginal and to String.
+ *It also contains getters for all variables as well as a printOriginal() and ToString().
  *The printOriginal function implements StringBuilder.
  * 
  * @author William Saint

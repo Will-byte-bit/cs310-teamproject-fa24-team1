@@ -8,11 +8,11 @@ import java.util.HashMap;
 import java.time.*;
 
 /**
- * The Shift class is an object that represent the shift data.
- * It contains a HashMap of keys and values.
- * The key is the index value of each data entry I.E., key 0: ID, key 1: descript, etc
- * calcTimeDifferenceShift takes two strings, converts them into local time, calculates the difference, and returns an integer.
- * calcTimeDifference Lunch is the same as shift; I have them in separate functions for future proofing.
+ * The Shift class is an object that represents the shift data.
+ * It contains a HashMap of keys and values.
+ * The key is the index value of each data entry, i.e., key 0: ID, key 1: description, etc.
+ * calcTimeDifferenceShift() takes two strings, converts them into local time, calculates the difference, and returns an integer.
+ * calcTimeDifferenceLunch() is the same as shift; I have them in separate functions for future proofing.
  *
  * @author William Saint
  * 

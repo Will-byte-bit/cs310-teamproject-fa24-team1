@@ -14,8 +14,8 @@ import java.sql.*;
  * It implements two find functions, which pull data from the database and return a shift object.
  * with the data provided by the database
  * One function takes an ID, another a badge.
- * Both functions use a DAO utility class call ResultSetToHashMap
- * @see #DAOUtility.resultSetToHashmap
+ * Both functions use a DAO utility class call resultSetToHashMap()
+ * @see #DAOUtility.resultSetToHashmap()
  * 
  * @author William Saint
  */
