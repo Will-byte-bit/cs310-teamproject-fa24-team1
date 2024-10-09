@@ -27,22 +27,25 @@ public final class DAOUtility {
      * @author William Saint
      * 
      */
-    public static HashMap<Integer, String> resultSetToHashMap(ResultSet rs){
+    public static HashMap<String, String> resultSetToHashMap(ResultSet rs){
 
         //Hash map of the raw shift data, key is 0 through length of shift.
-        HashMap<Integer, String> mapOfShift = new HashMap<>();
+        HashMap<String, String> mapOfShift = new HashMap<>();
 
         try{
             ResultSetMetaData rsMeta = rs.getMetaData();
 
             int numberOfCols = rsMeta.getColumnCount();
+            
+            
             while(rs.next()) {
-
+                
                 //iterate over cols
                 for (int i=1; i<=numberOfCols; i++) {
                     String colName = rsMeta.getColumnName(i);
               
-                    mapOfShift.put(i-1, rs.getString(colName));
+                    mapOfShift.put(colName, rs.getString(colName));
+                 
 
                 }
 

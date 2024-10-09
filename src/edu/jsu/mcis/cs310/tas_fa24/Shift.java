@@ -6,6 +6,8 @@ package edu.jsu.mcis.cs310.tas_fa24;
 
 import java.util.HashMap;
 import java.time.*;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 
 /**
  * The Shift class is an object that represents the shift data.
@@ -19,13 +21,34 @@ import java.time.*;
  * 
  *
  */
+
+//refactor code to all instance
 public class Shift {
-    private HashMap<Integer, String> shift = new HashMap<Integer, String>();
+    
+    //chronounit.mintues.between - local times
+    private HashMap<String, String> shift = new HashMap<>();
+    
+    private DateTimeFormatter inTake = DateTimeFormatter.ofPattern("HH:mm:ss");
+    //private DateTimeFormatter inTakeConvert = DateTimeFormatter.ofPattern("hh:mm:ss");
+    private DateTimeFormatter outTake = DateTimeFormatter.ofPattern("HH:mm");
+    
     private int shiftDuration, lunchDuration;
+    
     private String shiftStartStr = null;
     private String shiftEndStr = null;
     private String lunchStartStr= null;
     private String lunchEndStr = null;
+    
+    private LocalTime shiftStart = null;
+    private LocalTime shiftEnd = null;
+    private LocalTime lunchStart = null;
+    private LocalTime lunchEnd = null;
+    
+    private int roundingInterval;
+    private int gracePeriod;
+    private int dockPenalty;
+    private int lunchThreshold;
+    
     
     private final int  DEFAULT = 0;
     
@@ -35,44 +58,58 @@ public class Shift {
      * 
      * 
      */
-    public Shift(HashMap<Integer, String> shift){
+    public Shift(HashMap<String, String> shift){
+        
         this.shift = shift;
-        this.shiftDuration = calcTimeDifferenceShift(shift.get(2), shift.get(3));
-        this.lunchDuration = calcTimeDifferenceLunch(shift.get(7), shift.get(8)); 
+        
+        this.shiftStart = LocalTime.parse(shift.get("shiftstart"), inTake);
+       // this.shiftStart = LocalTime.parse(shiftStart.format(inTakeConvert));
+        
+        this.shiftEnd = LocalTime.parse(shift.get("shiftstop"), inTake);
+       // this.shiftEnd = LocalTime.parse(shiftEnd.format(inTakeConvert));
+       // System.out.println("converting works");
+        
+        this.lunchStart = LocalTime.parse(shift.get("lunchstart"), inTake);
+        this.lunchEnd = LocalTime.parse(shift.get("lunchstop"), inTake);
+        
+        this.dockPenalty =  Integer.parseInt(shift.get("dockpenalty"));
+        this.gracePeriod = Integer.parseInt(shift.get("graceperiod"));
+        this.roundingInterval = Integer.parseInt(shift.get("roundinterval"));
+        this.lunchThreshold = Integer.parseInt(shift.get("lunchthreshold"));
+        System.out.println("cant parse");
+        
+        
+        this.shiftStartStr = shiftStart.format(outTake);
+        this.shiftEndStr = shiftEnd.format(outTake);
+        
+        this.lunchStartStr = lunchStart.format(outTake);
+        this.lunchEndStr = lunchEnd.format(outTake);
+        
+        this.shiftDuration = calcTimeDifferenceShift();
+        this.lunchDuration = calcTimeDifferenceLunch(); 
         
         
         
     }
      
-    public int calcTimeDifferenceShift(String shiftStart, String shiftEnd){
-        
-        
-        //duration of shift in minutes
+    public int calcTimeDifferenceShift(){
+    
         int duration = DEFAULT;
         
-        
-        //local time of shifts
-        LocalTime shiftStartLT= LocalTime.parse(shiftStart);
-        LocalTime shiftEndLT = LocalTime.parse(shiftEnd);
-        
-        //for to string
-        shiftStartStr = shiftStartLT.toString();
-        shiftEndStr = shiftEndLT.toString();
-        
         //testing if shift end is greater than shift start
-        if(shiftEndLT.getMinute() > shiftStartLT.getMinute()){
+        if(shiftEnd.getMinute() > shiftStart.getMinute()){
        
         
-        Duration difference = Duration.between(shiftStartLT, shiftEndLT);
+        Duration difference = Duration.between(shiftStart, shiftEnd);
       
         
-        duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
+         duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
         
         //testing if it is less than, meaning a different day.
-        }else if(shiftEndLT.getMinute() < shiftStartLT.getMinute()){
+        }else if(shiftEnd.getMinute() < shiftStart.getMinute()){
             
-            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, shiftStartLT.getHour(), shiftStartLT.getMinute());
-            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, shiftEndLT.getHour(), shiftEndLT.getMinute());
+            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, shiftStart.getHour(), shiftStart.getMinute());
+            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, shiftEnd.getHour(), shiftEnd.getMinute());
             
             Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
             duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
@@ -83,31 +120,24 @@ public class Shift {
         return duration;
     }
      
-    public int calcTimeDifferenceLunch(String lunchStart, String lunchEnd){
+    public int calcTimeDifferenceLunch(){
         /*
         \Calcuates difference between times.
         */
         
-        //duration of shift in minutes
         int duration = DEFAULT;
         
-        LocalTime lunchStartLT= LocalTime.parse(lunchStart);
-        LocalTime lunchEndLT = LocalTime.parse(lunchEnd);
-        
-        lunchStartStr = lunchStartLT.toString();
-        lunchEndStr = lunchEndLT.toString();
-        
-        if(lunchEndLT.getMinute() > lunchStartLT.getMinute()){
-        Duration difference = Duration.between(lunchStartLT, lunchEndLT);
+        if(lunchEnd.getMinute() > lunchStart.getMinute()){
+        Duration difference = Duration.between(lunchStart, lunchEnd);
         
         duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
         
         }
         //testing if it is less than, meaning a different day.
-        else if(lunchEndLT.getMinute() < lunchStartLT.getMinute()){
+        else if(lunchEnd.getMinute() < lunchStart.getMinute()){
             
-            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, lunchStartLT.getHour(), lunchStartLT.getMinute());
-            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, lunchEndLT.getHour(), lunchEndLT.getMinute());
+            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, lunchStart.getHour(), lunchStart.getMinute());
+            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, lunchEnd.getHour(), lunchEnd.getMinute());
             
             Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
             duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
@@ -127,7 +157,7 @@ public class Shift {
    
         
         //appending through shift
-        sb.append(shift.get(1)).append(": ").append(shiftStartStr).append(" - ").append(shiftEndStr).append(" (").append(String.valueOf(shiftDuration));
+        sb.append(shift.get("description")).append(": ").append(shiftStartStr).append(" - ").append(shiftEndStr).append(" (").append(String.valueOf(shiftDuration));
         sb.append(" minutes); ");
         
         //appending through lunch
@@ -140,7 +170,7 @@ public class Shift {
     }
     
     //getters
-    public HashMap<Integer, String> getShift() {
+    public HashMap<String, String> getShift() {
         return shift;
     }
 

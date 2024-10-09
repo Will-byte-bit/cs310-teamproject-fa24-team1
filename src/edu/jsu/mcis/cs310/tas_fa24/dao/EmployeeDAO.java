@@ -97,22 +97,15 @@ public class EmployeeDAO {
                             PreparedStatement psShift = conn.prepareStatement(QUERY_SHIFT_DATA);
                             psShift.setInt(1, shiftID);
 
-                            ResultSet rsShift = psShift.executeQuery();
                             
-                            if(rsShift.next()) {
-                                HashMap<Integer, String> shiftData = new HashMap<>();
-                                shiftData.put(0, rsShift.getString("id"));
-                                shiftData.put(1, rsShift.getString("description"));
-                                shiftData.put(2, rsShift.getString("shiftstart"));
-                                shiftData.put(3, rsShift.getString("shiftstop"));
-                                shiftData.put(4, rsShift.getString("roundinterval"));
-                                shiftData.put(5, rsShift.getString("graceperiod"));
-                                shiftData.put(6, rsShift.getString("dockpenalty"));
-                                shiftData.put(7, rsShift.getString("lunchstart"));
-                                shiftData.put(8, rsShift.getString("lunchstop"));
-                                shiftData.put(9, rsShift.getString("lunchthreshold"));
+                            
+                            boolean resultsForShift = psShift.execute();
+                            
+                            if(resultsForShift) {
                                 
-                                Shift shift = new Shift(shiftData);
+                                ResultSet rsShift = psShift.getResultSet();
+                                
+                                Shift shift = new Shift(DAOUtility.resultSetToHashMap(rsShift));
                                 
                                 // Create and populate employee object
                                 employee = new Employee(id, firstName, 

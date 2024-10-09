@@ -6,6 +6,7 @@ package edu.jsu.mcis.cs310.tas_fa24.dao;
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
 import edu.jsu.mcis.cs310.tas_fa24.Shift;
 import java.sql.*;
+import java.util.HashMap;
 
 
 
@@ -63,8 +64,10 @@ public class ShiftDAO {
                 if (hasresults) {
 
                     rs = ps.getResultSet();
-                    System.out.println(rs);
+                    
+                   
                     shift = new Shift(DAOUtility.resultSetToHashMap(rs));
+                    
                     
                 }
 
@@ -117,12 +120,12 @@ public class ShiftDAO {
             if (conn.isValid(0)) {
 
                 ps = conn.prepareStatement(QUERY_FIND_BADGE);
-                System.out.println(badge.getId());
+               // System.out.println(badge.getId());
                 ps.setString(1, badge.getId());
                 
 
                 boolean hasresults = ps.execute();
-                System.out.println(hasresults);
+                //System.out.println(hasresults);
 
                 if (hasresults) {
                     
@@ -159,5 +162,5 @@ public class ShiftDAO {
         
         return find(id);
     }
-  
+ 
 }
