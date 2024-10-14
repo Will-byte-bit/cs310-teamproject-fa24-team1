@@ -129,5 +129,9 @@ public class PunchDAO {
 
     }
     
+    public int create(Punch punch) {
+        int id = DEFAULT_ID;
+        return id;
+    }
     
 }
