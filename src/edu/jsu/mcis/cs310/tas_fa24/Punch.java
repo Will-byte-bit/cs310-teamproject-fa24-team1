@@ -57,8 +57,8 @@ public class Punch {
     public String ToString(){
         return printOriginal();
     }
-    public int getTerminalId() {
-        return terminalId;
+    public int getTerminalid() {
+    return terminalId;
     }
 
     public int getId() {
@@ -69,7 +69,7 @@ public class Punch {
         return badge;
     }
 
-    public EventType getPunchType() {
+    public EventType getPunchtype() {
         return punchType;
     }
 
