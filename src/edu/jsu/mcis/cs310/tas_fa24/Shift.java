@@ -63,11 +63,10 @@ public class Shift {
         this.shift = shift;
         
         this.shiftStart = LocalTime.parse(shift.get("shiftstart"), inTake);
-       // this.shiftStart = LocalTime.parse(shiftStart.format(inTakeConvert));
+       
         
         this.shiftEnd = LocalTime.parse(shift.get("shiftstop"), inTake);
-       // this.shiftEnd = LocalTime.parse(shiftEnd.format(inTakeConvert));
-       // System.out.println("converting works");
+      
         
         this.lunchStart = LocalTime.parse(shift.get("lunchstart"), inTake);
         this.lunchEnd = LocalTime.parse(shift.get("lunchstop"), inTake);
@@ -76,7 +75,7 @@ public class Shift {
         this.gracePeriod = Integer.parseInt(shift.get("graceperiod"));
         this.roundingInterval = Integer.parseInt(shift.get("roundinterval"));
         this.lunchThreshold = Integer.parseInt(shift.get("lunchthreshold"));
-        System.out.println("cant parse");
+     
         
         
         this.shiftStartStr = shiftStart.format(outTake);
@@ -93,21 +92,16 @@ public class Shift {
     }
      
     public int calcTimeDifferenceShift(){
-        // Create local instance, parse in the constructor
         
         //duration of shift in minutes
         int duration = DEFAULT;
-        
-      
-       
-        
         
         //testing if shift end is greater than shift start
         if(shiftEnd.getMinute() > shiftStart.getMinute()){
        
         
          return (int) ChronoUnit.MINUTES.between(shiftStart, shiftEnd);
-        // Check ChronoUnit API
+       
         //testing if it is less than, meaning a different day.
         }else if(shiftEnd.getMinute() < shiftStart.getMinute()){
             
@@ -132,9 +126,7 @@ public class Shift {
         int duration = DEFAULT;
         
         if(lunchEnd.getMinute() > lunchStart.getMinute()){
-        Duration difference = Duration.between(lunchStart, lunchEnd);
-        
-        duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
+         return (int) ChronoUnit.MINUTES.between(shiftStart, shiftEnd);
         
         }
         //testing if it is less than, meaning a different day.
@@ -200,6 +192,37 @@ public class Shift {
 
     public String getLunchEndStr() {
         return lunchEndStr;
+    }
+    public int getRoundingInterval() {
+        return roundingInterval;
+    }
+
+    public int getGracePeriod() {
+        return gracePeriod;
+    }
+
+    public int getDockPenalty() {
+        return dockPenalty;
+    }
+
+    public int getLunchThreshold() {
+        return lunchThreshold;
+    }
+
+    public LocalTime getShiftStart() {
+        return shiftStart;
+    }
+
+    public LocalTime getShiftEnd() {
+        return shiftEnd;
+    }
+
+    public LocalTime getLunchStart() {
+        return lunchStart;
+    }
+
+    public LocalTime getLunchEnd() {
+        return lunchEnd;
     }
 
 }

@@ -87,7 +87,7 @@ public class PunchDAO {
                             //creating badge, creating punch
                             Badge badge = new Badge(badgeId, rsForBadge.getString("description"));
                             
-                            System.out.println(rs.getTimestamp("timestamp"));
+                         
                             
                             //formatting timestamp and removing unused data.
                             DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
