@@ -98,14 +98,15 @@ public class Shift {
         //duration of shift in minutes
         int duration = DEFAULT;
         
+      
+       
+        
+        
         //testing if shift end is greater than shift start
         if(shiftEnd.getMinute() > shiftStart.getMinute()){
        
         
-        Duration difference = Duration.between(shiftStart, shiftEnd);
-      
-        
-        duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
+         return (int) ChronoUnit.MINUTES.between(shiftStart, shiftEnd);
         // Check ChronoUnit API
         //testing if it is less than, meaning a different day.
         }else if(shiftEnd.getMinute() < shiftStart.getMinute()){
@@ -118,6 +119,7 @@ public class Shift {
             
             
         }
+        
         
         return duration;
     }
