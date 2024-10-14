@@ -16,6 +16,7 @@ import java.time.format.DateTimeFormatter;
  * 
  * @author William Saint
  * 
+ * 
  */
 public class Punch {
     private int terminalId;
@@ -57,7 +58,7 @@ public class Punch {
         return printOriginal();
     }
     public int getTerminalId() {
-    return terminalId;
+        return terminalId;
     }
 
     public int getId() {
@@ -72,11 +73,11 @@ public class Punch {
         return punchType;
     }
 
-    public LocalDateTime getOriginalTimeStamp() {
+    public LocalDateTime getOriginaltimestamp() {
         return originalTimeStamp;
     }
 
-    public PunchAdjustmentType getAdjustedTimeStamp() {
+    public PunchAdjustmentType getAdjustedtimestamp() {
         return adjustedTimeStamp;
     }
 
