@@ -1,5 +1,8 @@
 package edu.jsu.mcis.cs310.tas_fa24.dao;
 
+import edu.jsu.mcis.cs310.tas_fa24.Punch;
+import edu.jsu.mcis.cs310.tas_fa24.Shift;
+import edu.jsu.mcis.cs310.tas_fa24.EventType;
 import java.time.*;
 import java.util.*;
 import java.time.temporal.ChronoUnit;
@@ -57,4 +60,49 @@ public final class DAOUtility {
       
             return mapOfShift;
         }
+    
+    /**
+     * Calculates the total number of minutes accrued by an employee within a single day.
+     * This method takes a list of punches and a shift object as arguments, iterates through 
+     * the punches, and calculates the number of minutes between clock-in and clock-out 
+     * pairs, subtracting lunch breaks as necessary.
+     * 
+     * Time-out punches are ignored, and if an employee exceeds the shift's lunch threshold, 
+     * the lunch break duration is deducted.
+     * 
+     * @param dailypunchlist A list of Punch objects representing the employee's daily punches
+     * @param shift A Shift object representing the employee's shift rules
+     * @return The total number of accrued minutes as an integer
+     */
+    public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, Shift shift) {
+        int totalMinutes = 0;
+        boolean clockInFound = false;
+        LocalDateTime clockInTime = null;
+
+        for (Punch punch : dailypunchlist) {
+            if (punch.getPunchtype() == EventType.CLOCK_IN) {
+                // Found a clock-in punch, record the time
+                clockInFound = true;
+                clockInTime = punch.getOriginaltimestamp();
+            }
+            else if (punch.getPunchtype() == EventType.CLOCK_OUT && clockInFound) {
+                // Found a clock-out punch, calculate time difference from last clock-in
+                LocalDateTime clockOutTime = punch.getOriginaltimestamp();
+                int minutesBetween = (int) ChronoUnit.MINUTES.between(clockInTime, clockOutTime);
+                totalMinutes += minutesBetween;
+                clockInFound = false;  // Reset for the next punch pair
+            }
+            else if (punch.getPunchtype() == EventType.TIME_OUT) {
+                // Skip over TIME_OUT punches
+                clockInFound = false;
+            }
+        }
+
+        // Check if lunch deduction is needed
+        if (totalMinutes >= shift.getLunchThreshold()) {
+            totalMinutes -= shift.getLunchDuration();
+        }
+
+        return totalMinutes;
+    }
 }
