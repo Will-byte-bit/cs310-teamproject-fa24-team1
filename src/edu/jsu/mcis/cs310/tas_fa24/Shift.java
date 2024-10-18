@@ -146,7 +146,7 @@ public class Shift {
     
     
     public String toString(){
-        String result = null;
+        String result;
         
         StringBuilder sb = new StringBuilder();
    
