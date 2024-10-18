@@ -98,7 +98,6 @@ public class Shift {
         
         //testing if shift end is greater than shift start
         if(shiftEnd.getMinute() > shiftStart.getMinute()){
-       
         
          return (int) ChronoUnit.MINUTES.between(shiftStart, shiftEnd);
        
@@ -126,7 +125,7 @@ public class Shift {
         int duration = DEFAULT;
         
         if(lunchEnd.getMinute() > lunchStart.getMinute()){
-         return (int) ChronoUnit.MINUTES.between(shiftStart, shiftEnd);
+         return (int) ChronoUnit.MINUTES.between(lunchStart, lunchEnd);
         
         }
         //testing if it is less than, meaning a different day.
