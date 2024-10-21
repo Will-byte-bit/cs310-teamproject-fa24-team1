@@ -49,7 +49,7 @@ public class Punch {
         this.terminalId = terminalId;
         this.badge = badge;
         this.punchType = punchType;
-        originalTimeStamp = LocalDateTime.now();
+        originalTimeStamp = LocalDateTime.now().withNano(0);
         this.day = originalTimeStamp.getDayOfWeek().toString().substring(0, 3);
     }
     public Punch(int id, int terminalid, Badge badge, LocalDateTime originalTimeStamp, EventType punchtype){
@@ -57,7 +57,7 @@ public class Punch {
         this.terminalId = terminalid;
         this.badge = badge;
         this.punchType = punchtype;
-        this.originalTimeStamp = originalTimeStamp;
+        this.originalTimeStamp = originalTimeStamp.withNano(0);
         this.day = originalTimeStamp.getDayOfWeek().toString().substring(0, 3);
        
     }
