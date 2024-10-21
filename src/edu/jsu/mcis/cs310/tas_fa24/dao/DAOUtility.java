@@ -75,22 +75,37 @@ public final class DAOUtility {
      * @return The total number of accrued minutes as an integer
      */
     public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, Shift shift) {
+        
+        DateTimeFormatter formatterForFinal = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
         int totalMinutes = 0;
         boolean clockInFound = false;
         LocalDateTime clockInTime = null;
-
+        
+        //change variable clockinTime to punch and use punch for both clocking and out
         for (Punch punch : dailypunchlist) {
+            System.out.println(punch.getId());
+            punch.adjust(shift);
             if (punch.getPunchtype() == EventType.CLOCK_IN) {
                 // Found a clock-in punch, record the time
                 clockInFound = true;
-                clockInTime = punch.getOriginaltimestamp();
+                
+                System.out.println(punch.getOriginaltimestamp().format(formatterForFinal));
+                clockInTime = punch.getChangetimestamp();
+                
             }
             else if (punch.getPunchtype() == EventType.CLOCK_OUT && clockInFound) {
                 // Found a clock-out punch, calculate time difference from last clock-in
-                LocalDateTime clockOutTime = punch.getOriginaltimestamp();
+                
+                
+                LocalDateTime clockOutTime = punch.getChangetimestamp();
+                
                 int minutesBetween = (int) ChronoUnit.MINUTES.between(clockInTime, clockOutTime);
                 totalMinutes += minutesBetween;
+                
                 clockInFound = false;  // Reset for the next punch pair
+                System.out.println(punch.getOriginaltimestamp().format(formatterForFinal));
+                System.out.println(clockInTime.format(formatterForFinal));
+                System.out.println(clockOutTime.format(formatterForFinal));
             }
             else if (punch.getPunchtype() == EventType.TIME_OUT) {
                 // Skip over TIME_OUT punches

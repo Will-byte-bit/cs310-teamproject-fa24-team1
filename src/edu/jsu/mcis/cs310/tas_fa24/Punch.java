@@ -250,6 +250,9 @@ public class Punch {
     public LocalDateTime getOriginaltimestamp() {
         return originalTimeStamp;
     }
+    public LocalDateTime getChangetimestamp() {
+        return changedTimeStamp;
+    }
 
     public PunchAdjustmentType getAdjustedtimestamp() {
         return adjustedTimeStamp;
