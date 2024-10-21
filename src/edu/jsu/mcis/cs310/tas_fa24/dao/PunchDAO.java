@@ -137,11 +137,8 @@ public class PunchDAO {
                 String badgeID = punch.getBadge().getId();
                 psCreate.setInt(1, punch.getTerminalid());
                 psCreate.setString(2, badgeID);
-                psCreate.setObject(3, punch.getOriginaltimestamp());
-                
-                int PT = punch.getPunchtype().ordinal();
-                
-                psCreate.setObject(4, PT);
+                psCreate.setTimestamp(3, Timestamp.valueOf(punch.getOriginaltimestamp()));
+                psCreate.setInt(4, punch.getPunchtype().ordinal());
                 
                 int rowsAffected = psCreate.executeUpdate();
                 
