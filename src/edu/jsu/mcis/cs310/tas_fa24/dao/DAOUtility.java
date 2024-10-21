@@ -20,7 +20,7 @@ import java.sql.SQLException;
  * 
  */
 public final class DAOUtility {
-    
+
     /**
      * Converts a ResultSet to a HashMap.
      * The keys being ints matched to the index of the columns.
@@ -39,16 +39,16 @@ public final class DAOUtility {
             ResultSetMetaData rsMeta = rs.getMetaData();
 
             int numberOfCols = rsMeta.getColumnCount();
-            
-            
+
+
             while(rs.next()) {
-                
+
                 //iterate over cols
                 for (int i=1; i<=numberOfCols; i++) {
                     String colName = rsMeta.getColumnName(i);
-              
+
                     mapOfShift.put(colName, rs.getString(colName));
-                 
+
 
                 }
 
@@ -57,10 +57,10 @@ public final class DAOUtility {
             catch(SQLException e){
                 throw new DAOException(e.getMessage());
             }
-      
+
             return mapOfShift;
         }
-    
+
     /**
      * Calculates the total number of minutes accrued by an employee within a single day.
      * This method takes a list of punches and a shift object as arguments, iterates through 
@@ -75,49 +75,48 @@ public final class DAOUtility {
      * @return The total number of accrued minutes as an integer
      */
     public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, Shift shift) {
-        
-        DateTimeFormatter formatterForFinal = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
-        int totalMinutes = 0;
-        boolean clockInFound = false;
-        LocalDateTime clockInTime = null;
-        
-        //change variable clockinTime to punch and use punch for both clocking and out
-        for (Punch punch : dailypunchlist) {
-            System.out.println(punch.getId());
-            punch.adjust(shift);
-            if (punch.getPunchtype() == EventType.CLOCK_IN) {
-                // Found a clock-in punch, record the time
-                clockInFound = true;
-                
-                System.out.println(punch.getOriginaltimestamp().format(formatterForFinal));
-                clockInTime = punch.getChangetimestamp();
-                
-            }
-            else if (punch.getPunchtype() == EventType.CLOCK_OUT && clockInFound) {
-                // Found a clock-out punch, calculate time difference from last clock-in
-                
-                
-                LocalDateTime clockOutTime = punch.getChangetimestamp();
-                
-                int minutesBetween = (int) ChronoUnit.MINUTES.between(clockInTime, clockOutTime);
-                totalMinutes += minutesBetween;
-                
-                clockInFound = false;  // Reset for the next punch pair
-                System.out.println(punch.getOriginaltimestamp().format(formatterForFinal));
-                System.out.println(clockInTime.format(formatterForFinal));
-                System.out.println(clockOutTime.format(formatterForFinal));
-            }
-            else if (punch.getPunchtype() == EventType.TIME_OUT) {
-                // Skip over TIME_OUT punches
-                clockInFound = false;
-            }
-        }
 
-        // Check if lunch deduction is needed
-        if (totalMinutes >= shift.getLunchThreshold()) {
-            totalMinutes -= shift.getLunchDuration();
+      int totalMinutes = 0;
+      LocalDateTime clockInTime = null;
+      LocalDateTime clockOutTime = null;
+    
+      for (Punch punch : dailypunchlist) {
+        // Adjust from Will's Adjust method, handles shift rules
+        punch.adjust(shift);  
+        EventType punchType = punch.getPunchtype();
+        // clock-in punches, store timestamp
+        if (punchType == EventType.CLOCK_IN) {
+            clockInTime = punch.getOriginaltimestamp();
+        } 
+        
+        // Time-out punches, store timestamp (not required)
+        else if (punchType == EventType.TIME_OUT){
+            continue;
         }
+        // clock-out punches
+        //refactor to use PunchAdjustmentType ENUM - William
+        else if (punchType == EventType.CLOCK_OUT && clockInTime != null) {
+            clockOutTime = punch.getOriginaltimestamp();
+            // difference between in and out punches
+            int minutesBetween = (int) ChronoUnit.MINUTES.between(clockInTime, clockOutTime);
+            DayOfWeek dayOfWeek = clockInTime.getDayOfWeek();
+             // Check if lunch deduction is applicable
+            boolean isLunchPeriod = (clockInTime.toLocalTime().isBefore(shift.getLunchEnd()) && 
+                                     clockOutTime.toLocalTime().isAfter(shift.getLunchStart()));
+            // weekday & clock-in and clock-out span lunch
+            if (dayOfWeek != DayOfWeek.SATURDAY && dayOfWeek != DayOfWeek.SUNDAY && isLunchPeriod) {
+                int lunchBreak = shift.getLunchDuration();
+                minutesBetween -= lunchBreak; // Deduct lunch time
+            }
+            // Accumulate the total minutes 
+            totalMinutes += minutesBetween; 
+            // Reset clock-in 
+            clockInTime = null;
+        }
+    }
 
+        // Return accrued minutes
         return totalMinutes;
     }
 }
+
