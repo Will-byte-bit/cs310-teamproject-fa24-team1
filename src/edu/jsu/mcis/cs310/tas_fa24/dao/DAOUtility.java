@@ -147,8 +147,8 @@ public final class DAOUtility {
     
     /**
      * Function for taking an arrayList of punches and converts to Json. Author: William Saint
-     * @param timestamp The LocalDateTime to check
-     * @return true if the day is a weekday, false otherwise
+     * @param dailyPunchList
+     * @return JsonObject of punch lists.
      */
   
     public static String getPunchListAsJSON(ArrayList<Punch> dailyPunchList){
