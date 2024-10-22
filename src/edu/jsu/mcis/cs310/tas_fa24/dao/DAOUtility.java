@@ -154,18 +154,20 @@ public final class DAOUtility {
     public static String getPunchListAsJSON(ArrayList<Punch> dailyPunchList){
       
         JsonArray arrayOfPunches = new JsonArray();
-        JsonObject mapOfPunch = new JsonObject();
+        
         for(Punch punch: dailyPunchList){
             
+            JsonObject mapOfPunch = new JsonObject();
+           
+            mapOfPunch.put("terminalid", Integer.toString(punch.getTerminalid()));
             mapOfPunch.put("id", Integer.toString(punch.getId()));
             mapOfPunch.put("badgeid", punch.getBadge().getId());
-            mapOfPunch.put("terminalid", Integer.toString(punch.getTerminalid()));
-            mapOfPunch.put("punchtype", punch.getPunchtype());
-            mapOfPunch.put("adjustmenttype", punch.getAdjustedtimestamp());
-            mapOfPunch.put("originaltimestamp", punch.printOriginal());
-            mapOfPunch.put("adjustedtimestamp", punch.printAdjusted());
+            mapOfPunch.put("punchtype", punch.getPunchtype().toString());
+            mapOfPunch.put("adjustmenttype", punch.getAdjustedtimestamp().toString());
+            mapOfPunch.put("originaltimestamp", punch.jsonPrintOriginal());
+            mapOfPunch.put("adjustedtimestamp", punch.jsonPrintAdjusted());
             
-            arrayOfPunches.add(punch);
+            arrayOfPunches.add(mapOfPunch);
             
         
             

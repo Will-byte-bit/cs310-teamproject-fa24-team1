@@ -240,6 +240,21 @@ public class Punch {
 
         return sb.toString();
     }
+    public String jsonPrintOriginal(){
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(day).append(" ").append(originalTimeStamp.format(formatterForFinal));
+        return sb.toString();
+                
+    }
+    public String jsonPrintAdjusted(){
+        
+        StringBuilder sb = new StringBuilder();
+        
+        sb.append(day).append(" ").append(changedTimeStamp.format(formatterForFinal));
+        
+        return sb.toString();
+    }
     public String ToString(){
         return printOriginal();
     }
