@@ -144,5 +144,34 @@ public final class DAOUtility {
         DayOfWeek day = timestamp.getDayOfWeek();
         return (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY);
     }
+    
+    /**
+     * Function for taking an arrayList of punches and converts to Json. Author: William Saint
+     * @param timestamp The LocalDateTime to check
+     * @return true if the day is a weekday, false otherwise
+     */
+  
+    public static String getPunchListAsJSON(ArrayList<Punch> dailyPunchList){
+      
+        JsonArray arrayOfPunches = new JsonArray();
+        JsonObject mapOfPunch = new JsonObject();
+        for(Punch punch: dailyPunchList){
+            
+            mapOfPunch.put("id", Integer.toString(punch.getId()));
+            mapOfPunch.put("badgeid", punch.getBadge().getId());
+            mapOfPunch.put("terminalid", Integer.toString(punch.getTerminalid()));
+            mapOfPunch.put("punchtype", punch.getPunchtype());
+            mapOfPunch.put("adjustmenttype", punch.getAdjustedtimestamp());
+            mapOfPunch.put("originaltimestamp", punch.printOriginal());
+            mapOfPunch.put("adjustedtimestamp", punch.printAdjusted());
+            
+            arrayOfPunches.add(punch);
+            
+        
+            
+        }
+
+        return Jsoner.serialize(arrayOfPunches);
+    }
 
 }
