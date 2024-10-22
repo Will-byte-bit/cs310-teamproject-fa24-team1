@@ -60,7 +60,9 @@ public class Punch {
         this.originalTimeStamp = originalTimeStamp;
         this.day = originalTimeStamp.getDayOfWeek().toString().substring(0, 3);
        
+       
     }
+  
     public void adjust(Shift shift){
         
        
@@ -82,28 +84,38 @@ public class Punch {
             
             
             if(dayOfWeek.ordinal() <= 4){
+                
+                //testing for lunchstart
                 if(stamp.isBefore(lunchEnd) && stamp.isAfter(lunchStart)){
 
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), lunchEnd.getHour(), lunchEnd.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.LUNCH_STOP;
                 }
+                //test if within rounding interval
                 else if(stamp.isBefore(shiftStart) && difference <= roundingInterval){
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftStart.getHour(), shiftStart.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.SHIFT_START;
                 }//end test for before
+                
+                //test if within grace period
                 else if(stamp.isAfter(shiftStart) && difference <= gracePeriod){
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftStart.getHour(), shiftStart.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.SHIFT_START;
                 }//end test if in grace
+                
+                //test if no changes need to be made
                 else if((int) Math.abs(ChronoUnit.MINUTES.between(stamp, shiftStart)) % shift.getRoundingInterval() == 0){
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftStart.getHour(), shiftStart.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.NONE;
                 }
+                
+                //test for dock
                 else if(stamp.isAfter(shiftStart) && difference >= gracePeriod && (int) Math.abs(ChronoUnit.SECONDS.between(stamp, shiftStart)) <= dockBy*60){
 
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftStart.getHour(), dockBy);
                     adjustedTimeStamp = PunchAdjustmentType.SHIFT_DOCK;
                 }// end test after grace/dock
+                
                 //end test for lunch
                 else if(stamp.isBefore(shiftStart) && difference > roundingInterval){
                     stamp = roundByInterval(stamp, roundingInterval/MINUTE_TO_SECOND);
@@ -111,6 +123,7 @@ public class Punch {
                     adjustedTimeStamp = PunchAdjustmentType.INTERVAL_ROUND;
                 }//end rounding outside inital 15
                 
+             //weekend clock 
             }else{
                 
                  if(stamp.isBefore(shiftStart) && difference <= roundingInterval){
@@ -140,8 +153,6 @@ public class Punch {
                     adjustedTimeStamp = PunchAdjustmentType.LUNCH_START;
                 }
                 else if(stamp.isAfter(shiftEnd) && difference <= gracePeriod){
-
-                    System.out.println("start 2");
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftEnd.getHour(), shiftEnd.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.SHIFT_STOP;
                 }//end test if in grace
@@ -187,7 +198,28 @@ public class Punch {
         
     }
     public LocalTime roundByInterval(LocalTime stamp, int roundBy){
+     
+       /*
+        int minute = stamp.getMinute();
         
+        int adjustMinute;
+
+        if ((minute%roundBy) <=roundBy/2){
+            
+            adjustMinute = (Math.round(minute/roundBy) * roundBy);
+        }
+        else{
+           
+            adjustMinute = (Math.round(minute/roundBy) * roundBy)+ roundBy;
+        }
+        stamp = stamp.plusMinutes(adjustMinute-minute);
+        
+        
+        stamp.withSecond(0).withNano(0);
+        
+        System.out.println();
+        
+*/
         int seconds = stamp.getSecond();
         int minutes, mod, rounded;
         
@@ -210,6 +242,7 @@ public class Punch {
         }else{
             stamp = LocalTime.of(stamp.getHour(), rounded);
         }
+
         return stamp; 
     }
     public String printAdjusted(){

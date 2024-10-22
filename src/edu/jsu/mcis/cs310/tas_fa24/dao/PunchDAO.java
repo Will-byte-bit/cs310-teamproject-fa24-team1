@@ -117,6 +117,7 @@ public class PunchDAO {
     }
 
     public int create(Punch punch) {
+        System.out.println(punch.getId());
         PreparedStatement psCreate = null;
         ResultSet rsCreate = null;
         int punchID = DEFAULT_ID;
