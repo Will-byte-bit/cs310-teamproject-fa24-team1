@@ -117,7 +117,7 @@ public class Punch {
                 }// end test after grace/dock
                 
                 //end test for lunch
-                else if(stamp.isBefore(shiftStart) && difference > roundingInterval){
+                else if(difference > roundingInterval){
                     stamp = roundByInterval(stamp, roundingInterval/MINUTE_TO_SECOND);
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.INTERVAL_ROUND;
@@ -167,8 +167,8 @@ public class Punch {
                 }// end test after grace/dock
                 else if(difference <= roundingInterval){
 
-                    stamp = roundByInterval(stamp, roundingInterval/MINUTE_TO_SECOND);
-                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
+                    //stamp = roundByInterval(stamp, roundingInterval/MINUTE_TO_SECOND);
+                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftEnd.getHour(), shiftEnd.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.SHIFT_STOP;
 
                 }//end test for before
@@ -199,12 +199,14 @@ public class Punch {
     }
     public LocalTime roundByInterval(LocalTime stamp, int roundBy){
      
-       /*
+       
         int minute = stamp.getMinute();
         
         int adjustMinute;
+        
+        if(minute%roundBy != 0){
 
-        if ((minute%roundBy) <=roundBy/2){
+        if ((minute%roundBy) < roundBy/2){
             
             adjustMinute = (Math.round(minute/roundBy) * roundBy);
         }
@@ -212,36 +214,13 @@ public class Punch {
            
             adjustMinute = (Math.round(minute/roundBy) * roundBy)+ roundBy;
         }
-        stamp = stamp.plusMinutes(adjustMinute-minute);
-        
-        
-        stamp.withSecond(0).withNano(0);
-        
-        System.out.println();
-        
-*/
-        int seconds = stamp.getSecond();
-        int minutes, mod, rounded;
-        
-        if(seconds > 30){
-            minutes = stamp.getMinute() +1;
-        }else{
-              minutes = stamp.getMinute();
-        }
-       
-        mod = minutes % roundBy; 
-        
-        if((mod) >= NEAREST){
-            rounded = minutes+(roundBy - mod);
+            stamp = stamp.plusMinutes(adjustMinute-minute);
+            stamp.withSecond(0).withNano(0);
         }
         else{
-            rounded = minutes-mod;
+                stamp.withSecond(0).withNano(0);
         }
-        if(rounded == 60){
-            stamp = LocalTime.of(stamp.getHour()+1, 0);
-        }else{
-            stamp = LocalTime.of(stamp.getHour(), rounded);
-        }
+        
 
         return stamp; 
     }
