@@ -67,7 +67,10 @@ public class Punch {
         
        
         LocalTime stamp = originalTimeStamp.toLocalTime();
+       
+                
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        DateTimeFormatter formatter2 = DateTimeFormatter.ofPattern("HH:mm:ss");
         
         int roundingInterval = shift.getRoundingInterval()*MINUTE_TO_SECOND;
         int gracePeriod = shift.getGracePeriod()*MINUTE_TO_SECOND;
@@ -75,18 +78,28 @@ public class Punch {
         
         DayOfWeek dayOfWeek = originalTimeStamp.getDayOfWeek();
             
-        
+        stamp.withSecond(0);
+        stamp.withNano(0);
         if(punchType.ordinal() == CLOCK_IN){
             
            LocalTime shiftStart = shift.getShiftStart(), lunchEnd = shift.getLunchEnd(),  lunchStart = shift.getLunchStart();
              
+           shiftStart.withSecond(0);
+           shiftStart.withNano(0);
+           LocalTime shiftStartForNone = shiftStart.truncatedTo(ChronoUnit.MINUTES);
+           LocalTime stampForNone = stamp.truncatedTo(ChronoUnit.MINUTES);
            int difference = (int) Math.abs(ChronoUnit.SECONDS.between(shiftStart, stamp));
-            
+          
             
             if(dayOfWeek.ordinal() <= 4){
                 
+                //test if no changes need to be made
+                if((int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftStartForNone)) % shift.getRoundingInterval() == 0){
+                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftStart.getHour(), shiftStart.getMinute());
+                    adjustedTimeStamp = PunchAdjustmentType.NONE;
+                }
                 //testing for lunchstart
-                if(stamp.isBefore(lunchEnd) && stamp.isAfter(lunchStart)){
+                else if(stamp.isBefore(lunchEnd) && stamp.isAfter(lunchStart)){
 
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), lunchEnd.getHour(), lunchEnd.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.LUNCH_STOP;
@@ -102,12 +115,6 @@ public class Punch {
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftStart.getHour(), shiftStart.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.SHIFT_START;
                 }//end test if in grace
-                
-                //test if no changes need to be made
-                else if((int) Math.abs(ChronoUnit.MINUTES.between(stamp, shiftStart)) % shift.getRoundingInterval() == 0){
-                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftStart.getHour(), shiftStart.getMinute());
-                    adjustedTimeStamp = PunchAdjustmentType.NONE;
-                }
                 
                 //test for dock
                 else if(stamp.isAfter(shiftStart) && difference >= gracePeriod && (int) Math.abs(ChronoUnit.SECONDS.between(stamp, shiftStart)) <= dockBy*60){
@@ -145,9 +152,16 @@ public class Punch {
             LocalTime shiftEnd = shift.getShiftEnd(), lunchEnd = shift.getLunchEnd(), lunchStart = shift.getLunchStart();
             
             int difference = (int) Math.abs(ChronoUnit.SECONDS.between(stamp, shiftEnd));
+            LocalTime shiftEndForNone = shiftEnd.truncatedTo(ChronoUnit.MINUTES);
+            LocalTime stampForNone = stamp.truncatedTo(ChronoUnit.MINUTES);
                
             if(dayOfWeek.ordinal() <= 4){
-                if(stamp.isAfter(lunchStart) && stamp.isBefore(lunchEnd)){
+               
+                if(stamp.isAfter(shiftEnd) &&(int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftEndForNone)) % shift.getRoundingInterval() == 0){
+                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), originalTimeStamp.getHour(), originalTimeStamp.getMinute());
+                    adjustedTimeStamp = PunchAdjustmentType.NONE;
+                }
+                else if(stamp.isAfter(lunchStart) && stamp.isBefore(lunchEnd)){
 
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), lunchStart.getHour(), lunchStart.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.LUNCH_START;
@@ -156,10 +170,7 @@ public class Punch {
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftEnd.getHour(), shiftEnd.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.SHIFT_STOP;
                 }//end test if in grace
-                else if(stamp.isAfter(shiftEnd) && (int) Math.abs(ChronoUnit.MINUTES.between(stamp, shiftEnd)) % shift.getRoundingInterval() == 0){
-                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), originalTimeStamp.getHour(), originalTimeStamp.getMinute());
-                    adjustedTimeStamp = PunchAdjustmentType.NONE;
-                }
+               
                 else if(stamp.isBefore(shiftEnd) && difference >= gracePeriod && (int) Math.abs(ChronoUnit.SECONDS.between(stamp, shiftEnd)) <= dockBy*60){
                     
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftEnd.getHour(), dockBy);

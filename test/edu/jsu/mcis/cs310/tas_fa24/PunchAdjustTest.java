@@ -14,7 +14,16 @@ public class PunchAdjustTest {
         daoFactory = new DAOFactory("tas.jdbc");
 
     }
-
+    @Test
+    public void test1(){
+        PunchDAO punchDAO = daoFactory.getPunchDAO();
+        ShiftDAO shiftDAO = daoFactory.getShiftDAO();
+        Punch p1 = punchDAO.find(196);
+        Shift s1 = shiftDAO.find(1);
+        p1.adjust(s1);
+        assertEquals("#AB8204A4 CLOCK IN: WED 08/01/2018 07:00:06", p1.printOriginal());
+        assertEquals("#AB8204A4 CLOCK IN: WED 08/01/2018 07:00:00 (None)", p1.printAdjusted());
+    }
     @Test
     public void testAdjustPunchesShift1Weekday() {
 
