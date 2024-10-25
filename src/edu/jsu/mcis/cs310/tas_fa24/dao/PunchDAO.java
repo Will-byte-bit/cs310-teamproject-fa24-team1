@@ -259,21 +259,19 @@ public class PunchDAO {
     public ArrayList<Punch> list(Badge badge, LocalDate begin, LocalDate end){
         
         ArrayList<Punch> results = new ArrayList<>();
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        
         end = end.plusDays(1);
 
         //iterates over dates, then iterates over punches for that day. N^2 run time, need to change if can.
         for (LocalDate date = begin; date.isBefore(end); date = date.plusDays(1)){
-            System.out.println(date.format(formatter));
+            
             ArrayList<Punch> listForDay = list(badge, date);
             for(Punch punch: listForDay){
                 results.add(punch);
             }
         }
         
-        for(Punch punch: results){
-            System.out.println(punch.printOriginal());
-        }
+        
         //sorts based on time using the Comparator class.
        results.sort(Comparator.comparing(Punch::getOriginaltimestamp, Comparator.nullsLast(Comparator.naturalOrder())));
 
