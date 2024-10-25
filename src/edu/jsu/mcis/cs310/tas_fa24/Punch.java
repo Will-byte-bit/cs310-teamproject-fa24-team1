@@ -16,6 +16,7 @@ import java.time.temporal.ChronoUnit;
  *It contains constructors for new and existing punches.
  *It also contains getters for all variables as well as a printOriginal() and ToString().
  *The printOriginal function implements StringBuilder.
+ *Added the punch adjust function. Takes a shift object and adjusts the punch according to the rules.
  * 
  * @author William Saint
  * 
