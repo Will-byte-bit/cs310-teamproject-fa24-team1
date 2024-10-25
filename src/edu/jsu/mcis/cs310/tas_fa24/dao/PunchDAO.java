@@ -242,6 +242,8 @@ public class PunchDAO {
     }
     public ArrayList<Punch> list(Badge badge, LocalDate begin, LocalDate end){
         
+        
+        
         return null;
     }
 }
