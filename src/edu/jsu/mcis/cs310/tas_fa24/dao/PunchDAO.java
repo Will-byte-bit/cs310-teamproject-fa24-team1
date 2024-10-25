@@ -9,6 +9,8 @@ import java.time.LocalDate;
 import java.time.LocalDateTime; // Add this import
 import java.time.format.DateTimeFormatter; // Add this import
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 /**
  * PunchDAO is a class that grabs punches from the database. 
@@ -243,11 +245,40 @@ public class PunchDAO {
         }
 
         return punchList;
+       /**
+     * Retrieves a list of punches for the given badge and a range of dates
+     * Author: William Saint
+     * 
+     * @param badge The employee's badge.
+     * @param begin The Beginning date for the range.
+     * @param end The end date for range.
+     * @return A list of Punch objects of the dates.
+     * 
+     */
     }
     public ArrayList<Punch> list(Badge badge, LocalDate begin, LocalDate end){
         
+        ArrayList<Punch> results = new ArrayList<>();
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
+        end = end.plusDays(1);
+
+        //iterates over dates, then iterates over punches for that day. N^2 run time, need to change if can.
+        for (LocalDate date = begin; date.isBefore(end); date = date.plusDays(1)){
+            System.out.println(date.format(formatter));
+            ArrayList<Punch> listForDay = list(badge, date);
+            for(Punch punch: listForDay){
+                results.add(punch);
+            }
+        }
         
+        for(Punch punch: results){
+            System.out.println(punch.printOriginal());
+        }
+        //sorts based on time using the Comparator class.
+       results.sort(Comparator.comparing(Punch::getOriginaltimestamp, Comparator.nullsLast(Comparator.naturalOrder())));
+
+       
         
-        return null;
+        return results;
     }
 }
