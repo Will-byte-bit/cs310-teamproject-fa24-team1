@@ -11,6 +11,7 @@ import java.time.format.DateTimeFormatter; // Add this import
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 
 /**
  * PunchDAO is a class that grabs punches from the database. 
@@ -258,18 +259,32 @@ public class PunchDAO {
     }
     public ArrayList<Punch> list(Badge badge, LocalDate begin, LocalDate end){
         
+        /*
+        ​
+        ​ ​ ​Runs in linear time.
+        ​
+        */
         ArrayList<Punch> results = new ArrayList<>();
+        HashMap<Integer, ArrayList<Punch>> convert = new HashMap<>();
+        
+        int index = 0;
         
         end = end.plusDays(1);
 
-        //iterates over dates, then iterates over punches for that day. N^2 run time, need to change if can.
+        //iterates over arraylist, storing it in hashmap. N run time
         for (LocalDate date = begin; date.isBefore(end); date = date.plusDays(1)){
             
             ArrayList<Punch> listForDay = list(badge, date);
-            for(Punch punch: listForDay){
-                results.add(punch);
-            }
+            
+            convert.put(index, listForDay);
+            index++;
         }
+        //iterates over hashmap, constant time average, addall, linear time average.
+        for(int i = 0; i < index; i++){
+            results.addAll(convert.get(i));
+            
+        }
+        
         
         
         //sorts based on time using the Comparator class.
