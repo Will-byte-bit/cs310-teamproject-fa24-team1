@@ -258,40 +258,55 @@ public class PunchDAO {
      */
     }
     public ArrayList<Punch> list(Badge badge, LocalDate begin, LocalDate end){
-        
         /*
         ​
+        
         ​ ​ ​Runs in linear time.
         ​
         */
+        
         ArrayList<Punch> results = new ArrayList<>();
+        
+        
         HashMap<Integer, ArrayList<Punch>> convert = new HashMap<>();
+        
         
         int index = 0;
         
         end = end.plusDays(1);
 
         //iterates over arraylist, storing it in hashmap. N run time
+        
         for (LocalDate date = begin; date.isBefore(end); date = date.plusDays(1)){
             
             ArrayList<Punch> listForDay = list(badge, date);
             
+            
             convert.put(index, listForDay);
+            
+            
             index++;
+            
+            //runs in linear time
+            
+            //I did this to optimze run time
+            
         }
+        
         //iterates over hashmap, constant time average, addall, linear time average.
+        
+        
         for(int i = 0; i < index; i++){
+            
+            
             results.addAll(convert.get(i));
             
         }
         
-        
-        
         //sorts based on time using the Comparator class.
+        
        results.sort(Comparator.comparing(Punch::getOriginaltimestamp, Comparator.nullsLast(Comparator.naturalOrder())));
 
-       
-        
         return results;
     }
 }
