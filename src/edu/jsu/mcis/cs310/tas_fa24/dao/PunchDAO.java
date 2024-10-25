@@ -22,9 +22,6 @@ public class PunchDAO {
     private static final String QUERY_FIND_BADGE = "SELECT description FROM badge WHERE id = ?";
     private static final String QUERY_LIST_BY_BADGE_DATE = 
         "SELECT * FROM event WHERE badgeid = ? AND DATE(timestamp) = ? ORDER BY timestamp";
-    private static final String QUERY_INSERT = "INSERT INTO event (terminalid, badgeid, timestamp, eventtypeid) VALUES (?, ?, ?, ?)";
-    private static final String QUERY_DEPARTMENT = "SELECT terminalid FROM department WHERE id = ?";
-    private static final String QUERY_EMPLOYEE = "SELECT departmentid FROM employee WHERE badgeid = ?";
     static final String QUERY_CREATE_PUNCH = "INSERT INTO event (terminalid, badgeid, timestamp, eventtypeid) VALUES (?, ?, ?, ?)";
 
     private final int DEFAULT_ID = 0;
@@ -115,7 +112,14 @@ public class PunchDAO {
 
         return punch;
     }
-
+    
+    /**
+    * Adds new punches into the database
+    * @param punch, the object to be added
+    * @return punchID, the auto-generated punch ID (can also be 0 for manually
+    * added punch)
+    * @author Madison Latham
+    **/
     public int create(Punch punch) {
         System.out.println(punch.getId());
         PreparedStatement psCreate = null;
@@ -132,7 +136,7 @@ public class PunchDAO {
                     int departmentTerminalID = employee.getDepartment().getTerminalID();
                     
                     if (punchTerminalID != departmentTerminalID && punchTerminalID != 0) {
-                        return 0;
+                        return -1;
                     }
                 psCreate = conn.prepareStatement(QUERY_CREATE_PUNCH, Statement.RETURN_GENERATED_KEYS);
                 String badgeID = punch.getBadge().getId();
