@@ -9,6 +9,9 @@ import java.time.LocalDate;
 import java.time.LocalDateTime; // Add this import
 import java.time.format.DateTimeFormatter; // Add this import
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
+import java.util.HashMap;
 
 /**
  * PunchDAO is a class that grabs punches from the database. 
@@ -22,9 +25,6 @@ public class PunchDAO {
     private static final String QUERY_FIND_BADGE = "SELECT description FROM badge WHERE id = ?";
     private static final String QUERY_LIST_BY_BADGE_DATE = 
         "SELECT * FROM event WHERE badgeid = ? AND DATE(timestamp) = ? ORDER BY timestamp";
-    private static final String QUERY_INSERT = "INSERT INTO event (terminalid, badgeid, timestamp, eventtypeid) VALUES (?, ?, ?, ?)";
-    private static final String QUERY_DEPARTMENT = "SELECT terminalid FROM department WHERE id = ?";
-    private static final String QUERY_EMPLOYEE = "SELECT departmentid FROM employee WHERE badgeid = ?";
     static final String QUERY_CREATE_PUNCH = "INSERT INTO event (terminalid, badgeid, timestamp, eventtypeid) VALUES (?, ?, ?, ?)";
 
     private final int DEFAULT_ID = 0;
@@ -115,8 +115,16 @@ public class PunchDAO {
 
         return punch;
     }
-
+    
+    /**
+    * Adds new punches into the database
+    * @param punch, the object to be added
+    * @return punchID, the auto-generated punch ID (can also be 0 for manually
+    * added punch)
+    * @author Madison Latham
+    **/
     public int create(Punch punch) {
+        System.out.println(punch.getId());
         PreparedStatement psCreate = null;
         ResultSet rsCreate = null;
         int punchID = DEFAULT_ID;
@@ -131,17 +139,14 @@ public class PunchDAO {
                     int departmentTerminalID = employee.getDepartment().getTerminalID();
                     
                     if (punchTerminalID != departmentTerminalID && punchTerminalID != 0) {
-                        return 0;
+                        return -1;
                     }
                 psCreate = conn.prepareStatement(QUERY_CREATE_PUNCH, Statement.RETURN_GENERATED_KEYS);
                 String badgeID = punch.getBadge().getId();
                 psCreate.setInt(1, punch.getTerminalid());
                 psCreate.setString(2, badgeID);
-                psCreate.setObject(3, punch.getOriginaltimestamp());
-                
-                int PT = punch.getPunchtype().ordinal();
-                
-                psCreate.setObject(4, PT);
+                psCreate.setTimestamp(3, Timestamp.valueOf(punch.getOriginaltimestamp()));
+                psCreate.setInt(4, punch.getPunchtype().ordinal());
                 
                 int rowsAffected = psCreate.executeUpdate();
                 
@@ -241,5 +246,67 @@ public class PunchDAO {
         }
 
         return punchList;
+       /**
+     * Retrieves a list of punches for the given badge and a range of dates
+     * Author: William Saint
+     * 
+     * @param badge The employee's badge.
+     * @param begin The Beginning date for the range.
+     * @param end The end date for range.
+     * @return A list of Punch objects of the dates.
+     * 
+     */
+    }
+    public ArrayList<Punch> list(Badge badge, LocalDate begin, LocalDate end){
+        /*
+        ​
+        
+        ​ ​ ​Runs in linear time.
+        ​
+        */
+        
+        ArrayList<Punch> results = new ArrayList<>();
+        
+        
+        HashMap<Integer, ArrayList<Punch>> convert = new HashMap<>();
+        
+        
+        int index = 0;
+        
+        end = end.plusDays(1);
+
+        //iterates over arraylist, storing it in hashmap. N run time
+        
+        for (LocalDate date = begin; date.isBefore(end); date = date.plusDays(1)){
+            
+            ArrayList<Punch> listForDay = list(badge, date);
+            
+            
+            convert.put(index, listForDay);
+            
+            
+            index++;
+            
+            //runs in linear time
+            
+            //I did this to optimze run time
+            
+        }
+        
+        //iterates over hashmap, constant time average, addall, linear time average.
+        
+        
+        for(int i = 0; i < index; i++){
+            
+            
+            results.addAll(convert.get(i));
+            
+        }
+        
+        //sorts based on time using the Comparator class.
+        
+       results.sort(Comparator.comparing(Punch::getOriginaltimestamp, Comparator.nullsLast(Comparator.naturalOrder())));
+
+        return results;
     }
 }
