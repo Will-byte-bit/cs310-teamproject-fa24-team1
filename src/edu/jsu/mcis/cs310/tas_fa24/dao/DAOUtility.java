@@ -9,6 +9,8 @@ import java.util.*;
 import java.time.temporal.ChronoUnit;
 import java.time.format.DateTimeFormatter;
 import com.github.cliftonlabs.json_simple.*;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -174,6 +176,28 @@ public final class DAOUtility {
         }
 
         return Jsoner.serialize(arrayOfPunches);
+    }
+    
+    
+    /**
+     * Helper method to calculate Absenteeism Percentage
+     * @author samca
+     * @param punchList
+     * @param s
+     * @return absenteeismPercentage
+     */
+    
+    public static BigDecimal calculateAbsenteeism(ArrayList<Punch> punchList, Shift s) {
+	int totalScheduledMintues = s.getDailyScheduledMinutes() * 5;
+	int totalWorkedMinutes = calculateTotalMinutes(punchList, s);
+	    
+	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes / totalScheduledMintues)) * 100).setScale(2, RoundingMode.HALF_UP);
+
+	System.out.println("total schedule minutes: " + totalScheduledMintues);
+	System.out.println("total worked minutes: " + totalWorkedMinutes);
+	System.out.println("absenteeism percentage: " + absenteeismPercentage);
+	    
+	return absenteeismPercentage;
     }
 
 }

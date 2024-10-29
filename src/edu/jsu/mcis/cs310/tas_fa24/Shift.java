@@ -223,5 +223,9 @@ public class Shift {
     public LocalTime getLunchEnd() {
         return lunchEnd;
     }
-
+    
+    public int getDailyScheduledMinutes() {
+	return shiftDuration - lunchDuration;
+    }
+    
 }

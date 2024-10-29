@@ -1,7 +1,11 @@
 package edu.jsu.mcis.cs310.tas_fa24;
 
 import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.time.DayOfWeek;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 
 /**
  * Model Class for showing Employee Absenteeism
@@ -13,53 +17,45 @@ import java.time.LocalDate;
  */
 public class Absenteeism {
 	private Employee employee = null;
-	private LocalDate startDate = null;
+	private LocalDate payPeriodStart = null;
 	private BigDecimal absenteeismPercentage = null;
-	private Punch punch = null;
-	private Shift shift = null;
-	private Badge badge = null;
 	
 	
 	// Constructor
-	public Absenteeism(Employee employee, LocalDate startDate, BigDecimal absenteeismPercentage, 
-		Punch punch, Shift shift, Badge badge) {
-		
-		this.employee = employee;
-		this.startDate = startDate;
-		this.absenteeismPercentage = absenteeismPercentage;
-		this.punch = punch;
-		this.shift = shift;
-		this.badge = badge;
+	public Absenteeism(Employee employee, LocalDate payPeriodStart, BigDecimal absenteeismPercentage) {
+	    this.employee = employee;
+	    this.payPeriodStart = payPeriodStart.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+	    this.absenteeismPercentage = absenteeismPercentage.setScale(2, RoundingMode.HALF_UP);
 	}
 	
 	// Getters
 	public Employee getEmployee() {
-		return employee;
+	    return employee;
 	}
-	public LocalDate getStartDate() {
-		return startDate;
+	public LocalDate getPayPeriodStart() {
+	    return payPeriodStart;
 	}
-	public BigDecimal getabsenteeismPercentage() {
-		return absenteeismPercentage;
+	public BigDecimal getAbsenteeismPercentage() {
+	    return absenteeismPercentage;
 	}
-	public Punch getPunch() {
-		return punch;
-	}
-	public Shift getShift() {
-		return shift;
-	}
-	public Badge getBadge() {
-		return badge;
-	}
+
 	
 	// To-String
-	public String ToString() {
-		String result;
-		StringBuilder s = new StringBuilder();
-		s.append("#").append(badge).append("(Pay Period Starting: ").append(startDate).append("): ")
-		.append(absenteeismPercentage).append("%");
-		
-		result = s.toString();
-		return result;
+	@Override
+	public String toString() {
+	    
+	    System.out.println("Debug in toString - Absenteeism Percentage: " + absenteeismPercentage);
+	    String result;
+	    StringBuilder s = new StringBuilder();
+	    s.append("#");
+	    s.append(employee.getBadge().getId());
+	    s.append(" (Pay Period Starting ");
+	    s.append(payPeriodStart.format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
+	    s.append("): ");
+	    s.append(absenteeismPercentage);
+	    s.append("%");
+	    
+	    result = s.toString();
+	    return result;
 	}
 }
