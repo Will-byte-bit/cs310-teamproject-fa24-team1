@@ -63,7 +63,15 @@ public class AbsenteeismTest {
         
         /* Retrieve Absenteeism From Database */
         
+        System.out.println("Will test");
+        
+        System.out.println(e);
+        System.out.println(ts);
+        
+      
+        
         Absenteeism a2 = absenteeismDAO.find(e, ts);
+        
         
         /* Compare to Expected Value */
         

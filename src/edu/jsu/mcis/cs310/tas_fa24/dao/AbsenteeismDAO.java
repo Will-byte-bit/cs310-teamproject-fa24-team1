@@ -32,14 +32,13 @@ public class AbsenteeismDAO {
 		
 	try {
 	    Connection conn = daoFactory.getConnection();
-			
+            
 	    if (conn.isValid(0)){
 		// Statements
 		ps = conn.prepareStatement(QUERY_FIND);
 		ps.setInt(1, employee.getId());
 		ps.setDate(2, java.sql.Date.valueOf(payPeriodStart));
 		rs = ps.executeQuery();
-		    
 		if (rs.next()) {
 		    double percentageValue = rs.getDouble("percentage");
 		    BigDecimal percentage = BigDecimal.valueOf(percentageValue).setScale(2, RoundingMode.HALF_UP);
@@ -53,6 +52,7 @@ public class AbsenteeismDAO {
 	    if (rs != null) try { rs.close(); } catch (SQLException e) { throw new DAOException(e.getMessage()); }
 	    if (ps != null) try { ps.close(); } catch (SQLException e) { throw new DAOException(e.getMessage()); }
 	}
+      
 	return absenteeism;
     }
 	
