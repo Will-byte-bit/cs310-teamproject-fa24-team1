@@ -92,7 +92,7 @@ public class Punch {
                 
                 //test if no changes need to be made
                 if((int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftStartForNone)) % shift.getRoundingInterval() == 0){
-                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), shiftStart.getHour(), shiftStart.getMinute());
+                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.NONE;
                 }
                 //testing for lunchstart
@@ -155,7 +155,7 @@ public class Punch {
             if(dayOfWeek.ordinal() <= 4){
                
                 if(stamp.isAfter(shiftEnd) &&(int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftEndForNone)) % shift.getRoundingInterval() == 0){
-                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), originalTimeStamp.getHour(), originalTimeStamp.getMinute());
+                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.NONE;
                 }
                 else if(stamp.isAfter(lunchStart) && stamp.isBefore(lunchEnd)){

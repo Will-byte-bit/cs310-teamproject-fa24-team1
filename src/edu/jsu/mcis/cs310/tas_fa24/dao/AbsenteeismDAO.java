@@ -6,6 +6,8 @@ import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
 import java.sql.*;
+import java.time.DayOfWeek;
+import java.time.temporal.TemporalAdjusters;
 
 
 /**
@@ -29,6 +31,9 @@ public class AbsenteeismDAO {
 	Absenteeism absenteeism = null;
 	PreparedStatement ps = null;
 	ResultSet rs = null;
+	
+	// Setting the start date
+	payPeriodStart = payPeriodStart.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
 		
 	try {
 	    Connection conn = daoFactory.getConnection();
@@ -39,12 +44,13 @@ public class AbsenteeismDAO {
 		ps.setInt(1, employee.getId());
 		ps.setDate(2, java.sql.Date.valueOf(payPeriodStart));
 		rs = ps.executeQuery();
+		
+
+		    
 		if (rs.next()) {
-		    double percentageValue = rs.getDouble("percentage");
-		    BigDecimal percentage = BigDecimal.valueOf(percentageValue).setScale(2, RoundingMode.HALF_UP);
-		    System.out.println("Retrieved Absenteeism Percentage from DB: " + percentage);
+		    BigDecimal percentage = rs.getBigDecimal("percentage");
 		    absenteeism = new Absenteeism(employee, payPeriodStart, percentage);
-		}
+		} 
 	    }
 	} catch (SQLException e) {
 	    throw new DAOException("Error finding absenteeism record: " + e.getMessage());
@@ -56,7 +62,7 @@ public class AbsenteeismDAO {
 	return absenteeism;
     }
 	
-    // Create 
+    // Create a record for Absenteeism
     public void create(Absenteeism absenteeism) {
 
 	PreparedStatement ps = null;
@@ -71,7 +77,7 @@ public class AbsenteeismDAO {
 		ps.setDate(2, java.sql.Date.valueOf(absenteeism.getPayPeriodStart()));
 		rs = ps.executeQuery();
 		// Scale percentage
-		BigDecimal scaledPercentage = absenteeism.getAbsenteeismPercentage().setScale(2, RoundingMode.HALF_UP);
+		BigDecimal scaledPercentage = absenteeism.getAbsenteeismPercentage();
 
 		
 		// Choose query based on record existence
@@ -88,7 +94,6 @@ public class AbsenteeismDAO {
 		    ps.setDate(2, java.sql.Date.valueOf(absenteeism.getPayPeriodStart()));
 		    ps.setBigDecimal(3, scaledPercentage);
 		}
-		System.out.println("Absenteeism Percentage to be stored: " + scaledPercentage);
 		// Execute update
 		ps.executeUpdate();
 		}

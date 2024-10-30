@@ -82,6 +82,8 @@ public final class DAOUtility {
         boolean lunchDeducted = false;
 
         for (Punch punch : dailypunchlist) {
+            
+            DayOfWeek dayOfWeek = punch.getOriginaltimestamp().getDayOfWeek();
             // Adjust the punch according to the shift rules
             punch.adjust(shift);
             EventType punchType = punch.getPunchtype();
@@ -106,11 +108,14 @@ public final class DAOUtility {
                 if (spansLunch && !lunchDeducted) {
                     minutesWorked -= shift.getLunchDuration();
                     lunchDeducted = true; // Ensure lunch is deducted only once
+                    System.out.println("lunch deducted");
+                    
                 }
 
                 // Accumulate the total minutes
                 totalMinutes += applyRounding(minutesWorked, shift);
-
+                
+               
                 // Reset clockInTime for the next pair
                 clockInTime = null;
             }
@@ -180,7 +185,7 @@ public final class DAOUtility {
     
     
     /**
-     * Helper method to calculate Absenteeism Percentage
+     * Calculate Absenteeism from actual worked days compared to scheduled worked days.
      * @author samca
      * @param punchList
      * @param s
@@ -190,13 +195,8 @@ public final class DAOUtility {
     public static BigDecimal calculateAbsenteeism(ArrayList<Punch> punchList, Shift s) {
 	int totalScheduledMintues = s.getDailyScheduledMinutes() * 5;
 	int totalWorkedMinutes = calculateTotalMinutes(punchList, s);
-	    
-	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes / totalScheduledMintues)) * 100).setScale(2, RoundingMode.HALF_UP);
-
-	System.out.println("total schedule minutes: " + totalScheduledMintues);
-	System.out.println("total worked minutes: " + totalWorkedMinutes);
-	System.out.println("absenteeism percentage: " + absenteeismPercentage);
-	    
+	
+	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes / totalScheduledMintues)) * 100);
 	return absenteeismPercentage;
     }
 
