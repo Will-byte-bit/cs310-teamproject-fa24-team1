@@ -180,7 +180,7 @@ public final class DAOUtility {
     
     
     /**
-     * Helper method to calculate Absenteeism Percentage
+     * Calculate Absenteeism from actual worked days compared to scheduled worked days.
      * @author samca
      * @param punchList
      * @param s
@@ -191,12 +191,7 @@ public final class DAOUtility {
 	int totalScheduledMintues = s.getDailyScheduledMinutes() * 5;
 	int totalWorkedMinutes = calculateTotalMinutes(punchList, s);
 	    
-	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes / totalScheduledMintues)) * 100).setScale(2, RoundingMode.HALF_UP);
-
-	System.out.println("total schedule minutes: " + totalScheduledMintues);
-	System.out.println("total worked minutes: " + totalWorkedMinutes);
-	System.out.println("absenteeism percentage: " + absenteeismPercentage);
-	    
+	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes / totalScheduledMintues)) * 100);
 	return absenteeismPercentage;
     }
 
