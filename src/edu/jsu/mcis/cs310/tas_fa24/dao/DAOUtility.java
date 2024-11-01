@@ -200,5 +200,28 @@ public final class DAOUtility {
 	return absenteeismPercentage;
     }
 
+     /**
+     * Serializes an ArrayList of punch data spanding a pay period, as well as the time worked in minutes and absences.
+     * @author William Saint
+     * @param punchlist
+     * @param shift
+     * @return serialized string.
+     */
+    
+    public static String getPunchListPlusTotalsAsJSON(ArrayList<Punch> punchlist, Shift shift){
+        JsonObject object = new JsonObject();
+        JsonArray arrayOfPunches = new JsonArray();
+        
+        int timeWorked = 0;
+        BigDecimal absence = BigDecimal.valueOf(0);
+        for(Punch punch: punchlist){
+            arrayOfPunches.add(convertPunchToJSONMap(punch));
+        }
+        object.put("absenteeism", absence);
+        object.put("totalminutes", timeWorked);
+        object.put("punchlist", arrayOfPunches);
+        
+        return Jsoner.serialize(object);
+    }
     
 }
