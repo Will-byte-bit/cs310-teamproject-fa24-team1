@@ -152,6 +152,20 @@ public final class DAOUtility {
         return (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY);
     }
     
+    public static JsonObject convertPunchToJSONMap(Punch punch){
+        JsonObject mapOfPunch = new JsonObject();
+
+        mapOfPunch.put("terminalid", Integer.toString(punch.getTerminalid()));
+        mapOfPunch.put("id", Integer.toString(punch.getId()));
+        mapOfPunch.put("badgeid", punch.getBadge().getId());
+        mapOfPunch.put("punchtype", punch.getPunchtype().toString());
+        mapOfPunch.put("adjustmenttype", punch.getAdjustedtimestamp().toString());
+        mapOfPunch.put("originaltimestamp", punch.jsonPrintOriginal());
+        mapOfPunch.put("adjustedtimestamp", punch.jsonPrintAdjusted());
+        
+        return mapOfPunch;
+    }
+    
     /**
      * Function for taking an arrayList of punches and converts to Json. Author: William Saint
      * @param dailyPunchList
@@ -164,25 +178,13 @@ public final class DAOUtility {
         
         for(Punch punch: dailyPunchList){
             
-            JsonObject mapOfPunch = new JsonObject();
-           
-            mapOfPunch.put("terminalid", Integer.toString(punch.getTerminalid()));
-            mapOfPunch.put("id", Integer.toString(punch.getId()));
-            mapOfPunch.put("badgeid", punch.getBadge().getId());
-            mapOfPunch.put("punchtype", punch.getPunchtype().toString());
-            mapOfPunch.put("adjustmenttype", punch.getAdjustedtimestamp().toString());
-            mapOfPunch.put("originaltimestamp", punch.jsonPrintOriginal());
-            mapOfPunch.put("adjustedtimestamp", punch.jsonPrintAdjusted());
-            
-            arrayOfPunches.add(mapOfPunch);
-            
-        
+            arrayOfPunches.add(convertPunchToJSONMap(punch));
             
         }
 
         return Jsoner.serialize(arrayOfPunches);
     }
-    
+
     
     /**
      * Calculate Absenteeism from actual worked days compared to scheduled worked days.
