@@ -152,6 +152,20 @@ public final class DAOUtility {
         return (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY);
     }
     
+    public static JsonObject convertPunchToJSONMap(Punch punch){
+        JsonObject mapOfPunch = new JsonObject();
+
+        mapOfPunch.put("terminalid", Integer.toString(punch.getTerminalid()));
+        mapOfPunch.put("id", Integer.toString(punch.getId()));
+        mapOfPunch.put("badgeid", punch.getBadge().getId());
+        mapOfPunch.put("punchtype", punch.getPunchtype().toString());
+        mapOfPunch.put("adjustmenttype", punch.getAdjustedtimestamp().toString());
+        mapOfPunch.put("originaltimestamp", punch.jsonPrintOriginal());
+        mapOfPunch.put("adjustedtimestamp", punch.jsonPrintAdjusted());
+        
+        return mapOfPunch;
+    }
+    
     /**
      * Function for taking an arrayList of punches and converts to Json. Author: William Saint
      * @param dailyPunchList
@@ -164,25 +178,13 @@ public final class DAOUtility {
         
         for(Punch punch: dailyPunchList){
             
-            JsonObject mapOfPunch = new JsonObject();
-           
-            mapOfPunch.put("terminalid", Integer.toString(punch.getTerminalid()));
-            mapOfPunch.put("id", Integer.toString(punch.getId()));
-            mapOfPunch.put("badgeid", punch.getBadge().getId());
-            mapOfPunch.put("punchtype", punch.getPunchtype().toString());
-            mapOfPunch.put("adjustmenttype", punch.getAdjustedtimestamp().toString());
-            mapOfPunch.put("originaltimestamp", punch.jsonPrintOriginal());
-            mapOfPunch.put("adjustedtimestamp", punch.jsonPrintAdjusted());
-            
-            arrayOfPunches.add(mapOfPunch);
-            
-        
+            arrayOfPunches.add(convertPunchToJSONMap(punch));
             
         }
 
         return Jsoner.serialize(arrayOfPunches);
     }
-    
+
     
     /**
      * Calculate Absenteeism from actual worked days compared to scheduled worked days.
@@ -200,5 +202,29 @@ public final class DAOUtility {
 	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes/ totalScheduledMintues)) * 100);
 	return absenteeismPercentage;
     }
-
+      
+    /**
+     * Serializes an ArrayList of punch data spanding a pay period, as well as the time worked in minutes and absences.
+     * @author samca
+     * @param punchlist
+     * @param shift
+     * @return serialized string.
+     */
+    
+    public static String getPunchListPlusTotalsAsJSON(ArrayList<Punch> punchlist, Shift shift){
+        JsonObject object = new JsonObject();
+        JsonArray arrayOfPunches = new JsonArray();
+        
+        int timeWorked = 0;
+        BigDecimal absence = BigDecimal.valueOf(0);
+        for(Punch punch: punchlist){
+            arrayOfPunches.add(convertPunchToJSONMap(punch));
+        }
+        object.put("absenteeism", absence);
+        object.put("totalminutes", timeWorked);
+        object.put("punchlist", arrayOfPunches);
+        
+        return Jsoner.serialize(object);
+    }
+    
 }
