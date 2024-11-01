@@ -7,13 +7,13 @@ import edu.jsu.mcis.cs310.tas_fa24.EventType;
 import java.time.*;
 import java.util.*;
 import java.time.temporal.ChronoUnit;
-import java.time.format.DateTimeFormatter;
 import com.github.cliftonlabs.json_simple.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.format.DateTimeFormatter;
 
 /**
  * 
@@ -193,10 +193,11 @@ public final class DAOUtility {
      */
     
     public static BigDecimal calculateAbsenteeism(ArrayList<Punch> punchList, Shift s) {
+        DateTimeFormatter formatterForFinal = DateTimeFormatter.ofPattern("MM-dd-yyyy");
 	int totalScheduledMintues = s.getDailyScheduledMinutes() * 5;
 	int totalWorkedMinutes = calculateTotalMinutes(punchList, s);
-	
-	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes / totalScheduledMintues)) * 100);
+       
+	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes/ totalScheduledMintues)) * 100);
 	return absenteeismPercentage;
     }
 

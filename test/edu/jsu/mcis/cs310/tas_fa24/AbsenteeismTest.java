@@ -62,13 +62,7 @@ public class AbsenteeismTest {
         absenteeismDAO.create(a1);
         
         /* Retrieve Absenteeism From Database */
-        
-        System.out.println("Will test");
-        
-        System.out.println(e);
-        System.out.println(ts);
-        
-      
+       
         
         Absenteeism a2 = absenteeismDAO.find(e, ts);
         
