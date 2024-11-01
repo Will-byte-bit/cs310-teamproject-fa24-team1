@@ -22,7 +22,7 @@ public class PunchAdjustTest {
         Shift s1 = shiftDAO.find(1);
         p1.adjust(s1);
         assertEquals("#AB8204A4 CLOCK IN: WED 08/01/2018 07:00:06", p1.printOriginal());
-        assertEquals("#AB8204A4 CLOCK IN: WED 08/01/2018 07:00:00 (None)", p1.printAdjusted());
+        assertEquals("#AB8204A4 CLOCK IN: WED 08/01/2018 07:00:00 (Shift Start)", p1.printAdjusted());
     }
     @Test
     public void testAdjustPunchesShift1Weekday() {

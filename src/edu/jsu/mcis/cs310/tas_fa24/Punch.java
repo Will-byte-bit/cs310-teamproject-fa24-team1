@@ -66,7 +66,8 @@ public class Punch {
   
     public void adjust(Shift shift){
         
-       
+        //note 11/1/24
+        //added " && difference > roundingInterval" to none test on both
         LocalTime stamp = originalTimeStamp.toLocalTime();
       
         
@@ -91,7 +92,7 @@ public class Punch {
             if(dayOfWeek.ordinal() <= 4){
                 
                 //test if no changes need to be made
-                if((int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftStartForNone)) % shift.getRoundingInterval() == 0){
+                if((int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftStartForNone)) % shift.getRoundingInterval() == 0 && difference > roundingInterval){
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.NONE;
                 }
@@ -154,7 +155,7 @@ public class Punch {
                
             if(dayOfWeek.ordinal() <= 4){
                
-                if(stamp.isAfter(shiftEnd) &&(int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftEndForNone)) % shift.getRoundingInterval() == 0){
+                if((int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftEndForNone)) % shift.getRoundingInterval() == 0 && difference > roundingInterval){
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.NONE;
                 }
