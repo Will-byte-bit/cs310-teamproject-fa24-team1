@@ -9,7 +9,10 @@ public class Badge {
         this.id = id;
         this.description = description;
     }
-
+    public Badge(String description) {
+        this.id = "";
+        this.description = description;
+    }
     public String getId() {
         return id;
     }
