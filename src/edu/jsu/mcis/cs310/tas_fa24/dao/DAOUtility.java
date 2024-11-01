@@ -205,7 +205,7 @@ public final class DAOUtility {
       
     /**
      * Serializes an ArrayList of punch data spanding a pay period, as well as the time worked in minutes and absences.
-     * @author samca
+     * @author William Saint
      * @param punchlist
      * @param shift
      * @return serialized string.
