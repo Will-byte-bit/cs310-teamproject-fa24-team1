@@ -43,14 +43,35 @@ public class DailySchedule {
 
         }
 
+        
     // getters
-    public LocalTime getShiftStart(){ return shiftStart;}
-    public LocalTime getShiftEnd(){ return shiftEnd;  }
-    public LocalTime getLunchStart(){ return lunchStart;}
-    public LocalTime getLunchEnd(){ return lunchEnd;}
-    public int getRoundingInterval() { return roundingInterval;}
-    public int getGracePeriod() { return gracePeriod;}
-    public int getDockPenalty(){ return dockPenalty;}
+    public LocalTime getShiftStart(){ 
+        return shiftStart;
+    }
+    
+    public LocalTime getShiftEnd(){ 
+        return shiftEnd; 
+    }
+    
+    public LocalTime getLunchStart(){ 
+        return lunchStart;
+    }
+    
+    public LocalTime getLunchEnd(){ 
+        return lunchEnd;
+    }
+    
+    public int getRoundingInterval() { 
+        return roundingInterval;
+    }
+    
+    public int getGracePeriod() { 
+        return gracePeriod;
+    }
+    
+    public int getDockPenalty(){ 
+        return dockPenalty;
+    }
 
     
 }
