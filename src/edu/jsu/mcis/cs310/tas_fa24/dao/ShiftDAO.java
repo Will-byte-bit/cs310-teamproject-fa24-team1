@@ -106,7 +106,6 @@ public class ShiftDAO {
     * @return shift, created shift object.
     */
     public Shift find(Badge badge){
-        System.out.println("test");
         
         //create vars
         PreparedStatement ps = null;

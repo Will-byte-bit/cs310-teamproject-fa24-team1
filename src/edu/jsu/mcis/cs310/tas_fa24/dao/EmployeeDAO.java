@@ -155,7 +155,6 @@ public class EmployeeDAO {
                     rs = ps.getResultSet();
                     rs.next();
                     id = rs.getInt("id");
-                    System.out.println(id);
                 }
             }
         } catch (SQLException e) {
