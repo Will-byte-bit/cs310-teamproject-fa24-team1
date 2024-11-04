@@ -149,6 +149,7 @@ public final class DAOUtility {
         return (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY);
     }
     
+
   
     /**
      * Calculate Absenteeism from actual worked days compared to scheduled worked days.
@@ -193,7 +194,7 @@ public final class DAOUtility {
         
         return totalWorkedMinutes;
     }
-    
+
     public static JsonObject convertPunchToJSONMap(Punch punch){
         JsonObject mapOfPunch = new JsonObject();
 
@@ -226,7 +227,7 @@ public final class DAOUtility {
 
         return Jsoner.serialize(arrayOfPunches);
     }
-   
+
     /**
      * Serializes an ArrayList of punch data spanding a pay period, as well as the time worked in minutes and absences.
      * @author William Saint
