@@ -1,17 +1,14 @@
 package edu.jsu.mcis.cs310.tas_fa24;
 
-import edu.jsu.mcis.cs310.tas_fa24.dao.PunchDAO;
-import edu.jsu.mcis.cs310.tas_fa24.dao.DAOUtility;
-import edu.jsu.mcis.cs310.tas_fa24.dao.AbsenteeismDAO;
-import edu.jsu.mcis.cs310.tas_fa24.dao.EmployeeDAO;
-import edu.jsu.mcis.cs310.tas_fa24.dao.DAOFactory;
+import edu.jsu.mcis.cs310.tas_fa24.dao.*;
+import org.junit.Before;
+import org.junit.Test;
 import java.math.BigDecimal;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
 import java.util.ArrayList;
-import org.junit.*;
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
 
 public class AbsenteeismTest {
     
@@ -177,7 +174,7 @@ public class AbsenteeismTest {
 
 	/* Get Punch/Employee Objects */
 
-	Punch p = punchDAO.find(4943); // Use a unique punch ID for overtime attendance scenario
+	Punch p = punchDAO.find(4943);
 	Employee e = employeeDAO.find(p.getBadge());
 	Shift s = e.getShift();
 	Badge b = e.getBadge();
@@ -224,7 +221,7 @@ public class AbsenteeismTest {
 
 	/* Get Punch/Employee Objects */
 
-	Punch p = punchDAO.find(4943);  // Use a unique punch ID for a partial attendance scenario
+	Punch p = punchDAO.find(4943);
 	Employee e = employeeDAO.find(p.getBadge());
 	Shift s = e.getShift();
 	Badge b = e.getBadge();
