@@ -239,27 +239,14 @@ public final class DAOUtility {
         JsonObject object = new JsonObject();
         JsonArray arrayOfPunches = new JsonArray();
         
-        int timeWorked = 0;
+        int timeWorked = getWeeklyWorkedMinutes(punchList, shift);
         BigDecimal absence = calculateAbsenteeism(punchList, shift);
         LocalDate date = punchList.get(0).getOriginaltimestamp().toLocalDate();
         
-        ArrayList<Punch> punches = new ArrayList<>();
         
-        for(int i = 0; i< punchList.size(); i++){
-            Punch punch = punchList.get(i);
-            arrayOfPunches.add(convertPunchToJSONMap(punch));
-            if(!punch.getOriginaltimestamp().toLocalDate().equals(date)){
-                timeWorked += calculateTotalMinutes(punches, shift);
-                date = punch.getOriginaltimestamp().toLocalDate();
-                punches = new ArrayList<>();
-                punches.add(punch);
-            }else{
-                punches.add(punch);
-            }
-            if(i == punchList.size()-1){
-               timeWorked += calculateTotalMinutes(punches, shift);
-            }
+        for(Punch punch: punchList){
             
+            arrayOfPunches.add(convertPunchToJSONMap(punch));
         }
         
         
