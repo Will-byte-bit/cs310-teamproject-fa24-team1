@@ -2,14 +2,13 @@ package edu.jsu.mcis.cs310.tas_fa24.dao;
 
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
 import edu.jsu.mcis.cs310.tas_fa24.Employee;
-import edu.jsu.mcis.cs310.tas_fa24.Punch;
 import edu.jsu.mcis.cs310.tas_fa24.EventType;
+import edu.jsu.mcis.cs310.tas_fa24.Punch;
 import java.sql.*;
 import java.time.LocalDate;
-import java.time.LocalDateTime; // Add this import
-import java.time.format.DateTimeFormatter; // Add this import
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 

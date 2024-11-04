@@ -1,13 +1,11 @@
 package edu.jsu.mcis.cs310.tas_fa24.dao;
 
-import edu.jsu.mcis.cs310.tas_fa24.Badge;
-import edu.jsu.mcis.cs310.tas_fa24.Department;
-import edu.jsu.mcis.cs310.tas_fa24.Employee;
-import edu.jsu.mcis.cs310.tas_fa24.EmployeeType;
-import edu.jsu.mcis.cs310.tas_fa24.Shift;
-import java.sql.*;
+import edu.jsu.mcis.cs310.tas_fa24.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
-import java.util.HashMap;
 
 /**
  * What This Code Does: This file is used to find an employee with their id 

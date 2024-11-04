@@ -51,8 +51,8 @@ public class Version2_BadgeCreateDeleteTest {
         assertEquals("#02AA8E86 (Smith, Daniel Q)", b2.toString());
         
         /* Check Insertion Result */
-        
-        assertEquals(true, result);
+
+        assertTrue(result);
 
     }
     
@@ -79,8 +79,8 @@ public class Version2_BadgeCreateDeleteTest {
         assertEquals("#8EA649AD (Haney, Debra F)", b.toString());
         
         /* Check Deletion Result */
-        
-        assertEquals(true, result);
+
+        assertTrue(result);
 
     }
     
