@@ -21,14 +21,14 @@ public class DailySchedule {
     	private LocalTime lunchStart = null;
    	private LocalTime lunchEnd = null;
     
-   	private int roundingInterval;
-    	private int gracePeriod;
-    	private int dockPenalty;
-        private int lunchThreshold;
+   	private final int roundingInterval;
+    	private final int gracePeriod;
+    	private final int dockPenalty;
+        private final int lunchThreshold;
         
         // constructor (trying to switch to HashMap per Will's initial design)
         public DailySchedule(LocalTime shiftStart, LocalTime shiftEnd, 
-                LocalTime lunchStart, LocalTime lunchEnd, int roundingInterverval, 
+                LocalTime lunchStart, LocalTime lunchEnd, int roundingInterval, 
                 int gracePeriod, int dockPenalty, int lunchThreshold){
 
             this.shiftStart = shiftStart; 
