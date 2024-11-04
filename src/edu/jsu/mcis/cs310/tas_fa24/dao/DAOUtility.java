@@ -7,13 +7,13 @@ import edu.jsu.mcis.cs310.tas_fa24.EventType;
 import java.time.*;
 import java.util.*;
 import java.time.temporal.ChronoUnit;
+import java.time.format.DateTimeFormatter;
 import com.github.cliftonlabs.json_simple.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
-import java.time.format.DateTimeFormatter;
 
 /**
  * 
@@ -76,54 +76,51 @@ public final class DAOUtility {
      * @return The total number of accrued minutes as an integer
      */
     public static int calculateTotalMinutes(ArrayList<Punch> dailypunchlist, Shift shift) {
-        int totalMinutes = 0;
-        LocalDateTime clockInTime = null;
-        LocalDateTime clockOutTime = null;
-        boolean lunchDeducted = false;
+	int totalMinutes = 0;
+	LocalDateTime clockInTime = null;
+	LocalDateTime clockOutTime = null;
+	boolean lunchDeducted = false;
 
-        for (Punch punch : dailypunchlist) {
-            
-            DayOfWeek dayOfWeek = punch.getOriginaltimestamp().getDayOfWeek();
-            // Adjust the punch according to the shift rules
-            punch.adjust(shift);
-            EventType punchType = punch.getPunchtype();
+	for (Punch punch : dailypunchlist) {
+	    punch.adjust(shift);  // Adjust the punch according to the shift rules
+	    EventType punchType = punch.getPunchtype();
 
-            // Handle CLOCK_IN punches
-            if (punchType == EventType.CLOCK_IN) {
-                clockInTime = punch.getChangetimestamp();  // Use getChangetimestamp() for clock-in
-            }
+	    // Handle CLOCK_IN punches
+	    if (punchType == EventType.CLOCK_IN) {
+		clockInTime = punch.getChangetimestamp();  // Set clock-in time
+	    }
+	    // Handle CLOCK_OUT punches if clockInTime is already set
+	    else if (punchType == EventType.CLOCK_OUT && clockInTime != null) {
+		clockOutTime = punch.getChangetimestamp();  // Set clock-out time
 
-            // Handle CLOCK_OUT punches
-            else if (punchType == EventType.CLOCK_OUT && clockInTime != null) {
-                clockOutTime = punch.getChangetimestamp();  // Use getChangetimestamp() for clock-out
+		// Calculate minutes worked between clock-in and clock-out
+		int minutesWorked = (int) ChronoUnit.MINUTES.between(clockInTime, clockOutTime);
 
-                // Calculate the minutes between clock-in and clock-out
-                int minutesWorked = (int) ChronoUnit.MINUTES.between(clockInTime, clockOutTime);
+		// Check if the clock-in and clock-out span the lunch period
+		boolean spansLunch = (clockInTime.toLocalTime().isBefore(shift.getLunchEnd()) && 
+				      clockOutTime.toLocalTime().isAfter(shift.getLunchStart()));
 
-                // Check if the clock-in and clock-out span the lunch period
-                boolean spansLunch = (clockInTime.toLocalTime().isBefore(shift.getLunchEnd()) && 
-                                      clockOutTime.toLocalTime().isAfter(shift.getLunchStart()));
+		// Deduct lunch if necessary and ensure it's only deducted once
+		if (spansLunch && !lunchDeducted) {
+		    minutesWorked -= shift.getLunchDuration();
+		    lunchDeducted = true;
+		}
 
-                // Deduct lunch if necessary and the shift requires it
-                if (spansLunch && !lunchDeducted) {
-                    minutesWorked -= shift.getLunchDuration();
-                    lunchDeducted = true; // Ensure lunch is deducted only once
-                    System.out.println("lunch deducted");
-                    
-                }
+		// Accumulate the total minutes with any necessary rounding
+		totalMinutes += applyRounding(minutesWorked, shift);
 
-                // Accumulate the total minutes
-                totalMinutes += applyRounding(minutesWorked, shift);
-                
-               
-                // Reset clockInTime for the next pair
-                clockInTime = null;
-            }
-        }
-
-        // Return the total accrued minutes
-        return totalMinutes;
+		// Reset clockInTime for the next pair
+		clockInTime = null;
+	    }
+	}
+	return totalMinutes;
     }
+
+
+
+
+
+
 
     /**
      * Helper method to apply rounding based on the shift's rounding rules.
@@ -150,6 +147,37 @@ public final class DAOUtility {
     private static boolean isWeekday(LocalDateTime timestamp) {
         DayOfWeek day = timestamp.getDayOfWeek();
         return (day != DayOfWeek.SATURDAY && day != DayOfWeek.SUNDAY);
+    }
+    
+  
+    /**
+     * Calculate Absenteeism from actual worked days compared to scheduled worked days.
+     * @author samca
+     * @param punchList The list of Punch objects representing the employee's punches within a pay period.
+     * @param shift The Shift object containing the scheduled work hours and break times.
+     * @return absenteeismPercentage BigDecimal representing the absenteeism percentage.
+     */
+    
+    public static BigDecimal calculateAbsenteeism(ArrayList<Punch> punchList, Shift shift) {
+	// Calculate total worked minutes
+	int totalWorkedMinutes = 0;
+	int scheduledMinutes = (shift.getShiftDuration() * 5 - (shift.getLunchDuration() * 5));
+	
+	//Group punches by day
+	Map<LocalDate, ArrayList<Punch>> dailyPunches = new HashMap<>();
+	for (Punch punch: punchList) {
+	    LocalDate date = punch.getOriginaltimestamp().toLocalDate();
+	    dailyPunches.computeIfAbsent(date, k -> new ArrayList<>()).add(punch);
+	}
+	
+	// Calculate total worked minutes across all days
+	for (ArrayList<Punch> dailyPunchList : dailyPunches.values()) {
+	    totalWorkedMinutes += calculateTotalMinutes(dailyPunchList, shift);
+	}
+	
+	// Absenteeism formula
+	double percentage = ((double) totalWorkedMinutes / scheduledMinutes);
+	return BigDecimal.valueOf((1 - percentage) * 100).setScale(2, RoundingMode.HALF_UP);
     }
     
     public static JsonObject convertPunchToJSONMap(Punch punch){
@@ -184,47 +212,51 @@ public final class DAOUtility {
 
         return Jsoner.serialize(arrayOfPunches);
     }
-
-    
-    /**
-     * Calculate Absenteeism from actual worked days compared to scheduled worked days.
-     * @author samca
-     * @param punchList
-     * @param s
-     * @return absenteeismPercentage
-     */
-    
-    public static BigDecimal calculateAbsenteeism(ArrayList<Punch> punchList, Shift s) {
-        DateTimeFormatter formatterForFinal = DateTimeFormatter.ofPattern("MM-dd-yyyy");
-	int totalScheduledMintues = s.getDailyScheduledMinutes() * 5;
-	int totalWorkedMinutes = calculateTotalMinutes(punchList, s);
-       
-	BigDecimal absenteeismPercentage = BigDecimal.valueOf((1 - ((double) totalWorkedMinutes/ totalScheduledMintues)) * 100);
-	return absenteeismPercentage;
-    }
-      
+   
     /**
      * Serializes an ArrayList of punch data spanding a pay period, as well as the time worked in minutes and absences.
      * @author William Saint
-     * @param punchlist
+     * @param punchList
      * @param shift
      * @return serialized string.
      */
     
-    public static String getPunchListPlusTotalsAsJSON(ArrayList<Punch> punchlist, Shift shift){
+    public static String getPunchListPlusTotalsAsJSON(ArrayList<Punch> punchList, Shift shift){
         JsonObject object = new JsonObject();
         JsonArray arrayOfPunches = new JsonArray();
         
         int timeWorked = 0;
-        BigDecimal absence = BigDecimal.valueOf(0);
-        for(Punch punch: punchlist){
+        BigDecimal absence = calculateAbsenteeism(punchList, shift);
+        LocalDate date = punchList.get(0).getOriginaltimestamp().toLocalDate();
+        
+        ArrayList<Punch> punches = new ArrayList<>();
+        
+        for(int i = 0; i< punchList.size(); i++){
+            Punch punch = punchList.get(i);
             arrayOfPunches.add(convertPunchToJSONMap(punch));
+            if(!punch.getOriginaltimestamp().toLocalDate().equals(date)){
+                timeWorked += calculateTotalMinutes(punches, shift);
+                date = punch.getOriginaltimestamp().toLocalDate();
+                punches = new ArrayList<>();
+                punches.add(punch);
+            }else{
+                punches.add(punch);
+            }
+            if(i == punchList.size()-1){
+               timeWorked += calculateTotalMinutes(punches, shift);
+            }
+            
         }
-        object.put("absenteeism", absence);
+        
+        
+       
+        object.put("absenteeism", String.valueOf(absence).concat("%"));
         object.put("totalminutes", timeWorked);
         object.put("punchlist", arrayOfPunches);
         
         return Jsoner.serialize(object);
     }
     
+
+
 }

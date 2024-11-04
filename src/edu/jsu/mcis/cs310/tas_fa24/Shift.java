@@ -142,6 +142,16 @@ public class Shift {
         
         return duration;
     }
+    
+     /**
+     * Checks if lunch should be deducted based on the threshold.
+     * @param totalWorkedMinutes The total minutes worked by the employee.
+     * @return true if lunch deduction applies, false otherwise.
+     * @author samca
+     */
+    public boolean isLunchDeductible(int totalWorkedMinutes) {
+        return totalWorkedMinutes >= lunchThreshold;
+    }
  
     
     

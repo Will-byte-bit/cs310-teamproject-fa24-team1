@@ -44,7 +44,6 @@ public class Absenteeism {
 	@Override
 	public String toString() {
 	    
-	    System.out.println("Debug in toString - Absenteeism Percentage: " + absenteeismPercentage);
 	    String result;
 	    StringBuilder s = new StringBuilder();
 	    s.append("#");
@@ -52,7 +51,7 @@ public class Absenteeism {
 	    s.append(" (Pay Period Starting ");
 	    s.append(payPeriodStart.format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
 	    s.append("): ");
-	    s.append(absenteeismPercentage);
+	    s.append(String.format("%.2f", absenteeismPercentage));
 	    s.append("%");
 	    
 	    result = s.toString();
