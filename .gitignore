@@ -17,3 +17,7 @@ manifest.mf
 .externalNativeBuild
 .cxx
 local.properties
+/out/production
+/out/test
+IntelliJ.iml
+/.idea
