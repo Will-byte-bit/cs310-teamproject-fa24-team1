@@ -155,29 +155,43 @@ public final class DAOUtility {
      * @author samca
      * @param punchList The list of Punch objects representing the employee's punches within a pay period.
      * @param shift The Shift object containing the scheduled work hours and break times.
-     * @return absenteeismPercentage BigDecimal representing the absenteeism percentage.
+     * @return A BigDecimal representing the absenteeism percentage.
      */
     
     public static BigDecimal calculateAbsenteeism(ArrayList<Punch> punchList, Shift shift) {
 	// Calculate total worked minutes
-	int totalWorkedMinutes = 0;
+	int totalWorkedMinutes = getWeeklyWorkedMinutes(punchList, shift);
 	int scheduledMinutes = (shift.getShiftDuration() * 5 - (shift.getLunchDuration() * 5));
-	
-	//Group punches by day
-	Map<LocalDate, ArrayList<Punch>> dailyPunches = new HashMap<>();
-	for (Punch punch: punchList) {
-	    LocalDate date = punch.getOriginaltimestamp().toLocalDate();
-	    dailyPunches.computeIfAbsent(date, k -> new ArrayList<>()).add(punch);
-	}
-	
-	// Calculate total worked minutes across all days
-	for (ArrayList<Punch> dailyPunchList : dailyPunches.values()) {
-	    totalWorkedMinutes += calculateTotalMinutes(dailyPunchList, shift);
-	}
 	
 	// Absenteeism formula
 	double percentage = ((double) totalWorkedMinutes / scheduledMinutes);
 	return BigDecimal.valueOf((1 - percentage) * 100).setScale(2, RoundingMode.HALF_UP);
+    }
+    
+    /**
+     * @author samca
+     * @param punchList
+     * @param shift
+     * @return Returns total worked minutes from a range of dates.
+     */
+    public static int getWeeklyWorkedMinutes(ArrayList<Punch> punchList, Shift shift) {
+        Map<LocalDate, ArrayList<Punch>> dailyPunches = new HashMap<>();
+        
+        // Group punches by date
+        for (Punch punch : punchList) {
+            LocalDate date = punch.getOriginaltimestamp().toLocalDate();
+            dailyPunches.putIfAbsent(date, new ArrayList<>());
+            dailyPunches.get(date).add(punch);
+        }
+
+        int totalWorkedMinutes = 0;
+        
+        // Calculate total worked minutes across all days
+        for (ArrayList<Punch> dailyPunchList : dailyPunches.values()) {
+            totalWorkedMinutes += calculateTotalMinutes(dailyPunchList, shift);
+        }
+        
+        return totalWorkedMinutes;
     }
     
     public static JsonObject convertPunchToJSONMap(Punch punch){
@@ -256,7 +270,4 @@ public final class DAOUtility {
         
         return Jsoner.serialize(object);
     }
-    
-
-
 }
