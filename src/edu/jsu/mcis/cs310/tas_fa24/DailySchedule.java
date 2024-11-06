@@ -15,7 +15,11 @@ import java.time.temporal.ChronoUnit;
  */
 public class DailySchedule {
     
-    
+
+        private DateTimeFormatter inTake = DateTimeFormatter.ofPattern("HH:mm:ss");
+        //private DateTimeFormatter inTakeConvert = DateTimeFormatter.ofPattern("hh:mm:ss");
+        private DateTimeFormatter outTake = DateTimeFormatter.ofPattern("HH:mm");
+
     	private LocalTime shiftStart = null;
    	private LocalTime shiftEnd = null;
     	private LocalTime lunchStart = null;
@@ -42,6 +46,29 @@ public class DailySchedule {
             this.lunchThreshold = lunchThreshold;
 
         }
+         public DailySchedule(HashMap<String, String> map){
+
+            
+        this.shiftStart = LocalTime.parse(map.get("shiftstart"), inTake);
+             System.out.println(shiftStart.format(inTake));
+
+
+        this.shiftEnd = LocalTime.parse(map.get("shiftstop"), inTake);
+
+
+        this.lunchStart = LocalTime.parse(map.get("lunchstart"), inTake);
+        this.lunchEnd = LocalTime.parse(map.get("lunchstop"), inTake);
+
+        this.dockPenalty =  Integer.parseInt(map.get("dockpenalty"));
+        this.gracePeriod = Integer.parseInt(map.get("graceperiod"));
+        this.roundingInterval = Integer.parseInt(map.get("roundinterval"));
+        this.lunchThreshold = Integer.parseInt(map.get("lunchthreshold"));
+  
+
+
+
+        }
+
 
         
     // getters
@@ -72,6 +99,8 @@ public class DailySchedule {
     public int getDockPenalty(){ 
         return dockPenalty;
     }
-
+    public int getLunchThreshold(){
+        return lunchThreshold;
+    }
     
 }

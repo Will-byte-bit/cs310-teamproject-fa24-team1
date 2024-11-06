@@ -8,6 +8,7 @@ import edu.jsu.mcis.cs310.tas_fa24.Shift;
 import java.sql.*;
 import java.time.LocalDateTime;
 import java.util.HashMap;
+import edu.jsu.mcis.cs310.tas_fa24.dao.ShiftDAO;
 
 /**
  * What This Code Does: This file is used to find an employee with their id 
@@ -105,7 +106,9 @@ public class EmployeeDAO {
                                 
                                 ResultSet rsShift = psShift.getResultSet();
                                 
-                                Shift shift = new Shift(DAOUtility.resultSetToHashMap(rsShift));
+                                ShiftDAO dao = new ShiftDAO(daoFactory);
+                                
+                                Shift shift = dao.find(shiftID);
                                 
                                 // Create and populate employee object
                                 employee = new Employee(id, firstName, 

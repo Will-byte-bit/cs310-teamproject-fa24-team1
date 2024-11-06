@@ -25,18 +25,22 @@ import java.time.temporal.ChronoUnit;
 //refactor code to all instance
 public class Shift {
     
-    //chronounit.mintues.between - local times
+  
     private HashMap<String, String> shift = new HashMap<>();
+    private int id;
+    private String description;
+   
     
-    private DateTimeFormatter inTake = DateTimeFormatter.ofPattern("HH:mm:ss");
-    //private DateTimeFormatter inTakeConvert = DateTimeFormatter.ofPattern("hh:mm:ss");
-    private DateTimeFormatter outTake = DateTimeFormatter.ofPattern("HH:mm");
-    
-    private int shiftDuration, lunchDuration;
-    
+  
     // new DailySchedule Objects
     private DailySchedule defaultSchedule;
     private HashMap<DayOfWeek, DailySchedule> dailySchedules;
+    private DateTimeFormatter inTake = DateTimeFormatter.ofPattern("HH:mm:ss");
+    
+    private DateTimeFormatter outTake = DateTimeFormatter.ofPattern("HH:mm");
+    
+    private int shiftDuration;
+    private int lunchDuration;
     
     private final int  DEFAULT = 0;
     
@@ -51,9 +55,15 @@ public class Shift {
         this.dailySchedules = dailySchedules != null ? dailySchedules : new HashMap<>();
        
         //calculates differences using DailySchedule Object
+     
+        
+    }
+    public Shift(int id, String description, DailySchedule daily){
+        this.id = id;
+        this.description = description;
+        this.defaultSchedule = daily;
         this.shiftDuration = calcTimeDifferenceShift(defaultSchedule.getShiftStart(), defaultSchedule.getShiftEnd());
         this.lunchDuration = calcTimeDifferenceLunch(defaultSchedule.getLunchStart(), defaultSchedule.getLunchEnd()); 
-        
     }
     
 
@@ -121,6 +131,12 @@ public class Shift {
  
     
     // Upated toString() to get values from defaultSchedule
+
+    /**
+     *
+     * @return
+     */
+    @Override
     public String toString(){
         String result;
         
@@ -128,7 +144,7 @@ public class Shift {
    
         
         //appending through shift
-        sb.append(defaultSchedule.getDescription()).append(": ").append(getShiftStart().format(outTake)).append(" - ").append(getShiftEnd().format(outTake)).append(" (").append(String.valueOf(shiftDuration));
+        sb.append(description).append(": ").append(getShiftStart().format(outTake)).append(" - ").append(getShiftEnd().format(outTake)).append(" (").append(String.valueOf(shiftDuration));
         sb.append(" minutes); ");
         
         //appending through lunch
