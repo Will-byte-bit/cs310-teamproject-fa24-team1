@@ -4,6 +4,7 @@
  */
 package edu.jsu.mcis.cs310.tas_fa24.dao;
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
+import edu.jsu.mcis.cs310.tas_fa24.DailySchedule;
 import edu.jsu.mcis.cs310.tas_fa24.Shift;
 import java.sql.*;
 import java.util.HashMap;
@@ -45,7 +46,7 @@ public class ShiftDAO {
 
     public Shift find(int id) {
 
-        Shift shift = null;
+        DailySchedule daily = null;
 
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -66,7 +67,7 @@ public class ShiftDAO {
                     rs = ps.getResultSet();
                     
                    
-                    shift = new Shift(DAOUtility.resultSetToHashMap(rs));
+                    daily = new DailySchedule(DAOUtility.resultSetToHashMap(rs));
                     
                     
                 }
