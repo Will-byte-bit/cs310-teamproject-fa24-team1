@@ -23,13 +23,7 @@ public class BadgeDAO {
     }
     //remove before pushing
     public boolean create(Badge b){
-         CRC32 cr = new CRC32();
          
-         cr.update(b.getDescription().getBytes());
-         
-         long checkSum = cr.getValue();
-         
-         String id = String.format("%08X", checkSum);
          PreparedStatement ps = null;
          ResultSet rs = null;
         
@@ -40,7 +34,7 @@ public class BadgeDAO {
             if (conn.isValid(0)) {
 
                 ps = conn.prepareStatement(QUERY_CREATE_BADGE);
-                ps.setString(1, id);
+                ps.setString(1, b.getId());
                 ps.setString(2, b.getDescription());
 
                 rs = ps.getResultSet();
