@@ -34,78 +34,44 @@ public class Shift {
     
     private int shiftDuration, lunchDuration;
     
-    private String shiftStartStr = null;
-    private String shiftEndStr = null;
-    private String lunchStartStr= null;
-    private String lunchEndStr = null;
-    
-    private LocalTime shiftStart = null;
-    private LocalTime shiftEnd = null;
-    private LocalTime lunchStart = null;
-    private LocalTime lunchEnd = null;
-    
-    private int roundingInterval;
-    private int gracePeriod;
-    private int dockPenalty;
-    private int lunchThreshold;
-    
+    // new DailySchedule Objects
+    private DailySchedule defaultSchedule;
+    private HashMap<DayOfWeek, DailySchedule> dailySchedules;
     
     private final int  DEFAULT = 0;
     
     /**
-     * Constructor for shift
-     * @param shift, integer string.
-     *  
-     * Use names of the fields for reference in map.
+     * Constructor for Shift v.2
+     * @param defaultSchedule, DailuSchedule
+     * @param dailySchedules. DailySchedule
      */
-    public Shift(HashMap<String, String> shift){
+    public Shift(DailySchedule defaultSchedule, HashMap<DayOfWeek, DailySchedule> dailySchedules){
         
-        this.shift = shift;
-        
-        this.shiftStart = LocalTime.parse(shift.get("shiftstart"), inTake);
+        this.defaultSchedule = defaultSchedule;
+        this.dailySchedules = dailySchedules != null ? dailySchedules : new HashMap<>();
        
-        
-        this.shiftEnd = LocalTime.parse(shift.get("shiftstop"), inTake);
-      
-        
-        this.lunchStart = LocalTime.parse(shift.get("lunchstart"), inTake);
-        this.lunchEnd = LocalTime.parse(shift.get("lunchstop"), inTake);
-        
-        this.dockPenalty =  Integer.parseInt(shift.get("dockpenalty"));
-        this.gracePeriod = Integer.parseInt(shift.get("graceperiod"));
-        this.roundingInterval = Integer.parseInt(shift.get("roundinterval"));
-        this.lunchThreshold = Integer.parseInt(shift.get("lunchthreshold"));
-     
-        
-        
-        this.shiftStartStr = shiftStart.format(outTake);
-        this.shiftEndStr = shiftEnd.format(outTake);
-        
-        this.lunchStartStr = lunchStart.format(outTake);
-        this.lunchEndStr = lunchEnd.format(outTake);
-        
-        this.shiftDuration = calcTimeDifferenceShift();
-        this.lunchDuration = calcTimeDifferenceLunch(); 
-        
-        
+        //calculates differences using DailySchedule Object
+        this.shiftDuration = calcTimeDifferenceShift(defaultSchedule.getShiftStart(), defaultSchedule.getShiftEnd());
+        this.lunchDuration = calcTimeDifferenceLunch(defaultSchedule.getLunchStart(), defaultSchedule.getLunchEnd()); 
         
     }
-     
-    public int calcTimeDifferenceShift(){
+    
+
+    public int calcTimeDifferenceShift(LocalTime ShiftStart, LocalTime ShiftEnd){
         
         //duration of shift in minutes
         int duration = DEFAULT;
         
         //testing if shift end is greater than shift start
-        if(shiftEnd.getMinute() > shiftStart.getMinute()){
+        if(defaultSchedule.getShiftEnd().getMinute() > defaultSchedule.getShiftStart().getMinute()){
         
-         return (int) ChronoUnit.MINUTES.between(shiftStart, shiftEnd);
+         return (int) ChronoUnit.MINUTES.between(defaultSchedule.getShiftStart(), defaultSchedule.getShiftEnd());
        
         //testing if it is less than, meaning a different day.
-        }else if(shiftEnd.getMinute() < shiftStart.getMinute()){
+        }else if(defaultSchedule.getShiftEnd().getMinute() < defaultSchedule.getShiftStart().getMinute()){
             
-            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, shiftStart.getHour(), shiftStart.getMinute());
-            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, shiftEnd.getHour(), shiftEnd.getMinute());
+            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, defaultSchedule.getShiftStart().getHour(), defaultSchedule.getShiftStart().getMinute());
+            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, defaultSchedule.getShiftEnd().getHour(), defaultSchedule.getShiftEnd().getMinute());
             
             Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
             duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
@@ -117,22 +83,22 @@ public class Shift {
         return duration;
     }
      
-    public int calcTimeDifferenceLunch(){
+    public int calcTimeDifferenceLunch(LocalTime lunchStart, LocalTime lunchEnd){
         /*
         \Calcuates difference between times.
         */
         
         int duration = DEFAULT;
         
-        if(lunchEnd.getMinute() > lunchStart.getMinute()){
-         return (int) ChronoUnit.MINUTES.between(lunchStart, lunchEnd);
+        if(defaultSchedule.getLunchEnd().getMinute() > defaultSchedule.getLunchStart().getMinute()){
+         return (int) ChronoUnit.MINUTES.between(defaultSchedule.getLunchStart(), defaultSchedule.getLunchEnd());
         
         }
         //testing if it is less than, meaning a different day.
-        else if(lunchEnd.getMinute() < lunchStart.getMinute()){
+        else if(defaultSchedule.getLunchEnd().getMinute() < defaultSchedule.getLunchStart().getMinute()){
             
-            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, lunchStart.getHour(), lunchStart.getMinute());
-            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, lunchEnd.getHour(), lunchEnd.getMinute());
+            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, defaultSchedule.getLunchStart().getHour(), defaultSchedule.getLunchStart().getMinute());
+            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, defaultSchedule.getLunchEnd().getHour(), defaultSchedule.getLunchEnd().getMinute());
             
             Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
             duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
@@ -150,11 +116,11 @@ public class Shift {
      * @author samca
      */
     public boolean isLunchDeductible(int totalWorkedMinutes) {
-        return totalWorkedMinutes >= lunchThreshold;
+        return totalWorkedMinutes >= defaultSchedule.getLunchThreshold();
     }
  
     
-    
+    // Upated toString() to get values from defaultSchedule
     public String toString(){
         String result;
         
@@ -162,11 +128,11 @@ public class Shift {
    
         
         //appending through shift
-        sb.append(shift.get("description")).append(": ").append(shiftStartStr).append(" - ").append(shiftEndStr).append(" (").append(String.valueOf(shiftDuration));
+        sb.append(defaultSchedule.getDescription()).append(": ").append(getShiftStart().format(outTake)).append(" - ").append(getShiftEnd().format(outTake)).append(" (").append(String.valueOf(shiftDuration));
         sb.append(" minutes); ");
         
         //appending through lunch
-        sb.append("Lunch: ").append(lunchStartStr).append(" - ").append(lunchEndStr);
+        sb.append("Lunch: ").append(getLunchStart().format(outTake)).append(" - ").append(getLunchEnd().format(outTake));
         sb.append(" (").append(String.valueOf(lunchDuration)).append(" minutes)");
         
         result = sb.toString();
@@ -187,55 +153,49 @@ public class Shift {
         return lunchDuration;
     }
 
-    public String getShiftStartStr() {
-        return shiftStartStr;
-    }
-
-    public String getShiftEndStr() {
-        return shiftEndStr;
-    }
-
-    public String getLunchStartStr() {
-        return lunchStartStr;
-    }
-
-    public String getLunchEndStr() {
-        return lunchEndStr;
-    }
     public int getRoundingInterval() {
-        return roundingInterval;
+        return defaultSchedule.getRoundingInterval();
     }
 
     public int getGracePeriod() {
-        return gracePeriod;
+        return defaultSchedule.getGracePeriod();
     }
 
     public int getDockPenalty() {
-        return dockPenalty;
+        return defaultSchedule.getDockPenalty();
     }
 
     public int getLunchThreshold() {
-        return lunchThreshold;
+        return defaultSchedule.getLunchThreshold();
     }
 
     public LocalTime getShiftStart() {
-        return shiftStart;
+        return defaultSchedule.getShiftStart();
     }
 
     public LocalTime getShiftEnd() {
-        return shiftEnd;
+        return defaultSchedule.getShiftEnd();
     }
 
     public LocalTime getLunchStart() {
-        return lunchStart;
+        return defaultSchedule.getLunchStart();
     }
 
     public LocalTime getLunchEnd() {
-        return lunchEnd;
+        return defaultSchedule.getLunchEnd();
     }
     
     public int getDailyScheduledMinutes() {
 	return shiftDuration - lunchDuration;
+    }
+    
+    public DailySchedule getDefaultSchedule(){
+        return defaultSchedule;
+    }
+    
+    // retrieves schedule for specific day
+    public DailySchedule getScheduleForDay(DayOfWeek day){
+        return dailySchedules.getOrDefault(day, defaultSchedule);
     }
     
 }
