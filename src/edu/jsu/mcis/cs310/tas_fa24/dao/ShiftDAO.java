@@ -5,6 +5,7 @@
 package edu.jsu.mcis.cs310.tas_fa24.dao;
 
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
+import edu.jsu.mcis.cs310.tas_fa24.DailySchedule;
 import edu.jsu.mcis.cs310.tas_fa24.Shift;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -26,7 +27,8 @@ import java.sql.SQLException;
 public class ShiftDAO {
     
     //prepared statements for the two find methods
-    private static final String QUERY_FIND_ID = "SELECT * FROM shift WHERE id = ?";
+    private static final String QUERY_FIND_ID_SHIFT= "SELECT * FROM shift WHERE id = ?";
+    private static final String QUERY_FIND_ID_DAILY= "SELECT * FROM dailyschedule WHERE id = ?";
     private static final String QUERY_FIND_BADGE = "SELECT shiftid FROM employee WHERE badgeid = ?";
     
     private final int DEFAULT_ID = 0;
@@ -41,17 +43,20 @@ public class ShiftDAO {
     
     /**
     * 
-    * returns a shift object based on the ID provided.
+    * returns a shift object based on the ID provided. Refactored by William Sint
     * @param id, id of shift
     * @return shift, created shift object.
     */
 
     public Shift find(int id) {
+        
+        HashMap<String, String> map = new HashMap<>();
 
         Shift shift = null;
-
+        DailySchedule daily  = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
+        ResultSet rs2 = null;
 
         try {
 
@@ -59,19 +64,29 @@ public class ShiftDAO {
 
             if (conn.isValid(0)) {
 
-                ps = conn.prepareStatement(QUERY_FIND_ID);
+                ps = conn.prepareStatement(QUERY_FIND_ID_DAILY);
                 ps.setInt(1, id);
 
                 boolean hasresults = ps.execute();
-
                 if (hasresults) {
 
                     rs = ps.getResultSet();
+                   
+                   daily = new DailySchedule(DAOUtility.resultSetToHashMap(rs));
+                }
+
+
+                ps = conn.prepareStatement(QUERY_FIND_ID_SHIFT);
+                ps.setInt(1, id);
+                hasresults = ps.execute();
+                if (hasresults) {
+                    
+
+                    rs = ps.getResultSet();
+                    rs.next();
                     
                    
-                    shift = new Shift(DAOUtility.resultSetToHashMap(rs));
-                    
-                    
+                   shift = new Shift(Integer.parseInt(rs.getString("id")), rs.getString("description"), daily);
                 }
 
             }
