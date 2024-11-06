@@ -53,7 +53,7 @@ public class ShiftDAO {
         DailySchedule daily  = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        ResultSet rs2 = null;
+  
 
         try {
 
