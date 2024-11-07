@@ -198,7 +198,7 @@ public class ShiftDAO {
                     
         try {
             // find Default Schedule for the Shift
-            String defaultScheduleQuery = "SELECT * FROM dailyschedule WHERE is_default = true";
+            String defaultScheduleQuery = "SELECT * FROM dailyschedule WHERE id = true";
             try (PreparedStatement pst = conn.prepareStatement(defaultScheduleQuery)) {
                 ResultSet rs = pst.executeQuery();
                 if (rs.next()) {
@@ -279,16 +279,16 @@ public class ShiftDAO {
     
     // after researching the way I found to use the resultset to get the schedule contents
     private DailySchedule extractDailySchedule(ResultSet rs) throws SQLException {
-        LocalTime shiftStart = rs.getTime("shift_start").toLocalTime();
-        LocalTime shiftEnd = rs.getTime("shift_end").toLocalTime();
-        LocalTime lunchStart = rs.getTime("lunch_start").toLocalTime();
-        LocalTime lunchEnd = rs.getTime("lunch_end").toLocalTime();
-        int interval = rs.getInt("interval");
-        int gracePeriod = rs.getInt("grace_period");
-        int dockPenalty = rs.getInt("dock_penalty");
-        int lunchThreshold = rs.getInt("lunch_deduction_threshold");
+        LocalTime shiftStart = rs.getTime("shiftstart").toLocalTime();
+        LocalTime shiftEnd = rs.getTime("shiftstop").toLocalTime();
+        LocalTime lunchStart = rs.getTime("lunchstart").toLocalTime();
+        LocalTime lunchEnd = rs.getTime("lunchstop").toLocalTime();
+        int roundinterval = rs.getInt("roundinterval");
+        int gracePeriod = rs.getInt("graceperiod");
+        int dockPenalty = rs.getInt("dockpenalty");
+        int lunchThreshold = rs.getInt("lunchthreshold");
 
-        return new DailySchedule(shiftStart, shiftEnd, lunchStart, lunchEnd, interval, gracePeriod, dockPenalty, lunchThreshold);
+        return new DailySchedule(shiftStart, shiftEnd, lunchStart, lunchEnd, roundinterval, gracePeriod, dockPenalty, lunchThreshold);
     }
 
 }
