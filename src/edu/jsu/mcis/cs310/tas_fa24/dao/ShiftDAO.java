@@ -264,7 +264,7 @@ public class ShiftDAO {
             e.printStackTrace();
         }
         
-        // return results as schedule for day
+        // return results as schedule for day.
         return schedule;
     }
 
