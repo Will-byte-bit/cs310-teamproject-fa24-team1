@@ -16,8 +16,9 @@ import java.time.temporal.TemporalAdjusters;
 import java.util.*;
 import com.github.cliftonlabs.json_simple.*;
 
-import org.junit.*;
+import org.junit.Test;
 import static org.junit.Assert.*;
+import org.junit.Before;
 
 public class JSONTest2 {
     
@@ -29,7 +30,111 @@ public class JSONTest2 {
         daoFactory = new DAOFactory("tas.jdbc");
 
     }
+      @Test
+    public void test() {
+        
+        try {
+        
+            EmployeeDAO employeeDAO = daoFactory.getEmployeeDAO();
+            PunchDAO punchDAO = daoFactory.getPunchDAO();
+
+            /* Expected JSON Data */
+
+            String expectedJSON = "{\"absenteeism\":\"55.00%\",\"totalminutes\":1080\"punchlist\":[{\"originaltimestamp\":\"WED 08/01/2018 05:49:24\",\"badgeid\":\"4E6E296E\",\"adjustedtimestamp\":\"WED 08/01/2018 05:45:00\",\"adjustmenttype\":\"Interval Round\",\"terminalid\":\"105\",\"id\":\"147\",\"punchtype\":\"CLOCK IN\"},{\"originaltimestamp\":\"WED 08/01/2018 15:38:32\",\"badgeid\":\"4E6E296E\",\"adjustedtimestamp\":\"WED 08/01/2018 15:30:00\",\"adjustmenttype\":\"Shift Stop\",\"terminalid\":\"105\",\"id\":\"237\",\"punchtype\":\"CLOCK OUT\"},{\"originaltimestamp\":\"FRI 08/03/2018 06:18:42\",\"badgeid\":\"4E6E296E\",\"adjustedtimestamp\":\"FRI 08/03/2018 06:15:00\",\"adjustmenttype\":\"Interval Round\",\"terminalid\":\"105\",\"id\":\"382\",\"punchtype\":\"CLOCK IN\"},{\"originaltimestamp\":\"FRI 08/03/2018 15:41:59\",\"badgeid\":\"4E6E296E\",\"adjustedtimestamp\":\"FRI 08/03/2018 15:30:00\",\"adjustmenttype\":\"Shift Stop\",\"terminalid\":\"105\",\"id\":\"486\",\"punchtype\":\"CLOCK OUT\"}]}";
+
+            JsonObject expected = (JsonObject)(Jsoner.deserialize(expectedJSON));
+
+            /* Get Punch */
+
+            Punch p = punchDAO.find(147);
+            Employee e = employeeDAO.find(p.getBadge());
+            Shift s = e.getShift();
+            Badge b = e.getBadge();
+
+            /* Get Pay Period Punch List */
+
+            LocalDate ts = p.getOriginaltimestamp().toLocalDate();
+            LocalDate begin = ts.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+            LocalDate end = begin.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
+
+            ArrayList<Punch> punchlist = punchDAO.list(b, begin, end);
+
+            /* Adjust Punch List */
+
+            for (Punch punch : punchlist) {
+                punch.adjust(s);
+            }
+
+            /* JSON Conversion */
+
+            String actualJSON = DAOUtility.getPunchListPlusTotalsAsJSON(punchlist, s);
+     
+            JsonObject actual = (JsonObject)(Jsoner.deserialize(actualJSON));
+
+            /* Compare to Expected JSON */
+
+            assertEquals(expected, actual);
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
+      @Test
+    public void test2() {
+        
+        try {
+        
+            EmployeeDAO employeeDAO = daoFactory.getEmployeeDAO();
+            PunchDAO punchDAO = daoFactory.getPunchDAO();
+
+            /* Expected JSON Data */
+
+            String expectedJSON = "{\"absenteeism\":\"60.00%\",\"totalminutes\":960,\"punchlist\":[{\"originaltimestamp\":\"WED 08/01/2018 15:33:55\",\"badgeid\":\"0FFA272B\",\"adjustedtimestamp\":\"WED 08/01/2018 15:30:00\",\"adjustmenttype\":\"Shift Stop\",\"terminalid\":\"101\",\"id\":\"231\",\"punchtype\":\"CLOCK OUT\"},{\"originaltimestamp\":\"THU 08/02/2018 06:56:37\",\"badgeid\":\"0FFA272B\",\"adjustedtimestamp\":\"THU 08/02/2018 07:00:00\",\"adjustmenttype\":\"Shift Start\",\"terminalid\":\"101\",\"id\":\"282\",\"punchtype\":\"CLOCK IN\"},{\"originaltimestamp\":\"THU 08/02/2018 15:31:26\",\"badgeid\":\"0FFA272B\",\"adjustedtimestamp\":\"THU 08/02/2018 15:30:00\",\"adjustmenttype\":\"Shift Stop\",\"terminalid\":\"101\",\"id\":\"325\",\"punchtype\":\"CLOCK OUT\"},{\"originaltimestamp\":\"FRI 08/03/2018 06:59:52\",\"badgeid\":\"0FFA272B\",\"adjustedtimestamp\":\"FRI 08/03/2018 07:00:00\",\"adjustmenttype\":\"Shift Start\",\"terminalid\":\"101\",\"id\":\"427\",\"punchtype\":\"CLOCK IN\"},{\"originaltimestamp\":\"FRI 08/03/2018 15:31:40\",\"badgeid\":\"0FFA272B\",\"adjustedtimestamp\":\"FRI 08/03/2018 15:30:00\",\"adjustmenttype\":\"Shift Stop\",\"terminalid\":\"101\",\"id\":\"452\",\"punchtype\":\"CLOCK OUT\"}]}";
+
+            JsonObject expected = (JsonObject)(Jsoner.deserialize(expectedJSON));
+
+            /* Get Punch */
+
+            Punch p = punchDAO.find(231);
+            Employee e = employeeDAO.find(p.getBadge());
+            Shift s = e.getShift();
+            Badge b = e.getBadge();
+
+            /* Get Pay Period Punch List */
+
+            LocalDate ts = p.getOriginaltimestamp().toLocalDate();
+            LocalDate begin = ts.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY));
+            LocalDate end = begin.with(TemporalAdjusters.next(DayOfWeek.SATURDAY));
+
+            ArrayList<Punch> punchlist = punchDAO.list(b, begin, end);
+
+            /* Adjust Punch List */
+
+            for (Punch punch : punchlist) {
+                punch.adjust(s);
+            }
+
+            /* JSON Conversion */
+
+            String actualJSON = DAOUtility.getPunchListPlusTotalsAsJSON(punchlist, s);
+           
+
+            JsonObject actual = (JsonObject)(Jsoner.deserialize(actualJSON));
+
+            /* Compare to Expected JSON */
+
+            assertEquals(expected, actual);
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
     
+
     @Test
     public void testJSONShift1Weekday() {
         
@@ -188,6 +293,3 @@ public class JSONTest2 {
     
 
 }
-
-
-

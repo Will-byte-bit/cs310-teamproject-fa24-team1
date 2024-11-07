@@ -31,7 +31,32 @@ public class Version2_BadgeCreateDeleteTest {
         assertEquals("#052B00DC (Bies, Bill X)", b1.toString());
 
     }
-    
+     @Test
+    public void test1() {
+        BadgeDAO badgeDAO = daoFactory.getBadgeDAO();
+        /* Create Badges */
+
+        Badge b1 = new Badge("Big Dog, Tim");
+
+        /* Compare Badge to Expected Value */
+        
+        assertEquals("#B08C33B2 (Big Dog, Tim)", b1.toString());
+        badgeDAO.delete(b1.getId());
+
+    } @Test
+    public void test2() {
+         BadgeDAO badgeDAO = daoFactory.getBadgeDAO();
+
+        /* Create Badges */
+
+        Badge b1 = new Badge("Big Dog, Jeff");
+
+        /* Compare Badge to Expected Value */
+        
+        assertEquals("#09247570 (Big Dog, Jeff)", b1.toString());
+        badgeDAO.delete(b1.getId());
+
+    }
     @Test
     public void testCreateBadge2() {
         
