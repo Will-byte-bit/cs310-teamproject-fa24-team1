@@ -49,15 +49,13 @@ public class Shift {
      * @param defaultSchedule, DailuSchedule
      * @param dailySchedules. DailySchedule
      */
+    
     public Shift(DailySchedule defaultSchedule, HashMap<DayOfWeek, DailySchedule> dailySchedules){
         
         this.defaultSchedule = defaultSchedule;
-        this.dailySchedules = dailySchedules != null ? dailySchedules : new HashMap<>();
-       
-        //calculates differences using DailySchedule Object
-     
-        
+        this.dailySchedules = dailySchedules != null ? dailySchedules : new HashMap<>();        
     }
+    
     public Shift(int id, String description, DailySchedule daily){
         this.id = id;
         this.description = description;
@@ -213,5 +211,5 @@ public class Shift {
     public DailySchedule getScheduleForDay(DayOfWeek day){
         return dailySchedules.getOrDefault(day, defaultSchedule);
     }
-    
+  
 }

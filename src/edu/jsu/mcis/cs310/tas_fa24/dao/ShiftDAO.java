@@ -3,14 +3,14 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package edu.jsu.mcis.cs310.tas_fa24.dao;
-
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
 import edu.jsu.mcis.cs310.tas_fa24.DailySchedule;
 import edu.jsu.mcis.cs310.tas_fa24.Shift;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.time.LocalTime;
+import java.time.LocalDate;
+import java.time.DayOfWeek;
+import java.sql.*;
+import java.util.HashMap;
 
 
 
@@ -179,5 +179,116 @@ public class ShiftDAO {
         
         return find(id);
     }
- 
+    
+    
+     /**
+     * Finds a Shift with specific daily schedule overrides for an employee's badge
+     * and pay period. Retrieves both the default schedule and overrides.
+     * 
+     * @param badge employee badge
+     * @param payPeriodStartDate start date of pay period
+     * @return a Shift with daily schedule overrides
+     * 
+     * @author Josh Whaley
+     */
+    public Shift find(Badge badge, LocalDate payPeriodStartDate) {
+        DailySchedule defaultSchedule = null;
+        HashMap<DayOfWeek, DailySchedule> dailyOverrides = new HashMap<>();
+        Connection conn = daoFactory.getConnection();
+                    
+        try {
+            // find Default Schedule for the Shift
+            String defaultScheduleQuery = "SELECT * FROM dailyschedule WHERE id = true";
+            try (PreparedStatement pst = conn.prepareStatement(defaultScheduleQuery)) {
+                ResultSet rs = pst.executeQuery();
+                if (rs.next()) {
+                    defaultSchedule = extractDailySchedule(rs);
+                }
+            }
+
+            // find Schedule Overrides from scheduleOverride table matching employee's badgeid && when start and end overlap
+            String overrideQuery = "SELECT * FROM tas_fa24_v2.scheduleoverride WHERE badgeid = ? AND start <= ? AND end >= ?";
+            try (PreparedStatement pst = conn.prepareStatement(overrideQuery)) {
+                
+                // sets badge to string for the ResultSet
+                String badge1 = badge.toString();
+                pst.setString(1, badge1);
+                pst.setDate(2, java.sql.Date.valueOf(payPeriodStartDate));
+                pst.setDate(3, java.sql.Date.valueOf(payPeriodStartDate));
+                ResultSet rs = pst.executeQuery();
+                
+                while (rs.next()) {
+                    int dailyScheduleId = rs.getInt("dailyscheduleid");
+                    DayOfWeek dayOfWeek = DayOfWeek.of(rs.getInt("day"));
+
+                    // If there is an override, set it to the proper default schedule depending on the day
+                    DailySchedule dailySchedule = getDailyScheduleById(dailyScheduleId);
+                    if (dailySchedule != null) {
+                        dailyOverrides.put(dayOfWeek, dailySchedule);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+        return new Shift(defaultSchedule, dailyOverrides);
+    }
+
+    /**
+     * Helper Method that gets DailySchedule by its ID from the dailyschedule table.
+     * 
+     * @param id the ID of DailySchedule object
+     * @return DailySchedule object
+     * 
+     * @author Josh Whaley
+     */
+    
+    private DailySchedule getDailyScheduleById(int id) {
+        DailySchedule schedule = null;
+        String query = "SELECT * FROM dailyschedule WHERE id = ?";
+        Connection conn = daoFactory.getConnection();
+        
+        // run Query
+        try (PreparedStatement pst = conn.prepareStatement(query)) {
+            
+            // set id and store query results
+            pst.setInt(1, id);
+            ResultSet rs = pst.executeQuery();
+            
+            if (rs.next()) {
+                // gets to the proper schedule 
+                schedule = extractDailySchedule(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        
+        // return results as schedule for day.
+        return schedule;
+    }
+
+    /**
+     * Helper Method gets a DailySchedule from the ResultSet.
+     *
+     * @param rs the ResultSet containing schedule data
+     * @return a DailySchedule object with populated fields
+     * 
+     * @author Josh Whaley
+     */
+    
+    // after researching the way I found to use the resultset to get the schedule contents
+    private DailySchedule extractDailySchedule(ResultSet rs) throws SQLException {
+        LocalTime shiftStart = rs.getTime("shiftstart").toLocalTime();
+        LocalTime shiftEnd = rs.getTime("shiftstop").toLocalTime();
+        LocalTime lunchStart = rs.getTime("lunchstart").toLocalTime();
+        LocalTime lunchEnd = rs.getTime("lunchstop").toLocalTime();
+        int roundinterval = rs.getInt("roundinterval");
+        int gracePeriod = rs.getInt("graceperiod");
+        int dockPenalty = rs.getInt("dockpenalty");
+        int lunchThreshold = rs.getInt("lunchthreshold");
+
+        return new DailySchedule(shiftStart, shiftEnd, lunchStart, lunchEnd, roundinterval, gracePeriod, dockPenalty, lunchThreshold);
+    }
+
 }

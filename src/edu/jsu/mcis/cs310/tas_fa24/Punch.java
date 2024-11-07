@@ -70,11 +70,11 @@ public class Punch {
         //note 11/1/24
         //added " && difference > roundingInterval" to none test on both
         LocalTime stamp = originalTimeStamp.toLocalTime();
-      
+        DailySchedule defaultSchedule = shift.getDefaultSchedule();
         
-        int roundingInterval = shift.getRoundingInterval()*MINUTE_TO_SECOND;
-        int gracePeriod = shift.getGracePeriod()*MINUTE_TO_SECOND;
-        int dockBy = shift.getDockPenalty();
+        int roundingInterval = defaultSchedule.getRoundingInterval()*MINUTE_TO_SECOND;
+        int gracePeriod = defaultSchedule.getGracePeriod()*MINUTE_TO_SECOND;
+        int dockBy = defaultSchedule.getDockPenalty();
         
         DayOfWeek dayOfWeek = originalTimeStamp.getDayOfWeek();
             
