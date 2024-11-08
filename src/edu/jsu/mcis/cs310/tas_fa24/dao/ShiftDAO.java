@@ -215,10 +215,11 @@ public class ShiftDAO {
      * @param payPeriodStartDate start date of pay period
      * @return a Shift with daily schedule overrides
      * 
-     * @author Josh Whaley
+     * @author William Saint, sub author Josh Whaley.
      */
     public Shift find(Badge badge, LocalDate payPeriodStartDate) {
-         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+        
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         
         //grab defualt schedule based on badge WS
         DailySchedule defaultSchedule = find(badge).getDefaultSchedule();
@@ -230,111 +231,45 @@ public class ShiftDAO {
         Timestamp begin = Timestamp.valueOf(convertS.format(formatter));
         Timestamp end = Timestamp.valueOf(convertE.format(formatter));
         
-        System.out.println(convertS.format(formatter));
-        System.out.println(convertE.format(formatter));
-
-       
-        
         
         for(int day = 1; day <= 5; day++){
             dailyOverrides.put(DayOfWeek.of(day), defaultSchedule);
-   
         }
      
         Connection conn = daoFactory.getConnection();
                     
-        // find Default Schedule for the Shift
-        
-        /*
-        String defaultScheduleQuery = "SELECT * FROM dailyschedule WHERE id ";
-        
-        try (PreparedStatement pst = conn.prepareStatement(defaultScheduleQuery)) {
-        ResultSet rs = pst.executeQuery();
-        if (rs.next()) {
-        defaultSchedule = extractDailySchedule(rs);
-        }
-        }
-        */
-        
-        // find Schedule Overrides from scheduleOverride table matching employee's badgeid && when start and end overlap
-        String overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid is null and start >= ? and end is null";
+        //grab whole database
+        String overrideQuery = "SELECT * FROM scheduleoverride";
         try {
+            
             PreparedStatement pst = conn.prepareStatement(overrideQuery);
             
-            // sets badge to string for the ResultSet
-            pst.setTimestamp(1, begin);
             ResultSet rs = pst.executeQuery();
-            
-            while (rs.next()) {
+            while(rs.next()){
                 int dailyScheduleId = rs.getInt("dailyscheduleid");
                 DayOfWeek dayOfWeek = DayOfWeek.of(rs.getInt("day"));
-                
-                // If there is an override, set it to the proper default schedule depending on the day
                 DailySchedule dailySchedule = getDailyScheduleById(dailyScheduleId);
-                if (dailySchedule != null) {
+                
+                boolean fullSend = dailySchedule != null;
+                
+                String badgeGotten = rs.getString("badgeid");
+                Timestamp startGotten = rs.getTimestamp("start");
+                Timestamp endGotten = rs.getTimestamp("end");
+                
+                if(badgeGotten == null && startGotten.compareTo(begin) >= 0 && endGotten == null && fullSend){
                     dailyOverrides.put(dayOfWeek, dailySchedule);
                 }
-            } 
-            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid = ? and start <= ? and end is null";
-            pst = conn.prepareStatement(overrideQuery);
-            
-            // sets badge to string for the ResultSet
-            pst.setString(1, badge.getId());
-            pst.setTimestamp(2, begin);
-          
-            rs = pst.executeQuery();
-            while (rs.next()) {
-                int dailyScheduleId = rs.getInt("dailyscheduleid");
-                DayOfWeek dayOfWeek = DayOfWeek.of(rs.getInt("day"));
-                
-                // If there is an override, set it to the proper default schedule depending on the day
-                DailySchedule dailySchedule = getDailyScheduleById(dailyScheduleId);
-                if (dailySchedule != null) {
+                else  if(badgeGotten != null && badgeGotten.equals(badge.getId()) && startGotten.compareTo(begin) <= 0 && endGotten == null && fullSend){
                     dailyOverrides.put(dayOfWeek, dailySchedule);
                 }
-            } 
-            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid is null and start >= ? and end <= ?";
-            pst = conn.prepareStatement(overrideQuery);
-            
-            // sets badge to string for the ResultSet
-           
-            pst.setTimestamp(1, begin);
-            pst.setTimestamp(2, end);
-            
-          
-            rs = pst.executeQuery();
-            while (rs.next()) {
-                int dailyScheduleId = rs.getInt("dailyscheduleid");
-                DayOfWeek dayOfWeek = DayOfWeek.of(rs.getInt("day"));
-                
-                // If there is an override, set it to the proper default schedule depending on the day
-                DailySchedule dailySchedule = getDailyScheduleById(dailyScheduleId);
-                if (dailySchedule != null) {
+                else  if(badgeGotten == null && startGotten.compareTo(begin) >= 0 && endGotten != null && endGotten.compareTo(end) <= 0 && fullSend){
                     dailyOverrides.put(dayOfWeek, dailySchedule);
                 }
-            } 
-            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid = ? and start >= ? and end <= ?";
-            pst = conn.prepareStatement(overrideQuery);
-            
-            // sets badge to string for the ResultSet
-            pst.setString(1, badge.getId());
-             pst.setTimestamp(2, begin);
-             pst.setTimestamp(3, end);
-          
-            rs = pst.executeQuery();
-            while (rs.next()) {
-                int dailyScheduleId = rs.getInt("dailyscheduleid");
-                DayOfWeek dayOfWeek = DayOfWeek.of(rs.getInt("day"));
-                
-                // If there is an override, set it to the proper default schedule depending on the day
-                DailySchedule dailySchedule = getDailyScheduleById(dailyScheduleId);
-                if (dailySchedule != null) {
+                else if(badgeGotten != null && badgeGotten.equals(badge.getId()) && startGotten.compareTo(begin) >= 0 && endGotten != null && endGotten.compareTo(end) <= 0 && fullSend){
                     dailyOverrides.put(dayOfWeek, dailySchedule);
                 }
-            } 
-             
-             
-             
+            }
+            
            
         }
         catch(SQLException e){
