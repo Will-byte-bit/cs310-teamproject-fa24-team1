@@ -7,15 +7,15 @@ package edu.jsu.mcis.cs310.tas_fa24;
 import java.util.HashMap;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
+
 
 /**
  * The Shift class is an object that represents the shift data.
  * It contains a HashMap of keys and values.
  * The key is the index value of each data entry, i.e., key 0: ID, key 1: description, etc.
- * calcTimeDifferenceShift() takes two strings, converts them into local time, calculates the difference, and returns an integer.
- * calcTimeDifferenceLunch() is the same as shift; I have them in separate functions for future proofing.
+
  *
+ * 
  * @author William Saint
  * 
  * 
@@ -26,23 +26,18 @@ import java.time.temporal.ChronoUnit;
 public class Shift {
     
   
-    private HashMap<String, String> shift = new HashMap<>();
+    private final HashMap<String, String> shift = new HashMap<>();
     private int id;
     private String description;
    
     
-  
-    // new DailySchedule Objects
-    private DailySchedule defaultSchedule;
+    private final DailySchedule defaultSchedule;
     private HashMap<DayOfWeek, DailySchedule> dailySchedules = new HashMap<>();
-    private DateTimeFormatter inTake = DateTimeFormatter.ofPattern("HH:mm:ss");
     
-    private DateTimeFormatter outTake = DateTimeFormatter.ofPattern("HH:mm");
+    private final DateTimeFormatter outTake;
     
     private int shiftDuration;
     private int lunchDuration;
-    
-    private final int  DEFAULT = 0;
     
     /**
      * Constructor for Shift v.2
@@ -54,6 +49,7 @@ public class Shift {
         
         this.defaultSchedule = defaultSchedule;
         this.dailySchedules =  new HashMap<>(dailySchedules);
+        this.outTake = DateTimeFormatter.ofPattern("HH:mm");
       
 
     }
@@ -62,63 +58,22 @@ public class Shift {
         this.id = id;
         this.description = description;
         this.defaultSchedule = daily;
-        this.shiftDuration = calcTimeDifferenceShift(defaultSchedule.getShiftStart(), defaultSchedule.getShiftEnd());
-        this.lunchDuration = calcTimeDifferenceLunch(defaultSchedule.getLunchStart(), defaultSchedule.getLunchEnd()); 
-        //removed default schedules
+        this.shiftDuration = defaultSchedule.calcTimeDifferenceShift();
+        this.lunchDuration = defaultSchedule.calcTimeDifferenceLunch();
+        this.outTake = DateTimeFormatter.ofPattern("HH:mm");
+ 
      
     }
     
 
     public int calcTimeDifferenceShift(LocalTime ShiftStart, LocalTime ShiftEnd){
-        
-        //duration of shift in minutes
-        int duration = DEFAULT;
-        
-        //testing if shift end is greater than shift start
-        if(defaultSchedule.getShiftEnd().getMinute() > defaultSchedule.getShiftStart().getMinute()){
-        
-         return (int) ChronoUnit.MINUTES.between(defaultSchedule.getShiftStart(), defaultSchedule.getShiftEnd());
-       
-        //testing if it is less than, meaning a different day.
-        }else if(defaultSchedule.getShiftEnd().getMinute() < defaultSchedule.getShiftStart().getMinute()){
-            
-            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, defaultSchedule.getShiftStart().getHour(), defaultSchedule.getShiftStart().getMinute());
-            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, defaultSchedule.getShiftEnd().getHour(), defaultSchedule.getShiftEnd().getMinute());
-            
-            Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
-            duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
-            
-            
-        }
-        
-        
-        return duration;
+        //Method moved to DailySchedule.Java. Method stub kept for legacy compatibility.
+        return this.shiftDuration;
     }
      
     public int calcTimeDifferenceLunch(LocalTime lunchStart, LocalTime lunchEnd){
-        /*
-        \Calcuates difference between times.
-        */
-        
-        int duration = DEFAULT;
-        
-        if(defaultSchedule.getLunchEnd().getMinute() > defaultSchedule.getLunchStart().getMinute()){
-         return (int) ChronoUnit.MINUTES.between(defaultSchedule.getLunchStart(), defaultSchedule.getLunchEnd());
-        
-        }
-        //testing if it is less than, meaning a different day.
-        else if(defaultSchedule.getLunchEnd().getMinute() < defaultSchedule.getLunchStart().getMinute()){
-            
-            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, defaultSchedule.getLunchStart().getHour(), defaultSchedule.getLunchStart().getMinute());
-            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, defaultSchedule.getLunchEnd().getHour(), defaultSchedule.getLunchEnd().getMinute());
-            
-            Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
-            duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
-            
-            
-        }
-        
-        return duration;
+       
+        return this.lunchDuration;
     }
     
      /**
@@ -218,10 +173,10 @@ public class Shift {
     public DailySchedule getDefaultSchedule(DayOfWeek day){
         return dailySchedules.getOrDefault(day, defaultSchedule);
     }
-    public HashMap<DayOfWeek, DailySchedule> GETALL(){
+    public HashMap<DayOfWeek, DailySchedule> GET_ALL(){
         return dailySchedules;
     }
-    public void PRINTALL(){
+    public void PRINT_ALL(){
        
         for(int i = 1; i <= dailySchedules.size(); i++){
             System.out.println(dailySchedules.get(DayOfWeek.of(i%7)).getShiftStart());

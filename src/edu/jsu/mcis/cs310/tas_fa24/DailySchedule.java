@@ -12,14 +12,18 @@ import java.time.temporal.ChronoUnit;
 /**
  *
  * @author joshwhaley
+ * refactored extensively by William Saint.
+ * 
+ * This class holds the daily schedules for an employee. More information about specific functions below.
+ * 
+ * calcTimeDifferenceShift() takes two strings, converts them into local time, calculates the difference, and returns an integer.
+ * calcTimeDifferenceLunch() is the same as shift; I have them in separate functions for future proofing.
+* 
  */
 public class DailySchedule {
     
 
-        private DateTimeFormatter inTake = DateTimeFormatter.ofPattern("HH:mm:ss");
-        //private DateTimeFormatter inTakeConvert = DateTimeFormatter.ofPattern("hh:mm:ss");
-        private DateTimeFormatter outTake = DateTimeFormatter.ofPattern("HH:mm");
-
+        private final DateTimeFormatter inTake = DateTimeFormatter.ofPattern("HH:mm:ss");
     	private LocalTime shiftStart = null;
    	private LocalTime shiftEnd = null;
     	private LocalTime lunchStart = null;
@@ -30,15 +34,14 @@ public class DailySchedule {
     	private final int dockPenalty;
         private final int lunchThreshold;
         
-        private int shiftDuration;
-        private int lunchDuration;
+        private final int shiftDuration;
+        private final int lunchDuration;
     
         private final int  DEFAULT = 0;
         
         // constructor (trying to switch to HashMap per Will's initial design)
-        public DailySchedule(LocalTime shiftStart, LocalTime shiftEnd, 
-                LocalTime lunchStart, LocalTime lunchEnd, int roundingInterval, 
-                int gracePeriod, int dockPenalty, int lunchThreshold){
+        public DailySchedule(LocalTime shiftStart, LocalTime shiftEnd, LocalTime lunchStart, LocalTime lunchEnd, int roundingInterval, 
+                            int gracePeriod, int dockPenalty, int lunchThreshold){
 
             this.shiftStart = shiftStart; 
             this.shiftEnd = shiftEnd; 
@@ -73,7 +76,7 @@ public class DailySchedule {
         }
          
         
-       public int calcTimeDifferenceShift(){
+       public final int calcTimeDifferenceShift(){
         
         //duration of shift in minutes
         int duration = DEFAULT;
@@ -99,7 +102,7 @@ public class DailySchedule {
         return duration;
     }
      
-    public int calcTimeDifferenceLunch(){
+    public final int calcTimeDifferenceLunch(){
         /*
         \Calcuates difference between times.
         */
@@ -118,8 +121,7 @@ public class DailySchedule {
             
             Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
             duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
-            
-            
+
         }
         
         return duration;
