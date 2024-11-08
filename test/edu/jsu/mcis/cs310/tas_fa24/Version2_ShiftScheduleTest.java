@@ -57,7 +57,7 @@ public class Version2_ShiftScheduleTest {
         
         ArrayList<Punch> p1 = punchDAO.list(b, begin, end);
         System.out.println(1);
-        s.PRINTALL();
+        s.PRINT_ALL();
         for (Punch p : p1) {
             p.adjust(s);
          
@@ -89,7 +89,7 @@ public class Version2_ShiftScheduleTest {
         
         ArrayList<Punch> p2 = punchDAO.list(b, begin, end);
         System.out.println(2);
-         s.PRINTALL();
+         s.PRINT_ALL();
         for (Punch p : p2) {
             p.adjust(s);
             
@@ -116,7 +116,7 @@ public class Version2_ShiftScheduleTest {
         
         ArrayList<Punch> p3 = punchDAO.list(b, begin, end);
         System.out.println(3);
-        s.PRINTALL();
+        s.PRINT_ALL();
         for (Punch p : p3) {
             p.adjust(s);
         }
@@ -276,7 +276,7 @@ public class Version2_ShiftScheduleTest {
         
         ArrayList<Punch> p1 = punchDAO.list(b, begin, end);
         System.out.println(1);
-        s.PRINTALL();
+        s.PRINT_ALL();
         for (Punch p : p1) {
             p.adjust(s);
             System.out.println(p.printOriginal());
@@ -306,7 +306,7 @@ public class Version2_ShiftScheduleTest {
         
         ArrayList<Punch> p2 = punchDAO.list(b, begin, end);
         System.out.println(2);
-        s.PRINTALL();
+        s.PRINT_ALL();
         for (Punch p : p2) {
             p.adjust(s);
             System.out.println(p.printOriginal());
@@ -335,7 +335,7 @@ public class Version2_ShiftScheduleTest {
         
         ArrayList<Punch> p3 = punchDAO.list(b, begin, end);
         System.out.println(3);
-        s.PRINTALL();
+        s.PRINT_ALL();
         for (Punch p : p3) {
             p.adjust(s);
             System.out.println();
