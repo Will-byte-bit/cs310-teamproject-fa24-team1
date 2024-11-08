@@ -10,8 +10,11 @@ import java.time.LocalTime;
 import java.time.LocalDate;
 import java.time.DayOfWeek;
 import java.sql.*;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
-
+import java.sql.Timestamp;
 
 
 /**
@@ -160,12 +163,12 @@ public class ShiftDAO {
             if (conn.isValid(0)) {
 
                 ps = conn.prepareStatement(QUERY_FIND_BADGE);
-               // System.out.println(badge.getId());
+               
                 ps.setString(1, badge.getId());
                 
 
                 boolean hasresults = ps.execute();
-                //System.out.println(hasresults);
+              
 
                 if (hasresults) {
                     
@@ -215,10 +218,24 @@ public class ShiftDAO {
      * @author Josh Whaley
      */
     public Shift find(Badge badge, LocalDate payPeriodStartDate) {
+         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
         
         //grab defualt schedule based on badge WS
         DailySchedule defaultSchedule = find(badge).getDefaultSchedule();
         HashMap<DayOfWeek, DailySchedule> dailyOverrides = new HashMap<>();
+        
+        LocalDateTime convertS = LocalDateTime.of(payPeriodStartDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)), LocalTime.MIDNIGHT.withNano(0));
+        LocalDateTime convertE = LocalDateTime.of(payPeriodStartDate.with(TemporalAdjusters.next(DayOfWeek.SATURDAY)), LocalTime.MAX.withNano(0));
+
+        Timestamp begin = Timestamp.valueOf(convertS.format(formatter));
+        Timestamp end = Timestamp.valueOf(convertE.format(formatter));
+        
+        System.out.println(convertS.format(formatter));
+        System.out.println(convertE.format(formatter));
+
+       
+        
+        
         for(int day = 1; day <= 5; day++){
             dailyOverrides.put(DayOfWeek.of(day), defaultSchedule);
    
@@ -240,12 +257,12 @@ public class ShiftDAO {
         */
         
         // find Schedule Overrides from scheduleOverride table matching employee's badgeid && when start and end overlap
-        String overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid = null and start = ? and end is null";
+        String overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid is null and start >= ? and end is null";
         try {
             PreparedStatement pst = conn.prepareStatement(overrideQuery);
             
             // sets badge to string for the ResultSet
-            pst.setDate(1, java.sql.Date.valueOf(payPeriodStartDate));
+            pst.setTimestamp(1, begin);
             ResultSet rs = pst.executeQuery();
             
             while (rs.next()) {
@@ -258,12 +275,12 @@ public class ShiftDAO {
                     dailyOverrides.put(dayOfWeek, dailySchedule);
                 }
             } 
-            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid = ? and start = ? and end is null";
+            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid = ? and start <= ? and end is null";
             pst = conn.prepareStatement(overrideQuery);
             
             // sets badge to string for the ResultSet
             pst.setString(1, badge.getId());
-            pst.setDate(2, java.sql.Date.valueOf(payPeriodStartDate));
+            pst.setTimestamp(2, begin);
           
             rs = pst.executeQuery();
             while (rs.next()) {
@@ -276,12 +293,14 @@ public class ShiftDAO {
                     dailyOverrides.put(dayOfWeek, dailySchedule);
                 }
             } 
-            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid is null and start = ? and end is not null";
+            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid is null and start >= ? and end <= ?";
             pst = conn.prepareStatement(overrideQuery);
             
             // sets badge to string for the ResultSet
            
-            pst.setDate(1, java.sql.Date.valueOf(payPeriodStartDate));
+            pst.setTimestamp(1, begin);
+            pst.setTimestamp(2, end);
+            
           
             rs = pst.executeQuery();
             while (rs.next()) {
@@ -294,12 +313,13 @@ public class ShiftDAO {
                     dailyOverrides.put(dayOfWeek, dailySchedule);
                 }
             } 
-            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid = ? and start = ? and end is null";
+            overrideQuery = "SELECT * FROM scheduleoverride WHERE badgeid = ? and start >= ? and end <= ?";
             pst = conn.prepareStatement(overrideQuery);
             
             // sets badge to string for the ResultSet
             pst.setString(1, badge.getId());
-            pst.setDate(2, java.sql.Date.valueOf(payPeriodStartDate));
+             pst.setTimestamp(2, begin);
+             pst.setTimestamp(3, end);
           
             rs = pst.executeQuery();
             while (rs.next()) {
@@ -320,7 +340,7 @@ public class ShiftDAO {
         catch(SQLException e){
             e.printStackTrace();
         }
-     
+
         return new Shift(defaultSchedule, dailyOverrides);
     }
 
