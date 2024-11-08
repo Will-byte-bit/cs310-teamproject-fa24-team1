@@ -52,8 +52,10 @@ public final class DAOUtility {
                 //iterate over cols
                 for (int i=1; i<=numberOfCols; i++) {
                     String colName = rsMeta.getColumnName(i);
-
+                   
                     mapOfShift.put(colName, rs.getString(colName));
+                   
+                    
 
                 }
 
@@ -102,7 +104,7 @@ public final class DAOUtility {
 
 		// Check if the clock-in and clock-out span the lunch period
 		boolean spansLunch = (clockInTime.toLocalTime().isBefore(shift.getLunchEnd()) && 
-				      clockOutTime.toLocalTime().isAfter(shift.getLunchStart()));
+				      clockOutTime.toLocalTime().isAfter(shift.getLunchStart())) && isWeekday(punch.getOriginaltimestamp());
 
 		// Deduct lunch if necessary and ensure it's only deducted once
 		if (spansLunch && !lunchDeducted) {
@@ -167,12 +169,21 @@ public final class DAOUtility {
 	// Calculate total worked minutes
         
 	int totalWorkedMinutes = getWeeklyWorkedMinutes(punchList, shift);
-	int scheduledMinutes = (shift.getShiftDuration() * 5 - (shift.getLunchDuration() * 5));
+        int scheduledMinutes = 0;
+        
+        for(int day = 1; day <= 5; day++){
+           scheduledMinutes += shift.getDefaultSchedule(DayOfWeek.of(day)).getShiftDuration() - shift.getDefaultSchedule(DayOfWeek.of(day)).getLunchDuration();
+        }
+        System.out.println(scheduledMinutes);
+        System.out.println(totalWorkedMinutes);
 	
 	// Absenteeism formula
 	double percentage = ((double) totalWorkedMinutes / scheduledMinutes);
-       
-	return BigDecimal.valueOf((1 - percentage) * 100).setScale(2, RoundingMode.HALF_UP);
+        
+       return BigDecimal.valueOf((1 - percentage) * 100).setScale(3, RoundingMode.HALF_UP);
+     
+        
+
     }
     
     /**

@@ -40,12 +40,14 @@ public class DailySchedule {
             this.shiftStart = shiftStart; 
             this.shiftEnd = shiftEnd; 
             this.lunchStart = lunchStart;
-            this.lunchEnd = null;
+            this.lunchEnd = lunchEnd;
     
             this.roundingInterval = roundingInterval;
             this.gracePeriod = gracePeriod;
             this.dockPenalty = dockPenalty;
             this.lunchThreshold = lunchThreshold;
+            this.lunchDuration = calcTimeDifferenceLunch();
+            this.shiftDuration = calcTimeDifferenceShift();
 
         }
         
@@ -53,12 +55,7 @@ public class DailySchedule {
         public DailySchedule(HashMap<String, String> map){
 
         this.shiftStart = LocalTime.parse(map.get("shiftstart"), inTake);
-             
-
-
         this.shiftEnd = LocalTime.parse(map.get("shiftstop"), inTake);
-
-
         this.lunchStart = LocalTime.parse(map.get("lunchstart"), inTake);
         this.lunchEnd = LocalTime.parse(map.get("lunchstop"), inTake);
 
@@ -66,26 +63,28 @@ public class DailySchedule {
         this.gracePeriod = Integer.parseInt(map.get("graceperiod"));
         this.roundingInterval = Integer.parseInt(map.get("roundinterval"));
         this.lunchThreshold = Integer.parseInt(map.get("lunchthreshold"));
-
+        this.lunchDuration = calcTimeDifferenceLunch();
+        this.shiftDuration = calcTimeDifferenceShift();
+  
 
         }
          
         
-         public int calcTimeDifferenceShift(LocalTime ShiftStart, LocalTime ShiftEnd){
+       public int calcTimeDifferenceShift(){
         
         //duration of shift in minutes
         int duration = DEFAULT;
         
         //testing if shift end is greater than shift start
-        if(getShiftEnd().getMinute() > getShiftStart().getMinute()){
+        if(shiftEnd.getMinute() > shiftStart.getMinute()){
         
          return (int) ChronoUnit.MINUTES.between(getShiftStart(), getShiftEnd());
        
         //testing if it is less than, meaning a different day.
-        }else if(getShiftEnd().getMinute() < getShiftStart().getMinute()){
+        }else if(shiftEnd.getMinute() < shiftStart.getMinute()){
             
-            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, getShiftStart().getHour(), getShiftStart().getMinute());
-            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, getShiftEnd().getHour(), getShiftEnd().getMinute());
+            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6,  shiftStart.getHour(), shiftStart.getMinute());
+            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, shiftEnd.getHour(), shiftEnd.getMinute());
             
             Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
             duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
@@ -97,22 +96,22 @@ public class DailySchedule {
         return duration;
     }
      
-    public int calcTimeDifferenceLunch(LocalTime lunchStart, LocalTime lunchEnd){
+    public int calcTimeDifferenceLunch(){
         /*
         \Calcuates difference between times.
         */
         
         int duration = DEFAULT;
         
-        if(getLunchEnd().getMinute() > getLunchStart().getMinute()){
+        if(lunchEnd.getMinute() > lunchStart.getMinute()){
          return (int) ChronoUnit.MINUTES.between(getLunchStart(), getLunchEnd());
         
         }
         //testing if it is less than, meaning a different day.
-        else if(getLunchEnd().getMinute() < getLunchStart().getMinute()){
+        else if(lunchEnd.getMinute() < lunchStart.getMinute()){
             
-            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, getLunchStart().getHour(), getLunchStart().getMinute());
-            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, getLunchEnd().getHour(), getLunchEnd().getMinute());
+            LocalDateTime shiftStartLDT = LocalDateTime.of(2024,10,6, lunchStart.getHour(), lunchStart.getMinute());
+            LocalDateTime shiftEndLDT = LocalDateTime.of(2024,10,7, lunchEnd.getHour(), lunchEnd.getMinute());
             
             Duration difference = Duration.between(shiftStartLDT, shiftEndLDT);
             duration = (difference.toHoursPart() * 60) + difference.toMinutesPart();
@@ -156,5 +155,10 @@ public class DailySchedule {
     public int getLunchThreshold(){
         return lunchThreshold;
     }
-    
+    public int getLunchDuration(){
+        return lunchDuration;
+    }
+    public int getShiftDuration(){
+        return shiftDuration;
+    }
 }

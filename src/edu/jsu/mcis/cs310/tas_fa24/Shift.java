@@ -64,10 +64,7 @@ public class Shift {
         this.defaultSchedule = daily;
         this.shiftDuration = calcTimeDifferenceShift(defaultSchedule.getShiftStart(), defaultSchedule.getShiftEnd());
         this.lunchDuration = calcTimeDifferenceLunch(defaultSchedule.getLunchStart(), defaultSchedule.getLunchEnd()); 
-        for(int day = 1; day <= 5; day++){
-            dailySchedules.put(DayOfWeek.of(day), daily);
-   
-        }
+        //removed default schedules
      
     }
     
@@ -167,11 +164,13 @@ public class Shift {
     }
 
     public int getShiftDuration() {
-        return shiftDuration;
+        
+        return defaultSchedule.getShiftDuration();
+        
     }
 
     public int getLunchDuration() {
-        return lunchDuration;
+        return defaultSchedule.getLunchDuration();
     }
 
     public int getRoundingInterval() {
@@ -218,6 +217,16 @@ public class Shift {
     // retrieves schedule for specific day
     public DailySchedule getDefaultSchedule(DayOfWeek day){
         return dailySchedules.getOrDefault(day, defaultSchedule);
+    }
+    public HashMap<DayOfWeek, DailySchedule> GETALL(){
+        return dailySchedules;
+    }
+    public void PRINTALL(){
+       
+        for(int i = 1; i <= dailySchedules.size(); i++){
+            System.out.println(dailySchedules.get(DayOfWeek.of(i%7)).getShiftStart());
+            System.out.println(dailySchedules.get(DayOfWeek.of(i%7)).getShiftEnd());
+        }
     }
   
 }
