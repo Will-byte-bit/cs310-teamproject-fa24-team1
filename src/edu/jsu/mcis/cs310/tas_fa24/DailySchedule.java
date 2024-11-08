@@ -53,7 +53,7 @@ public class DailySchedule {
         public DailySchedule(HashMap<String, String> map){
 
         this.shiftStart = LocalTime.parse(map.get("shiftstart"), inTake);
-             System.out.println(shiftStart.format(inTake));
+             
 
 
         this.shiftEnd = LocalTime.parse(map.get("shiftstop"), inTake);

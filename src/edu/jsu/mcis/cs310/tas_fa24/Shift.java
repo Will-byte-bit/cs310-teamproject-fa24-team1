@@ -34,7 +34,7 @@ public class Shift {
   
     // new DailySchedule Objects
     private DailySchedule defaultSchedule;
-    private HashMap<DayOfWeek, DailySchedule> dailySchedules;
+    private HashMap<DayOfWeek, DailySchedule> dailySchedules = new HashMap<>();
     private DateTimeFormatter inTake = DateTimeFormatter.ofPattern("HH:mm:ss");
     
     private DateTimeFormatter outTake = DateTimeFormatter.ofPattern("HH:mm");
@@ -53,7 +53,9 @@ public class Shift {
     public Shift(DailySchedule defaultSchedule, HashMap<DayOfWeek, DailySchedule> dailySchedules){
         
         this.defaultSchedule = defaultSchedule;
-        this.dailySchedules = dailySchedules != null ? dailySchedules : new HashMap<>();        
+        this.dailySchedules =  new HashMap<>(dailySchedules);
+      
+
     }
     
     public Shift(int id, String description, DailySchedule daily){
@@ -62,6 +64,11 @@ public class Shift {
         this.defaultSchedule = daily;
         this.shiftDuration = calcTimeDifferenceShift(defaultSchedule.getShiftStart(), defaultSchedule.getShiftEnd());
         this.lunchDuration = calcTimeDifferenceLunch(defaultSchedule.getLunchStart(), defaultSchedule.getLunchEnd()); 
+        for(int day = 1; day <= 5; day++){
+            dailySchedules.put(DayOfWeek.of(day), daily);
+   
+        }
+     
     }
     
 
@@ -155,7 +162,7 @@ public class Shift {
     }
     
     //getters
-    public HashMap<String, String> getShift() {
+    public HashMap<String, String>getShift() {
         return shift;
     }
 
@@ -204,11 +211,12 @@ public class Shift {
     }
     
     public DailySchedule getDefaultSchedule(){
-        return defaultSchedule;
+        
+        return this.defaultSchedule;
     }
     
     // retrieves schedule for specific day
-    public DailySchedule getScheduleForDay(DayOfWeek day){
+    public DailySchedule getDefaultSchedule(DayOfWeek day){
         return dailySchedules.getOrDefault(day, defaultSchedule);
     }
   

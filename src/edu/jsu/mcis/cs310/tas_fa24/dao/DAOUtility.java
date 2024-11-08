@@ -165,11 +165,13 @@ public final class DAOUtility {
     
     public static BigDecimal calculateAbsenteeism(ArrayList<Punch> punchList, Shift shift) {
 	// Calculate total worked minutes
+        
 	int totalWorkedMinutes = getWeeklyWorkedMinutes(punchList, shift);
 	int scheduledMinutes = (shift.getShiftDuration() * 5 - (shift.getLunchDuration() * 5));
 	
 	// Absenteeism formula
 	double percentage = ((double) totalWorkedMinutes / scheduledMinutes);
+       
 	return BigDecimal.valueOf((1 - percentage) * 100).setScale(2, RoundingMode.HALF_UP);
     }
     
@@ -261,5 +263,12 @@ public final class DAOUtility {
         object.put("punchlist", arrayOfPunches);
         
         return Jsoner.serialize(object);
+    }
+    
+    public static DayOfWeek getDayOfWeekFromPunch(Punch punch){
+        
+        DayOfWeek day = punch.getOriginaltimestamp().toLocalDate().getDayOfWeek();
+        
+        return day;
     }
 }

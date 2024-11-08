@@ -4,6 +4,7 @@
  */
 package edu.jsu.mcis.cs310.tas_fa24;
 
+import edu.jsu.mcis.cs310.tas_fa24.dao.DAOUtility;
 import java.time.DayOfWeek;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -70,7 +71,8 @@ public class Punch {
         //note 11/1/24
         //added " && difference > roundingInterval" to none test on both
         LocalTime stamp = originalTimeStamp.toLocalTime();
-        DailySchedule defaultSchedule = shift.getDefaultSchedule();
+        DailySchedule defaultSchedule = shift.getDefaultSchedule(DAOUtility.getDayOfWeekFromPunch(this));
+ 
         
         int roundingInterval = defaultSchedule.getRoundingInterval()*MINUTE_TO_SECOND;
         int gracePeriod = defaultSchedule.getGracePeriod()*MINUTE_TO_SECOND;
@@ -91,6 +93,10 @@ public class Punch {
           
             
             if(dayOfWeek.ordinal() <= 4){
+                if(stamp.equals(shiftStart)){
+                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
+                    adjustedTimeStamp = PunchAdjustmentType.NONE;
+                }
                 
                 //test if no changes need to be made
                 if((int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftStartForNone)) % shift.getRoundingInterval() == 0 && difference > roundingInterval){
@@ -156,6 +162,11 @@ public class Punch {
                
             if(dayOfWeek.ordinal() <= 4){
                
+                if(stamp.equals(shiftEnd)){
+                    changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
+                    adjustedTimeStamp = PunchAdjustmentType.NONE;
+                }
+                
                 if((int) Math.abs(ChronoUnit.MINUTES.between(stampForNone, shiftEndForNone)) % shift.getRoundingInterval() == 0 && difference > roundingInterval){
                     changedTimeStamp = LocalDateTime.of(originalTimeStamp.getYear(), originalTimeStamp.getMonthValue(), originalTimeStamp.getDayOfMonth(), stamp.getHour(), stamp.getMinute());
                     adjustedTimeStamp = PunchAdjustmentType.NONE;

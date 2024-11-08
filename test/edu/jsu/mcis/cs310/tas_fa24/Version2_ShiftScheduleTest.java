@@ -56,14 +56,18 @@ public class Version2_ShiftScheduleTest {
         /* Retrieve Punch List #1 */
         
         ArrayList<Punch> p1 = punchDAO.list(b, begin, end);
-        
+ 
         for (Punch p : p1) {
             p.adjust(s);
+         
+                   
+            
         }
         
         /* Calculate Pay Period 08-26-2018 Absenteeism */
         
         BigDecimal percentage = DAOUtility.calculateAbsenteeism(p1, s);
+       
         Absenteeism a1 = new Absenteeism(e, ts, percentage);
         
         assertEquals("#D2CC71D4 (Pay Period Starting 08-26-2018): -17.50%", a1.toString());
