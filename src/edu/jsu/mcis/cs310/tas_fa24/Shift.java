@@ -32,6 +32,8 @@ public class Shift {
    
     
     private final DailySchedule defaultSchedule;
+    
+    //might need to change to scheduleWeek
     private HashMap<DayOfWeek, DailySchedule> dailySchedules = new HashMap<>();
     
     private final DateTimeFormatter outTake;

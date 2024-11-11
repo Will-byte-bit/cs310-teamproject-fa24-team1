@@ -225,7 +225,7 @@ public class ShiftDAO {
         DailySchedule defaultSchedule = find(badge).getDefaultSchedule();
         HashMap<DayOfWeek, DailySchedule> dailyOverrides = new HashMap<>();
         
-        LocalDateTime getStartOfPayPeriod= LocalDateTime.of(payPeriodStartDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)), LocalTime.MIDNIGHT.withNano(0));
+        LocalDateTime getStartOfPayPeriod = LocalDateTime.of(payPeriodStartDate.with(TemporalAdjusters.previousOrSame(DayOfWeek.SUNDAY)), LocalTime.MIDNIGHT.withNano(0));
         LocalDateTime getEndOfPayPeriod = LocalDateTime.of(payPeriodStartDate.with(TemporalAdjusters.next(DayOfWeek.SATURDAY)), LocalTime.MAX.withNano(0));
 
         Timestamp begin = Timestamp.valueOf(getStartOfPayPeriod.format(formatter));

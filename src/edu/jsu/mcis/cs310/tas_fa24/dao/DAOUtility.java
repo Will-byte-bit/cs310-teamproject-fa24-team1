@@ -170,8 +170,7 @@ public final class DAOUtility {
         for(int day = 1; day <= 5; day++){
            scheduledMinutes += shift.getDefaultSchedule(DayOfWeek.of(day)).getShiftDuration() - shift.getDefaultSchedule(DayOfWeek.of(day)).getLunchDuration();
         }
-        System.out.println(scheduledMinutes);
-        System.out.println(totalWorkedMinutes);
+       
 	
 	// Absenteeism formula
 	double percentage = ((double) totalWorkedMinutes / scheduledMinutes);
@@ -242,7 +241,8 @@ public final class DAOUtility {
     }
 
     /**
-     * Serializes an ArrayList of punch data spanding a pay period, as well as the time worked in minutes and absences.
+     * Serializes an ArrayList of punch data spanding a pay period,
+     * as well as the time worked for that pay period in minutes and a percentage of the amount of work they missed.
      * @author William Saint
      * @param punchList
      * @param shift
