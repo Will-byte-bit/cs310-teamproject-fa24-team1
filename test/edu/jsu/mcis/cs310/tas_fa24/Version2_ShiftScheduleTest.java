@@ -56,13 +56,10 @@ public class Version2_ShiftScheduleTest {
         /* Retrieve Punch List #1 */
         
         ArrayList<Punch> p1 = punchDAO.list(b, begin, end);
-        System.out.println(1);
-        s.PRINT_ALL();
+        
         for (Punch p : p1) {
             p.adjust(s);
          
-                   
-            
         }
         
         /* Calculate Pay Period 08-26-2018 Absenteeism */
@@ -115,8 +112,7 @@ public class Version2_ShiftScheduleTest {
         /* Retrieve Punch List #3 */
         
         ArrayList<Punch> p3 = punchDAO.list(b, begin, end);
-        System.out.println(3);
-        s.PRINT_ALL();
+       
         for (Punch p : p3) {
             p.adjust(s);
         }
@@ -125,7 +121,7 @@ public class Version2_ShiftScheduleTest {
         
         percentage = DAOUtility.calculateAbsenteeism(p3, s);
         Absenteeism a3 = new Absenteeism(e, ts, percentage);
-        System.out.println("");
+        
         
         assertEquals("#D2CC71D4 (Pay Period Starting 09-09-2018): -4.38%", a3.toString());
         
@@ -275,13 +271,10 @@ public class Version2_ShiftScheduleTest {
         /* Retrieve Punch List #1 */
         
         ArrayList<Punch> p1 = punchDAO.list(b, begin, end);
-        System.out.println(1);
-        s.PRINT_ALL();
+        
         for (Punch p : p1) {
             p.adjust(s);
-            System.out.println(p.printOriginal());
-            System.out.println(p.printAdjusted());
-            
+              
         }
         
         /* Calculate Pay Period 09-09-2018 Absenteeism */
@@ -305,12 +298,10 @@ public class Version2_ShiftScheduleTest {
         /* Retrieve Punch List #2 */
         
         ArrayList<Punch> p2 = punchDAO.list(b, begin, end);
-        System.out.println(2);
-        s.PRINT_ALL();
+       
         for (Punch p : p2) {
             p.adjust(s);
-            System.out.println(p.printOriginal());
-            System.out.println(p.printAdjusted());
+            
         }
         
         /* Calculate Pay Period 09-16-2018 Absenteeism */
@@ -334,11 +325,10 @@ public class Version2_ShiftScheduleTest {
         /* Retrieve Punch List #3 */
         
         ArrayList<Punch> p3 = punchDAO.list(b, begin, end);
-        System.out.println(3);
-        s.PRINT_ALL();
+        
         for (Punch p : p3) {
             p.adjust(s);
-            System.out.println();
+          
         }
         
         /* Calculate Pay Period 09-23-2018 Absenteeism */
