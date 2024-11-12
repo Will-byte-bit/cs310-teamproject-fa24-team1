@@ -11,6 +11,7 @@ import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.text.DecimalFormat;
 import java.time.DayOfWeek;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -258,7 +259,10 @@ public final class DAOUtility {
         JsonArray arrayOfPunches = new JsonArray();
         
         int timeWorked = getWeeklyWorkedMinutes(punchList, shift);
-        BigDecimal absence = calculateAbsenteeism(punchList, shift);
+        BigDecimal absenceBig = calculateAbsenteeism(punchList, shift);
+        absenceBig = absenceBig.setScale(2, RoundingMode.HALF_UP);
+        
+        
         LocalDate date = punchList.get(0).getOriginaltimestamp().toLocalDate();
         
         
@@ -269,7 +273,7 @@ public final class DAOUtility {
         
         
        
-        object.put("absenteeism", String.valueOf(absence).concat("%"));
+        object.put("absenteeism", String.valueOf(absenceBig).concat("%"));
         object.put("totalminutes", timeWorked);
         object.put("punchlist", arrayOfPunches);
         

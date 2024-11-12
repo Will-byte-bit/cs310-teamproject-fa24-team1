@@ -69,7 +69,7 @@ public class Version2_ShiftScheduleTest {
       
        
         Absenteeism a1 = new Absenteeism(e, ts, percentage);
-        
+      
         assertEquals("#D2CC71D4 (Pay Period Starting 08-26-2018): -17.50%", a1.toString());
         
         /* PART TWO */
