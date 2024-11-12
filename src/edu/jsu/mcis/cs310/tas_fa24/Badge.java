@@ -40,11 +40,9 @@ public class Badge {
     }
     public final String makeId(){
         CRC32 cr = new CRC32();
-        System.out.println(description);
         cr.update(description.getBytes());
          
         long checkSum = cr.getValue();
-        System.out.println(String.format("%08X", checkSum));
         return String.format("%08X", checkSum);
     }
 
