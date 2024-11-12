@@ -179,7 +179,7 @@ public final class DAOUtility {
 	// Absenteeism formula
 	double percentage = ((double) totalWorkedMinutes / scheduledMinutes);
         
-       return BigDecimal.valueOf((1 - percentage) * 100).setScale(2, RoundingMode.HALF_UP);
+       return BigDecimal.valueOf((1 - percentage) * 100).setScale(3, RoundingMode.HALF_UP);
      
         
 
