@@ -27,11 +27,9 @@ public final class DAOFactory {
         }
 
     }
-
     Connection getConnection() {
         return conn;
     }
-
     public BadgeDAO getBadgeDAO() {
         return new BadgeDAO(this);
     }
@@ -50,7 +48,5 @@ public final class DAOFactory {
     public AbsenteeismDAO getAbsenteeismDAO() {
 	return new AbsenteeismDAO(this);
     }
-    
-    
-
+    public ReportDAO getReportDAO() { return  new ReportDAO(this); }
 }

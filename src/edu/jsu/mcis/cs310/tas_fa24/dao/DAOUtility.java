@@ -1,19 +1,23 @@
 package edu.jsu.mcis.cs310.tas_fa24.dao;
 
-import edu.jsu.mcis.cs310.tas_fa24.Punch;
-import edu.jsu.mcis.cs310.tas_fa24.PunchAdjustmentType;
-import edu.jsu.mcis.cs310.tas_fa24.Shift;
+import com.github.cliftonlabs.json_simple.JsonArray;
+import com.github.cliftonlabs.json_simple.JsonObject;
+import com.github.cliftonlabs.json_simple.Jsoner;
 import edu.jsu.mcis.cs310.tas_fa24.EventType;
-import java.time.*;
-import java.util.*;
-import java.time.temporal.ChronoUnit;
-import java.time.format.DateTimeFormatter;
-import com.github.cliftonlabs.json_simple.*;
+import edu.jsu.mcis.cs310.tas_fa24.Punch;
+import edu.jsu.mcis.cs310.tas_fa24.Shift;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
+import java.time.DayOfWeek;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * 
@@ -175,7 +179,7 @@ public final class DAOUtility {
 	// Absenteeism formula
 	double percentage = ((double) totalWorkedMinutes / scheduledMinutes);
         
-       return BigDecimal.valueOf((1 - percentage) * 100).setScale(3, RoundingMode.HALF_UP);
+       return BigDecimal.valueOf((1 - percentage) * 100).setScale(2, RoundingMode.HALF_UP);
      
         
 
