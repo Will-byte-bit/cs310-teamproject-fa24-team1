@@ -43,7 +43,6 @@ public class Absenteeism {
 	// To-String
 	@Override
 	public String toString() {
-	    
 	    String result;
 	    StringBuilder s = new StringBuilder();
 	    s.append("#");
@@ -51,7 +50,7 @@ public class Absenteeism {
 	    s.append(" (Pay Period Starting ");
 	    s.append(payPeriodStart.format(DateTimeFormatter.ofPattern("MM-dd-yyyy")));
 	    s.append("): ");
-	    s.append(String.format("%.2f", absenteeismPercentage));
+	    s.append(String.format("%.2f", absenteeismPercentage.setScale(2, RoundingMode.HALF_UP)));
 	    s.append("%");
 	    
 	    result = s.toString();

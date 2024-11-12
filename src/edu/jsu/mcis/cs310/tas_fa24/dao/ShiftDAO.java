@@ -15,7 +15,7 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.TemporalAdjusters;
 import java.util.HashMap;
 import java.sql.Timestamp;
-
+import java.util.HashMap;
 
 /**
  * This class pulls shift data from the database.
