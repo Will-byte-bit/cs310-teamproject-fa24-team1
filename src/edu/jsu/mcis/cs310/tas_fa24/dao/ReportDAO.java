@@ -7,6 +7,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -20,6 +21,7 @@ public class ReportDAO {
     public ReportDAO(DAOFactory daoFactory) {
         this.daoFactory = daoFactory;
     }
+
     /**
      * Retrieves a badge summary report for employees in JSON format.
      * If departmentId is specified, it filters by that department; otherwise, includes all.
@@ -86,5 +88,84 @@ public class ReportDAO {
         JsonArray jsonArray = new JsonArray();
         jsonArray.addAll(badgeSummaryList);
         return Jsoner.prettyPrint(jsonArray.toJson());
+    }
+
+    /**
+     * Retrieves an employee summary report in JSON format.
+     * If departmentId is specified, it filters by that department; otherwise, includes all.
+     *
+     * @param departmentId The department ID to filter by, or null for all departments.
+     * @return JSON-formatted string containing the employee summary data.
+     */
+    public String getEmployeeSummary(Integer departmentId) {
+    List<JsonObject> employeeSummaryList = new ArrayList<>();
+    ResultSet rs = null;
+    PreparedStatement ps = null;
+    
+    SimpleDateFormat dateFormat = new SimpleDateFormat("MM/dd/yyyy");
+    
+    try {
+        Connection conn = daoFactory.getConnection();
+        String query;
+
+        if (departmentId == null) {
+            query = "SELECT e.badgeid, e.firstname, e.middlename, e.lastname, d.description AS department, " +
+                    "t.description AS employeetype, s.description AS shift, e.active " +
+                    "FROM employee e " +
+                    "JOIN department d ON e.departmentid = d.id " +
+                    "JOIN employeetype t ON e.employeetypeid = t.id " +
+                    "JOIN shift s ON e.shiftid = s.id " +
+                    "ORDER BY d.description, e.firstname, e.lastname, e.middlename";
+            ps = conn.prepareStatement(query);
+        } else {
+            query = "SELECT e.badgeid, e.firstname, e.middlename, e.lastname, d.description AS department, " +
+                    "t.description AS employeetype, s.description AS shift, e.active " +
+                    "FROM employee e " +
+                    "JOIN department d ON e.departmentid = d.id " +
+                    "JOIN employeetype t ON e.employeetypeid = t.id " +
+                    "JOIN shift s ON e.shiftid = s.id " +
+                    "WHERE e.departmentid = ? " +
+                    "ORDER BY d.description, e.firstname, e.lastname, e.middlename";
+            ps = conn.prepareStatement(query);
+            ps.setInt(1, departmentId);
+        }
+        
+        rs = ps.executeQuery();
+
+        while (rs.next()) {
+            String badgeId = rs.getString("badgeid");
+            String firstName = rs.getString("firstname");
+            String middleName = rs.getString("middlename");
+            String lastName = rs.getString("lastname");
+            String department = rs.getString("department");
+            String employeeType = rs.getString("employeetype");
+            String shift = rs.getString("shift");
+            String activeDate = dateFormat.format(rs.getDate("active"));
+
+            // Construct JSON object with expected keys for each employee
+            JsonObject jsonObject = new JsonObject();
+            jsonObject.put("badgeid", badgeId);
+            jsonObject.put("firstname", firstName);
+            jsonObject.put("middlename", middleName);
+            jsonObject.put("lastname", lastName);
+            jsonObject.put("department", department);
+            jsonObject.put("employeetype", employeeType);
+            jsonObject.put("shift", shift);
+            jsonObject.put("active", activeDate);
+
+            employeeSummaryList.add(jsonObject);
+        }
+
+    } catch (SQLException e) {
+        throw new DAOException("Error retrieving employee summary: " + e.getMessage());
+    } finally {
+        try { if (rs != null) rs.close(); } catch (SQLException e) { System.err.println("Error closing ResultSet: " + e.getMessage()); }
+        try { if (ps != null) ps.close(); } catch (SQLException e) { System.err.println("Error closing PreparedStatement: " + e.getMessage()); }
+    }
+    
+    // Convert to JSON array and return pretty-printed JSON string
+    JsonArray jsonArray = new JsonArray();
+    jsonArray.addAll(employeeSummaryList);
+    return Jsoner.prettyPrint(jsonArray.toJson());
     }
 }
