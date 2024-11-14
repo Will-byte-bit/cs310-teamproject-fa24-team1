@@ -354,7 +354,7 @@ public class ReportDAO {
         }catch (SQLException e) {
             throw new DAOException("Error retrieving whos in whos out: " + e.getMessage());
         }
-        System.out.println(Jsoner.serialize(result));
+       
         return Jsoner.serialize(result);
     }
 }
