@@ -116,6 +116,10 @@ public class Shift {
     }
     
     //getters
+    public String getDescription(){
+        return this.description;
+    }
+    
     public HashMap<String, String>getShift() {
         return shift;
     }
