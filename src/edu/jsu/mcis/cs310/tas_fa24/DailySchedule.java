@@ -168,4 +168,7 @@ public class DailySchedule {
     public int getShiftDuration(){
         return shiftDuration;
     }
+    public int getDailyScheduledMinutes(){
+        return shiftDuration - lunchThreshold;
+    }
 }
