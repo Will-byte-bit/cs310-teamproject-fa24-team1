@@ -14,7 +14,7 @@ import java.util.HashMap;
 /**
  *
  * @author joshwhaley
- * refactored extensively by William Saint.
+ * refactored by William Saint.
  * 
  * This class holds the daily schedules for an employee. More information about specific functions below.
  * 
@@ -169,6 +169,6 @@ public class DailySchedule {
         return shiftDuration;
     }
     public int getDailyScheduledMinutes(){
-        return shiftDuration - lunchThreshold;
+        return shiftDuration - lunchDuration;
     }
 }
