@@ -34,15 +34,15 @@ import java.time.format.DateTimeFormatter;
  */
 public class Employee {
     
-    private int id;
-    private String firstName;
-    private String middleName;
-    private String lastName;
-    private LocalDateTime active;
-    private Badge badge;
-    private Department department;
-    private Shift shift;
-    private EmployeeType employeeType;
+    private final int id;
+    private final String firstName;
+    private final String middleName;
+    private final String lastName;
+    private final LocalDateTime active;
+    private final Badge badge;
+    private final Department department;
+    private final Shift shift;
+    private final EmployeeType employeeType;
     
 
     // Constructor

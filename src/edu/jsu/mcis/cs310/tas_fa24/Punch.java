@@ -28,9 +28,7 @@ public class Punch {
     
     private final int CLOCK_IN = 1;
     private final int CLOCK_OUT =  0;
-    private final int MINUTE_TO_SECOND = 60;
-    private final int NEAREST = 8;
-    
+    private final int MINUTE_TO_SECOND = 60;    
     private int terminalId;
     private int id;
     

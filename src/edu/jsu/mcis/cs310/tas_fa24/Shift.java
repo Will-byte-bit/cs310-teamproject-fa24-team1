@@ -27,7 +27,6 @@ public class Shift {
     
   
     private final HashMap<String, String> shift = new HashMap<>();
-    private int id;
     private String description;
    
     
@@ -57,7 +56,6 @@ public class Shift {
     }
     
     public Shift(int id, String description, DailySchedule daily){
-        this.id = id;
         this.description = description;
         this.defaultSchedule = daily;
         this.shiftDuration = defaultSchedule.calcTimeDifferenceShift();
