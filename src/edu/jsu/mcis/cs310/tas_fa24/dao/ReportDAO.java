@@ -183,6 +183,14 @@ public class ReportDAO {
     jsonArray.addAll(employeeSummaryList);
     return Jsoner.prettyPrint(jsonArray.toJson());
     }
+    
+    /**
+     * Retrieves who's clocked in for work and who's not based on a time and date, as well optionally a specific department.
+     * @param time
+     * @param departmentID
+     * @Author William Saint
+     * @return Serialized String
+     */
     public String getWhosInWhosOut(LocalDateTime time, Integer departmentID){
         time.withNano(0);
         
@@ -379,7 +387,7 @@ public class ReportDAO {
      */
 
     public String getHoursSummary(LocalDate date, Integer departmentId, EmployeeType employeeType) {
-        JsonArray reportArray = new JsonArray();
+         JsonArray reportArray = new JsonArray();
         PunchDAO punchDAO = daoFactory.getPunchDAO();
         ShiftDAO shiftDAO = daoFactory.getShiftDAO();
         
@@ -413,7 +421,7 @@ public class ReportDAO {
                     String employeeTypeDesc = rs.getString("EMPLOYEE_TYPE");
                     String shiftName = rs.getString("SHIFT_NAME");
                     String badgeId = rs.getString("BADGEID");
-
+                
                     // Construct full name
                     String middleInitial = (middleName != null && !middleName.isEmpty()) ? middleName.substring(0, 1) : "";
                     String name = String.format("%s, %s %s", lastName, firstName, middleInitial);
@@ -429,7 +437,6 @@ public class ReportDAO {
                     double totalRegularHours = 0.0;
                     double totalOvertimeHours = 0.0;
                 
-                    //Don't need, call daoUtility.
                     for(LocalDate currentDay = payPeriodStart; !currentDay.isAfter(payPeriodEnd); currentDay = currentDay.plusDays(1)){
                         final LocalDate day = currentDay;
                         DailySchedule dailySchedule = shift.getDefaultSchedule(day.getDayOfWeek());
@@ -442,6 +449,8 @@ public class ReportDAO {
                         int dailyMinutes = DAOUtility.calculateTotalMinutes(dailyPunches, shift);
 
                         // Calculate regular and overtime hours for the day
+                        
+               
                         double dailyRegularHours = Math.min(dailySchedule.getDailyScheduledMinutes() / 60.0, dailyMinutes / 60.0);
                         double dailyOvertimeHours = Math.max(0, (dailyMinutes / 60.0) - dailySchedule.getDailyScheduledMinutes() / 60.0);
 
@@ -479,5 +488,6 @@ public class ReportDAO {
 
     
     return Jsoner.prettyPrint(reportArray.toJson());
+    
     }
 }
