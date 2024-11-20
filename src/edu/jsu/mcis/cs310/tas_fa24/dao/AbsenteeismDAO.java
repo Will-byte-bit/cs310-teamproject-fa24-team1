@@ -110,5 +110,26 @@ public class AbsenteeismDAO {
 	    }
 	}		
     }
-	
+    
+    /**
+     * Method to clear out Absenteeism record from database.
+     * @param employeeId 
+     */
+    
+    public void clear(Integer employeeId) {
+	PreparedStatement ps = null;
+	try {
+	    Connection conn = daoFactory.getConnection();
+	    // Prepare the SQL statement
+	    String query = "DELETE FROM absenteeism WHERE employeeid = ?";
+	    ps = conn.prepareStatement(query);
+	    ps.setInt(1, employeeId);
+	    ps.executeUpdate();
+	} catch (SQLException e) {
+	    throw new DAOException("Error clearing absenteeism history for employee ID " + employeeId + ": " + e.getMessage());
+	} finally {
+	    // Close the PreparedStatement
+	    try { if (ps != null) ps.close(); } catch (SQLException e) { System.err.println("Error closing PreparedStatement: " + e.getMessage()); }
+	}
+    }
 }

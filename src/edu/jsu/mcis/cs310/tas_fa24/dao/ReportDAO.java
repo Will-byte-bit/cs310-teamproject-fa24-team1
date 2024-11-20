@@ -490,4 +490,102 @@ public class ReportDAO {
     return Jsoner.prettyPrint(reportArray.toJson());
     
     }
+    
+    /**
+     * Method to return a Json object containing a Json list of an employee's lifetime absenteeism history.
+     * @param employeeId
+     * @return 
+     */
+    
+    public String getAbsenteeismHistory(Integer employeeId) {
+	JsonObject report = new JsonObject();
+	JsonArray historyList = new JsonArray();
+
+	ResultSet rsEmployee = null;
+	ResultSet rsAbsenteeism = null;
+	PreparedStatement psEmployee = null;
+	PreparedStatement psAbsenteeism = null;
+
+	try {
+	    Connection conn = daoFactory.getConnection();
+
+	    // Query to get employee details
+	    String queryEmployee = """
+		SELECT e.firstname, e.middlename, e.lastname, e.badgeid, d.description AS department
+		FROM employee e
+		JOIN department d ON e.departmentid = d.id
+		WHERE e.id = ?
+	    """;
+	    psEmployee = conn.prepareStatement(queryEmployee);
+	    psEmployee.setInt(1, employeeId);
+	    rsEmployee = psEmployee.executeQuery();
+
+	    if (rsEmployee.next()) {
+		// Build the full name
+		String fullname = String.format("%s, %s%s",
+		    rsEmployee.getString("lastname"),
+		    rsEmployee.getString("firstname"),
+		    (rsEmployee.getString("middlename") != null) ? " " + rsEmployee.getString("middlename").substring(0, 1) + "." : "");
+
+		report.put("name", fullname);
+		report.put("badgeid", rsEmployee.getString("badgeid"));
+		report.put("department", rsEmployee.getString("department"));
+	    }
+
+	    // Query to get absenteeism records
+	    String queryAbsenteeism = """
+		SELECT payperiod, percentage
+		FROM absenteeism
+		WHERE employeeid = ?
+		ORDER BY payperiod DESC
+		LIMIT 12
+	    """;
+	    psAbsenteeism = conn.prepareStatement(queryAbsenteeism);
+	    psAbsenteeism.setInt(1, employeeId);
+	    rsAbsenteeism = psAbsenteeism.executeQuery();
+
+	    double cumulativeAbsenteeism = 0.0;
+	    int recordCount = 0;
+
+	    while (rsAbsenteeism.next()) {
+		String payPeriod = rsAbsenteeism.getString("payperiod");
+		double absenteeism = rsAbsenteeism.getDouble("percentage");
+
+		// Update cumulative absenteeism and calculate lifetime average
+		cumulativeAbsenteeism += absenteeism;
+		recordCount++;
+		double lifetimeAbsenteeism = cumulativeAbsenteeism / recordCount;
+
+		// Create JSON object for the record
+		JsonObject record = new JsonObject();
+		record.put("payperiod", payPeriod);
+		record.put("percentage", String.format("%.2f", absenteeism));
+		record.put("lifetime", String.format("%.2f", lifetimeAbsenteeism));
+
+		// Add to history
+		historyList.add(record);
+	    }
+
+	    // Handle case where there are no absenteeism records
+	    if (historyList.isEmpty()) {
+		historyList.add(new JsonObject());
+	    }
+
+	    report.put("absenteeismhistory", historyList);
+
+	} catch (SQLException e) {
+	    throw new DAOException("Error retrieving absenteeism history " + e.getMessage());
+	} finally {
+	    try { if (rsEmployee != null) rsEmployee.close(); } catch (SQLException e) { System.err.println("Error closing Employee ResultSet: " + e.getMessage()); }
+	    try { if (rsAbsenteeism != null) rsAbsenteeism.close(); } catch (SQLException e) { System.err.println("Error closing Absenteeism ResultSet: " + e.getMessage()); }
+	    try { if (psEmployee != null) psEmployee.close(); } catch (SQLException e) { System.err.println("Error closing Employee PreparedStatement: " + e.getMessage()); }
+	    try { if (psAbsenteeism != null) psAbsenteeism.close(); } catch (SQLException e) { System.err.println("Error closing Absenteeism PreparedStatement: " + e.getMessage()); }
+	}
+
+
+	return Jsoner.prettyPrint(report.toJson());
+    }
+
+
+
 }
