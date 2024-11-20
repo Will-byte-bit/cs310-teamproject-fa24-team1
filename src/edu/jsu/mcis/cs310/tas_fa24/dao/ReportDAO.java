@@ -429,6 +429,7 @@ public class ReportDAO {
                     double totalRegularHours = 0.0;
                     double totalOvertimeHours = 0.0;
                 
+                    //Don't need, call daoUtility.
                     for(LocalDate currentDay = payPeriodStart; !currentDay.isAfter(payPeriodEnd); currentDay = currentDay.plusDays(1)){
                         final LocalDate day = currentDay;
                         DailySchedule dailySchedule = shift.getDefaultSchedule(day.getDayOfWeek());

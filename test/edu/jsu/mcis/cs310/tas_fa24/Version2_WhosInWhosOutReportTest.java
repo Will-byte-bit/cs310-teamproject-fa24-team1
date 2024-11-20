@@ -52,6 +52,69 @@ public class Version2_WhosInWhosOutReportTest {
         assertEquals(jsonExpected, jsonActual);
 
     }
+      
+    @Test
+    public void testWhosInWhosOutByDepartment4() {
+        
+        JsonArray jsonExpected = null, jsonActual = null;
+        
+        try {
+        
+            
+            String jsonExpectedString = "[{\"arrived\":\"WED 09/05/2018 06:59:51\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Francis\",\"badgeid\":\"2986FF85\",\"shift\":\"Shift 1\",\"lastname\":\"Black\",\"status\":\"In\"},{\"arrived\":\"WED 09/05/2018 06:56:21\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Genoveva\",\"badgeid\":\"DF19620C\",\"shift\":\"Shift 1\",\"lastname\":\"Forte\",\"status\":\"In\"},{\"arrived\":\"WED 09/05/2018 06:56:09\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Dustin\",\"badgeid\":\"CEC9A3DA\",\"shift\":\"Shift 1\",\"lastname\":\"Hein\",\"status\":\"In\"},{\"arrived\":\"WED 09/05/2018 07:00:00\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Ethel\",\"badgeid\":\"29C03912\",\"shift\":\"Shift 1\",\"lastname\":\"McKain\",\"status\":\"In\"},{\"arrived\":\"WED 09/05/2018 06:53:38\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Raymond\",\"badgeid\":\"2A7F5D99\",\"shift\":\"Shift 1\",\"lastname\":\"Palmer\",\"status\":\"In\"},{\"arrived\":\"WED 09/05/2018 06:58:17\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Anna\",\"badgeid\":\"922370AA\",\"shift\":\"Shift 1\",\"lastname\":\"Price\",\"status\":\"In\"},{\"arrived\":\"WED 09/05/2018 06:59:57\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Georgine\",\"badgeid\":\"AB8204A4\",\"shift\":\"Shift 1\",\"lastname\":\"Snively\",\"status\":\"In\"},{\"arrived\":\"WED 09/05/2018 06:57:58\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Basil\",\"badgeid\":\"8E5F0240\",\"shift\":\"Shift 1\",\"lastname\":\"Thomas\",\"status\":\"In\"},{\"arrived\":\"WED 09/05/2018 06:46:48\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Matthew\",\"badgeid\":\"28DC3FB8\",\"shift\":\"Shift 1\",\"lastname\":\"Woods\",\"status\":\"In\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Ernest\",\"badgeid\":\"D2C39273\",\"shift\":\"Shift 1\",\"lastname\":\"Buck\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Alvina\",\"badgeid\":\"87176FD7\",\"shift\":\"Shift 1\",\"lastname\":\"Cordero\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Nichole\",\"badgeid\":\"CBDE17A7\",\"shift\":\"Shift 1\",\"lastname\":\"Fox\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Amie\",\"badgeid\":\"08D01475\",\"shift\":\"Shift 2\",\"lastname\":\"Littell\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Jeffery\",\"badgeid\":\"DD6E2C0C\",\"shift\":\"Shift 1\",\"lastname\":\"Rhodes\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Maria\",\"badgeid\":\"A5F194EB\",\"shift\":\"Shift 1\",\"lastname\":\"Ybarra\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Laura\",\"badgeid\":\"88D12DCC\",\"shift\":\"Shift 1\",\"lastname\":\"Begaye\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Misty\",\"badgeid\":\"D4A2072B\",\"shift\":\"Shift 1\",\"lastname\":\"Ellis\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Amanda\",\"badgeid\":\"9E06A774\",\"shift\":\"Shift 1\",\"lastname\":\"Foster\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Brad\",\"badgeid\":\"CF697DE6\",\"shift\":\"Shift 1\",\"lastname\":\"Hickmon\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Norman\",\"badgeid\":\"C47A78C1\",\"shift\":\"Shift 1\",\"lastname\":\"King\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Paul\",\"badgeid\":\"31A25435\",\"shift\":\"Shift 1\",\"lastname\":\"Munday\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Bonita\",\"badgeid\":\"690538BA\",\"shift\":\"Shift 1\",\"lastname\":\"Snow\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Scotty\",\"badgeid\":\"7CB9642F\",\"shift\":\"Shift 1\",\"lastname\":\"Treat\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Margaret\",\"badgeid\":\"2A972897\",\"shift\":\"Shift 1\",\"lastname\":\"White\",\"status\":\"Out\"}]";
+            jsonExpected = (JsonArray)Jsoner.deserialize(jsonExpectedString);
+            
+            /* Get "Who's In, Who's Out" Report (2018-09-05 at 7:00am, Assembly Dept) */
+
+            LocalDateTime ts = LocalDateTime.of(2018, 9, 5, 7, 0);
+
+            String jsonActualString = reportDAO.getWhosInWhosOut(ts, 4);
+            jsonActual = (JsonArray)Jsoner.deserialize(jsonActualString);
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        /* Compare to Expected Values */
+        
+        assertNotNull(jsonExpected);
+        assertNotNull(jsonActual);
+        assertEquals(jsonExpected, jsonActual);
+
+    }
+    @Test
+    public void testWhosInWhosOutByDepartmenttest() {
+        
+        JsonArray jsonExpected = null, jsonActual = null;
+        
+        try {
+        
+            
+            String jsonExpectedString = "[{\"arrived\":\"TUE 09/04/2018 06:51:35\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Maria\",\"badgeid\":\"E8A58074\",\"shift\":\"Shift 1\",\"lastname\":\"Brown\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 06:50:24\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Joy\",\"badgeid\":\"BEAFDB2F\",\"shift\":\"Shift 1\",\"lastname\":\"Clark\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 06:26:44\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Jessie\",\"badgeid\":\"4E6E296E\",\"shift\":\"Shift 1\",\"lastname\":\"Hart\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 06:51:00\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Nicholas\",\"badgeid\":\"2CD387C2\",\"shift\":\"Shift 1\",\"lastname\":\"Horner\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 06:57:20\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Debra\",\"badgeid\":\"8C0644BA\",\"shift\":\"Shift 1\",\"lastname\":\"Jones\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 06:47:08\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Juan\",\"badgeid\":\"398B1563\",\"shift\":\"Shift 2\",\"lastname\":\"Sanchez\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 07:00:00\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Mary\",\"badgeid\":\"4E04B5FE\",\"shift\":\"Shift 1\",\"lastname\":\"Smith\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 06:58:19\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Bobbie\",\"badgeid\":\"CB99D1E8\",\"shift\":\"Shift 1\",\"lastname\":\"Speier\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 06:46:55\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Karen\",\"badgeid\":\"58EB7EA1\",\"shift\":\"Shift 1\",\"lastname\":\"Stalker\",\"status\":\"In\"},{\"arrived\":\"TUE 09/04/2018 06:58:09\",\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Janice\",\"badgeid\":\"FCE87D9F\",\"shift\":\"Shift 1\",\"lastname\":\"Tucker\",\"status\":\"In\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Marian\",\"badgeid\":\"55B74EB5\",\"shift\":\"Shift 1\",\"lastname\":\"Coleman\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Doris\",\"badgeid\":\"3DA8B226\",\"shift\":\"Shift 1\",\"lastname\":\"Hamm\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Diana\",\"badgeid\":\"76B87761\",\"shift\":\"Shift 1\",\"lastname\":\"Rohrbach\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Charles\",\"badgeid\":\"95497F63\",\"shift\":\"Shift 1\",\"lastname\":\"Andrews\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Mary\",\"badgeid\":\"E06BE060\",\"shift\":\"Shift 1\",\"lastname\":\"Dixon\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Christine\",\"badgeid\":\"08D745A6\",\"shift\":\"Shift 1\",\"lastname\":\"Harris\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Fay\",\"badgeid\":\"76118CDC\",\"shift\":\"Shift 1\",\"lastname\":\"Kaiser\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Dorothy\",\"badgeid\":\"F1EE0555\",\"shift\":\"Shift 1\",\"lastname\":\"Montgomery\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Sherri\",\"badgeid\":\"D1D2C387\",\"shift\":\"Shift 1\",\"lastname\":\"Omara\",\"status\":\"Out\"},{\"employeetype\":\"Full-Time Employee\",\"firstname\":\"Richard\",\"badgeid\":\"4DAC9951\",\"shift\":\"Shift 1\",\"lastname\":\"Stein\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Joshua\",\"badgeid\":\"12565C60\",\"shift\":\"Shift 1\",\"lastname\":\"Chapman\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Patricia\",\"badgeid\":\"C457EFF7\",\"shift\":\"Shift 1\",\"lastname\":\"Dam\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Sarah\",\"badgeid\":\"CF1D8750\",\"shift\":\"Shift 1\",\"lastname\":\"Dearman\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Betty\",\"badgeid\":\"E70AD3D2\",\"shift\":\"Shift 1\",\"lastname\":\"Decker\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Nicholas\",\"badgeid\":\"124A2DED\",\"shift\":\"Shift 1\",\"lastname\":\"Ford\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Phillip\",\"badgeid\":\"DFD9BB5C\",\"shift\":\"Shift 1\",\"lastname\":\"Gallegos\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Edith\",\"badgeid\":\"9BD0258A\",\"shift\":\"Shift 1\",\"lastname\":\"Hearn\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Patricia\",\"badgeid\":\"8D6362AD\",\"shift\":\"Shift 1\",\"lastname\":\"McGruder\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Alison\",\"badgeid\":\"9973DBF1\",\"shift\":\"Shift 1\",\"lastname\":\"Miller\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Mauricio\",\"badgeid\":\"3E9E0E87\",\"shift\":\"Shift 1\",\"lastname\":\"Patterson\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Sarah\",\"badgeid\":\"9E0476B5\",\"shift\":\"Shift 1\",\"lastname\":\"Rivers\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Lawrence\",\"badgeid\":\"408B195F\",\"shift\":\"Shift 1\",\"lastname\":\"Robinson\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Raymond\",\"badgeid\":\"D4F37E6F\",\"shift\":\"Shift 1\",\"lastname\":\"Sanchez\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Willie\",\"badgeid\":\"860CBBEE\",\"shift\":\"Shift 1\",\"lastname\":\"Simmons\",\"status\":\"Out\"},{\"employeetype\":\"Temporary Employee\",\"firstname\":\"Steven\",\"badgeid\":\"93313988\",\"shift\":\"Shift 1\",\"lastname\":\"Taylor\",\"status\":\"Out\"}]";
+            jsonExpected = (JsonArray)Jsoner.deserialize(jsonExpectedString);
+            
+            /* Get "Who's In, Who's Out" Report (2018-09-05 at 7:00am, Assembly Dept) */
+
+            LocalDateTime ts = LocalDateTime.of(2018, 9, 4, 7, 0);
+
+            String jsonActualString = reportDAO.getWhosInWhosOut(ts, 5);
+            jsonActual = (JsonArray)Jsoner.deserialize(jsonActualString);
+            
+        }
+        catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+        /* Compare to Expected Values */
+        
+        assertNotNull(jsonExpected);
+        assertNotNull(jsonActual);
+        assertEquals(jsonExpected, jsonActual);
+
+    }
+
+
 
     @Test
     public void testWhosInWhosOutAll() {
