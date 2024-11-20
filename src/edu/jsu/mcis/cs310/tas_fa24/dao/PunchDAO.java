@@ -22,8 +22,6 @@ import java.util.HashMap;
 public class PunchDAO {
     private static final String QUERY_FIND_ID = "SELECT * FROM event WHERE id = ?";
     private static final String QUERY_FIND_BADGE = "SELECT description FROM badge WHERE id = ?";
-    private static final String QUERY_LIST_BY_BADGE_DATE = 
-        "SELECT * FROM event WHERE badgeid = ? AND DATE(timestamp) = ? ORDER BY timestamp";
     static final String QUERY_CREATE_PUNCH = "INSERT INTO event (terminalid, badgeid, timestamp, eventtypeid) VALUES (?, ?, ?, ?)";
 
     private final int DEFAULT_ID = 0;
