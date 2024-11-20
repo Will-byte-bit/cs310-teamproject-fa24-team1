@@ -382,7 +382,7 @@ public class ReportDAO {
         JsonArray reportArray = new JsonArray();
         PunchDAO punchDAO = daoFactory.getPunchDAO();
         ShiftDAO shiftDAO = daoFactory.getShiftDAO();
-
+        
         String sql = """
             SELECT e.firstname, e.middlename, e.lastname, d.description AS DEPT_NAME,
                et.description AS EMPLOYEE_TYPE, s.description AS SHIFT_NAME, e.badgeid
@@ -420,8 +420,8 @@ public class ReportDAO {
 
                     // Retrieve employee badge and shift
                     Badge badge = new Badge(badgeId, "");
-                    LocalDate payPeriodStart = date.withDayOfMonth(1);
-                    LocalDate payPeriodEnd = date.withDayOfMonth(date.lengthOfMonth());
+                    LocalDate payPeriodStart = date.with(DayOfWeek.MONDAY);
+                    LocalDate payPeriodEnd = date.with(DayOfWeek.SUNDAY);
 
                     ArrayList<Punch> punches = punchDAO.list(badge, payPeriodStart, payPeriodEnd);
                     Shift shift = shiftDAO.find(badge, payPeriodStart);
