@@ -462,9 +462,7 @@ public class ReportDAO {
                     }
 
                     // Skip employees with no hours worked (both regular and overtime)
-                    if (weeklyRegularHours <= 0 && weeklyOvertimeHours <= 0) {
-                        continue;
-                    }
+                    if (weeklyRegularHours != 0 ) {
 
                     // Create JSON object for each employee
                     JsonObject record = new JsonObject();
@@ -478,6 +476,8 @@ public class ReportDAO {
                     record.put("overtime", String.format("%.2f", weeklyOvertimeHours));
 
                     reportArray.add(record);
+                    
+                    }
                 }
             }
         } catch (SQLException e) {
