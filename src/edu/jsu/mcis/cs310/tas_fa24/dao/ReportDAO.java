@@ -9,6 +9,7 @@ import edu.jsu.mcis.cs310.tas_fa24.Badge;
 import edu.jsu.mcis.cs310.tas_fa24.Punch;
 import edu.jsu.mcis.cs310.tas_fa24.DailySchedule;
 import edu.jsu.mcis.cs310.tas_fa24.dao.ShiftDAO;
+import edu.jsu.mcis.cs310.tas_fa24.dao.PunchDAO;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -387,10 +388,10 @@ public class ReportDAO {
      */
 
     public String getHoursSummary(LocalDate date, Integer departmentId, EmployeeType employeeType) {
-         JsonArray reportArray = new JsonArray();
+        JsonArray reportArray = new JsonArray();
         PunchDAO punchDAO = daoFactory.getPunchDAO();
         ShiftDAO shiftDAO = daoFactory.getShiftDAO();
-        
+
         String sql = """
             SELECT e.firstname, e.middlename, e.lastname, d.description AS DEPT_NAME,
                et.description AS EMPLOYEE_TYPE, s.description AS SHIFT_NAME, e.badgeid
@@ -399,7 +400,7 @@ public class ReportDAO {
             JOIN employeetype et ON e.employeetypeid = et.ID
             JOIN shift s ON e.shiftid = s.ID
             WHERE (? IS NULL OR e.departmentid = ?)
-             AND (? IS NULL OR et.description = ?)
+            AND (? IS NULL OR et.description = ?)
             ORDER BY e.lastname, e.firstname, e.middlename;
             """;
 
@@ -421,7 +422,7 @@ public class ReportDAO {
                     String employeeTypeDesc = rs.getString("EMPLOYEE_TYPE");
                     String shiftName = rs.getString("SHIFT_NAME");
                     String badgeId = rs.getString("BADGEID");
-                
+
                     // Construct full name
                     String middleInitial = (middleName != null && !middleName.isEmpty()) ? middleName.substring(0, 1) : "";
                     String name = String.format("%s, %s %s", lastName, firstName, middleInitial);
@@ -433,35 +434,35 @@ public class ReportDAO {
 
                     ArrayList<Punch> punches = punchDAO.list(badge, payPeriodStart, payPeriodEnd);
                     Shift shift = shiftDAO.find(badge, payPeriodStart);
-                
-                    double totalRegularHours = 0.0;
-                    double totalOvertimeHours = 0.0;
-                
-                    for(LocalDate currentDay = payPeriodStart; !currentDay.isAfter(payPeriodEnd); currentDay = currentDay.plusDays(1)){
+
+                    double weeklyRegularHours = 0.0;
+                    double weeklyOvertimeHours = 0.0;
+
+                    for (LocalDate currentDay = payPeriodStart; !currentDay.isAfter(payPeriodEnd); currentDay = currentDay.plusDays(1)) {
                         final LocalDate day = currentDay;
-                        DailySchedule dailySchedule = shift.getDefaultSchedule(day.getDayOfWeek());
-                
-                        ArrayList<Punch> dailyPunches = punches.stream()
-                        .filter(p -> p.getOriginaltimestamp().toLocalDate().equals(day))
-                            .collect(Collectors.toCollection(ArrayList::new));
-                
+
+                        ArrayList<Punch> dailyPunches;
+                        dailyPunches = punchDAO.list(badge, currentDay);
+
                         // Calculate total worked minutes for the day
                         int dailyMinutes = DAOUtility.calculateTotalMinutes(dailyPunches, shift);
 
-                        // Calculate regular and overtime hours for the day
-                        
-               
-                        double dailyRegularHours = Math.min(dailySchedule.getDailyScheduledMinutes() / 60.0, dailyMinutes / 60.0);
-                        double dailyOvertimeHours = Math.max(0, (dailyMinutes / 60.0) - dailySchedule.getDailyScheduledMinutes() / 60.0);
+                        // Calculate daily regular hours
+                        double dailyRegularHours = dailyMinutes / 60.0;
 
-                        // total hours only for the current day
-                        totalRegularHours += dailyRegularHours;
-                        totalOvertimeHours += dailyOvertimeHours;
-
+                        // Add daily hours to weekly totals
+                        weeklyRegularHours += dailyRegularHours;
                     }
-                
-                    // Skip employees with no regular hours worked
-                    if (totalRegularHours <= 0){
+
+                    // Cap weekly regular hours at 40 and allocate the excess to overtime
+                    if (weeklyRegularHours > 40) {
+                        double excessHours = weeklyRegularHours - 40.0;
+                        weeklyRegularHours = 40.0;
+                        weeklyOvertimeHours += excessHours;
+                    }
+
+                    // Skip employees with no hours worked (both regular and overtime)
+                    if (weeklyRegularHours <= 0 && weeklyOvertimeHours <= 0) {
                         continue;
                     }
 
@@ -473,22 +474,17 @@ public class ReportDAO {
                     record.put("department", department);
                     record.put("employeetype", employeeTypeDesc);
                     record.put("shift", shiftName);
-                    record.put("regular", String.format("%.2f", totalRegularHours));
-                    record.put("overtime", String.format("%.2f", totalOvertimeHours));
+                    record.put("regular", String.format("%.2f", weeklyRegularHours));
+                    record.put("overtime", String.format("%.2f", weeklyOvertimeHours));
 
-                
                     reportArray.add(record);
-                
                 }
-            } 
-    
+            }
         } catch (SQLException e) {
-        throw new DAOException("Error retrieving hours summary: " + e.getMessage());
-        } 
+            throw new DAOException("Error retrieving hours summary: " + e.getMessage());
+        }
 
-    
-    return Jsoner.prettyPrint(reportArray.toJson());
-    
+        return Jsoner.prettyPrint(reportArray.toJson());
     }
     
     /**
