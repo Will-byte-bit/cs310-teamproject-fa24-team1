@@ -8,6 +8,7 @@ import edu.jsu.mcis.cs310.tas_fa24.Shift;
 import edu.jsu.mcis.cs310.tas_fa24.Badge;
 import edu.jsu.mcis.cs310.tas_fa24.Punch;
 import edu.jsu.mcis.cs310.tas_fa24.DailySchedule;
+import static edu.jsu.mcis.cs310.tas_fa24.dao.DAOUtility.getWeeklyWorkedMinutes;
 import edu.jsu.mcis.cs310.tas_fa24.dao.ShiftDAO;
 import edu.jsu.mcis.cs310.tas_fa24.dao.PunchDAO;
 import java.sql.Connection;
@@ -435,17 +436,26 @@ public class ReportDAO {
 
                     ArrayList<Punch> punches = punchDAO.list(badge, payPeriodStart, payPeriodEnd);
                     Shift shift = shiftDAO.find(badge, payPeriodStart);
-                    DailySchedule dailySchedule;
-
+                    
+                    System.out.println(badge);
+                    DateTimeFormatter formatterForFinal = DateTimeFormatter.ofPattern("HH:mm:ss");
+                    System.out.println(shift.getDefaultSchedule(DayOfWeek.FRIDAY).getShiftStart().format(formatterForFinal));
+                    System.out.println(shift.getDefaultSchedule(DayOfWeek.FRIDAY).getShiftEnd().format(formatterForFinal));
+                    
                     double weeklyRegularHours = 0.0;
                     double weeklyOvertimeHours = 0.0;
+                    double weeklyScheduledHours = 0.0;
                     
+                    double scheduledMinutes = 0.00;
+                        
+                        for(int day = 1; day <= 5; day++){
+                            scheduledMinutes += shift.getDefaultSchedule(DayOfWeek.of(day)).getShiftDuration() - shift.getDefaultSchedule(DayOfWeek.of(day)).getLunchDuration();
+                            scheduledMinutes = (long)(scheduledMinutes / 60.0);
+                            weeklyScheduledHours += scheduledMinutes;
+                        }
+                        
 
                     for (LocalDate currentDay = payPeriodStart; !currentDay.isAfter(payPeriodEnd); currentDay = currentDay.plusDays(1)) {
-                        final LocalDate day = currentDay;
-                        dailySchedule = shift.getDefaultSchedule(currentDay.getDayOfWeek());
-                        double correctHours = dailySchedule.getDailyScheduledMinutes() / 60.0;
-
 
                         ArrayList<Punch> dailyPunches;
                         dailyPunches = punchDAO.list(badge, currentDay);
@@ -456,19 +466,19 @@ public class ReportDAO {
                         // Calculate daily regular hours
                         double dailyRegularHours = dailyMinutes / 60.0;
 
-
                         // Add daily hours to weekly totals
                         weeklyRegularHours += dailyRegularHours;
-                        
+   
                     }
-                    
+
                     
                     // Cap weekly regular hours at 40 and allocate the excess to overtime
-                    if (weeklyRegularHours > 40.0) {
-                        double excessHours = weeklyRegularHours - 40.0;
-                        weeklyRegularHours = 40;
+                    if (weeklyRegularHours > weeklyScheduledHours) {
+                        double excessHours = weeklyRegularHours - weeklyScheduledHours;
+                        weeklyRegularHours = weeklyScheduledHours;
                         weeklyOvertimeHours += excessHours;
                     }
+                    
 
                     // Skip employees with no hours worked (both regular and overtime)
                     if (weeklyRegularHours != 0 ) {
