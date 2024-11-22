@@ -136,7 +136,7 @@ public final class DAOUtility {
      * @param shift The shift object containing rounding rules
      * @return Rounded minutes based on the shift's rounding interval
      */
-    public static int applyRounding(int minutesWorked, Shift shift) {
+    private static int applyRounding(int minutesWorked, Shift shift) {
         int roundingInterval = shift.getRoundingInterval();
         int remainder = minutesWorked % roundingInterval;
 

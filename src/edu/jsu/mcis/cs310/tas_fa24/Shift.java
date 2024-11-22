@@ -165,7 +165,7 @@ public class Shift {
     }
     
     public int getDailyScheduledMinutes() {
-	return defaultSchedule.getShiftDuration() -  defaultSchedule.getLunchDuration();
+	return shiftDuration -  lunchDuration;
     }
     
     public DailySchedule getDefaultSchedule(){
