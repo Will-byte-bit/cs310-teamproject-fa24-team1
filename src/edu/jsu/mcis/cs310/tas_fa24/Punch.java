@@ -29,12 +29,12 @@ public class Punch {
     private final int CLOCK_IN = 1;
     private final int CLOCK_OUT =  0;
     private final int MINUTE_TO_SECOND = 60;    
-    private int terminalId;
+    private final int terminalId;
     private int id;
     
-    private String day;
+    private final String day;
      
-    private DateTimeFormatter formatterForFinal = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
+    private final DateTimeFormatter formatterForFinal;
     private Badge badge = null;
     private EventType punchType = null;
     private LocalDateTime originalTimeStamp = null;
@@ -47,6 +47,7 @@ public class Punch {
    
     
     public Punch(int terminalId, Badge badge, EventType punchType){
+        this.formatterForFinal = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
         this.terminalId = terminalId;
         this.badge = badge;
         this.punchType = punchType;
@@ -54,6 +55,7 @@ public class Punch {
         this.day = originalTimeStamp.getDayOfWeek().toString().substring(0, 3);
     }
     public Punch(int id, int terminalid, Badge badge, LocalDateTime originalTimeStamp, EventType punchtype){
+        this.formatterForFinal = DateTimeFormatter.ofPattern("MM/dd/yyyy HH:mm:ss");
         this.id = id;
         this.terminalId = terminalid;
         this.badge = badge;
