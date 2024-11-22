@@ -399,6 +399,7 @@ public class ReportDAO {
             JOIN department d ON e.departmentid = d.ID
             JOIN employeetype et ON e.employeetypeid = et.ID
             JOIN shift s ON e.shiftid = s.ID
+            JOIN dailyschedule ds ON e.shiftid = ds.ID
             WHERE (? IS NULL OR e.departmentid = ?)
             AND (? IS NULL OR et.description = ?)
             ORDER BY e.lastname, e.firstname, e.middlename;
@@ -434,12 +435,17 @@ public class ReportDAO {
 
                     ArrayList<Punch> punches = punchDAO.list(badge, payPeriodStart, payPeriodEnd);
                     Shift shift = shiftDAO.find(badge, payPeriodStart);
+                    DailySchedule dailySchedule;
 
                     double weeklyRegularHours = 0.0;
                     double weeklyOvertimeHours = 0.0;
+                    
 
                     for (LocalDate currentDay = payPeriodStart; !currentDay.isAfter(payPeriodEnd); currentDay = currentDay.plusDays(1)) {
                         final LocalDate day = currentDay;
+                        dailySchedule = shift.getDefaultSchedule(currentDay.getDayOfWeek());
+                        double correctHours = dailySchedule.getDailyScheduledMinutes() / 60.0;
+
 
                         ArrayList<Punch> dailyPunches;
                         dailyPunches = punchDAO.list(badge, currentDay);
@@ -450,14 +456,17 @@ public class ReportDAO {
                         // Calculate daily regular hours
                         double dailyRegularHours = dailyMinutes / 60.0;
 
+
                         // Add daily hours to weekly totals
                         weeklyRegularHours += dailyRegularHours;
+                        
                     }
-
+                    
+                    
                     // Cap weekly regular hours at 40 and allocate the excess to overtime
-                    if (weeklyRegularHours > 40) {
+                    if (weeklyRegularHours > 40.0) {
                         double excessHours = weeklyRegularHours - 40.0;
-                        weeklyRegularHours = 40.0;
+                        weeklyRegularHours = 40;
                         weeklyOvertimeHours += excessHours;
                     }
 

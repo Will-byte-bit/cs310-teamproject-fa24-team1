@@ -3,6 +3,7 @@ package edu.jsu.mcis.cs310.tas_fa24.dao;
 import com.github.cliftonlabs.json_simple.JsonArray;
 import com.github.cliftonlabs.json_simple.JsonObject;
 import com.github.cliftonlabs.json_simple.Jsoner;
+import edu.jsu.mcis.cs310.tas_fa24.DailySchedule;
 import edu.jsu.mcis.cs310.tas_fa24.EventType;
 import edu.jsu.mcis.cs310.tas_fa24.Punch;
 import edu.jsu.mcis.cs310.tas_fa24.Shift;
@@ -135,7 +136,7 @@ public final class DAOUtility {
      * @param shift The shift object containing rounding rules
      * @return Rounded minutes based on the shift's rounding interval
      */
-    private static int applyRounding(int minutesWorked, Shift shift) {
+    public static int applyRounding(int minutesWorked, Shift shift) {
         int roundingInterval = shift.getRoundingInterval();
         int remainder = minutesWorked % roundingInterval;
 
